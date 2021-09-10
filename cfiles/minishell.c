@@ -1,23 +1,35 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/09/10 14:56:12 by bcosters          #+#    #+#             */
+/*   Updated: 2021/09/10 16:49:36 by bcosters         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../extras/hfiles/minishell.h"
 
 void	handler(int signal)
 {
-	pid_t pid;
+	pid_t	pid;
 
+	//getpid is an illegal function
 	pid = getpid();
 	if (signal == 2)
 	{
-		kill(pid, 9);
+		kill(0, SIGTERM);
 	}
 	if (signal == 3)
 	{
-		kill(pid, 9);
+		kill(0, SIGTERM);
 	}
 }
 
 void	functions(t_minishell *mini)
 {
-
 	if (!(ft_strncmp(mini->input, "echo -n", 7)))
 		ft_echon(mini);
 	/*else if (!(ft_strncmp(mini->input, "echo", 4)))
@@ -34,16 +46,19 @@ void	functions(t_minishell *mini)
 		ft_env(mini);
 	else if (!(ft_strncmp(mini->input, "exit", 4)))
 		ft_exit(mini);*/
-	else	
-		ft_PATH(mini);
+	else
+		ft_path(mini);
 }
 
-char **ft_get_path(t_minishell *mini)
-{
-	while (!(ft_strncmp(mini->env->content, "PATH=", 5))) 
-		mini->env = mini->env->next;
-	return(ft_split(mini->env->value, ':'));
-}
+//OBSOLETE function since getenv("PATH") does the trick
+
+// char	**ft_get_path(/*t_minishell *mini*/)
+// {
+// 	// while (!(ft_strncmp(mini->env->content, "PATH=", 5)))
+// 	// 	mini->env = mini->env->next;
+// 	// return (ft_split(mini->env->value, ':'));
+// 	return (ft_split(getenv("PATH"), ':'));
+// }
 
 /*char	**ft_get_path(char **env)
 {
@@ -57,7 +72,7 @@ char **ft_get_path(t_minishell *mini)
 	return (ft_split(env[i] + 5, ':'));
 }*/
 
-t_list *ft_env_list(char **env, t_minishell *mini)
+t_list	*ft_env_list(char **env, t_minishell *mini)
 {
 	int		i;
 	t_list	*new;
@@ -78,43 +93,51 @@ t_list *ft_env_list(char **env, t_minishell *mini)
 
 t_minishell	*ft_init(char **env)
 {
-	int	i;
-	t_minishell *mini;
+	int			i;
+	t_minishell	*mini;
 
 	i = -1;
 	mini = malloc(sizeof(t_minishell));
 	if (!mini)
-		return (0);
-	mini->env = ft_env_list(env, mini); 
-	/*while (mini->env)
+		return (NULL);
+	mini->env = ft_env_list(env, mini);
+	//test for the env variable
+	t_list	*temp = mini->env;
+	while (temp)
 	{
-		printf("%s\n", mini->env->content);
-		printf("%s\n", mini->env->value);
-		mini->env = mini->env->next;
-		if (!mini->env)
-			break;
-	}*/
-	//mini->env = env;
+		printf("%s=", temp->content);
+		printf("%s\n", temp->value);
+		temp = temp->next;
+	}
+	//getpid is illegal
 	mini->pid = getpid();
-	mini->PATH = ft_get_path(mini);
-	/*while (mini->PATH[++i])
-		printf("%s\n", mini->PATH[i]);*/
+	mini->path = ft_split(getenv("PATH"), ':');
 	i = -1;
+	while (mini->path[++i])
+		printf("%s\n", mini->path[i]);
 	return (mini);
 }
 
-int main(int argc, char **env)
+//the 3rd parameter of main IS the environment always
+int	main(int argc, char **argv, char **env)
 {
 	t_minishell	*mini;
+	char		*prompt;
 
 	mini = ft_init(env);
 	while (argc)
 	{
 		signal(SIGINT, handler);
 		signal(SIGQUIT, handler);
-		mini->input = readline("minishell42: ");
+		//some fun way to make the prompt
+		prompt = ft_strtrim(argv[0], "./");
+		prompt = ft_strjoin(prompt, "42: ");
+		mini->input = readline(prompt);
 		add_history(mini->input);
+		//the escape chars + single/double quotes need to be handled
 		mini->argv = ft_split(mini->input, 32);
 		functions(mini);
 	}
+	free(prompt);
+	//no memory getting cleared yet
 }

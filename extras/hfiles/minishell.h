@@ -1,23 +1,42 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/09/10 14:52:05 by bcosters          #+#    #+#             */
+/*   Updated: 2021/09/10 15:37:14 by bcosters         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-#include "../libft/libft.h"
-#include <stdio.h>
-#include <unistd.h>
-#include <signal.h>
-#include <stdlib.h>
-#include <readline/readline.h>
-#include <readline/history.h>
+# include "../libft/libft.h"
+# include <stdio.h>
+# include <unistd.h>
+# include <signal.h>
+# include <stdlib.h>
+# include <readline/readline.h>
+# include <readline/history.h>
 
-typedef struct	s_minishell
+typedef struct s_minishell
 {
-	char	*input;	
+	char	*input;
 	t_list	*env;
-	char	**PATH;
+	char	**path;
 	char	**argv;
 	pid_t	pid;
 }				t_minishell;
 
+//suggestion for updated linked list
+typedef struct s_env
+{
+	char				*keyword;
+	char				*content;
+	struct s_envvars	*next;
+}				t_env;
 
 void	ft_echon(t_minishell *mini);
 void	ft_echo(t_minishell *mini);
@@ -25,6 +44,6 @@ void	ft_cd(t_minishell *mini);
 void	ft_pwd(t_minishell *mini);
 void	ft_env(t_minishell *mini);
 void	ft_exit(t_minishell *mini);
-void	ft_PATH(t_minishell *mini);
+void	ft_path(t_minishell *mini);
 
 #endif

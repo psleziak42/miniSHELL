@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell_builtins.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/09/10 15:14:50 by bcosters          #+#    #+#             */
+/*   Updated: 2021/09/10 15:14:51 by bcosters         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../extras/hfiles/minishell.h"
 
 /*void	ft_env(t_minishell *mini)
@@ -27,13 +39,13 @@ void	ft_cd(t_minishell *mini)
 void	ft_pwd(t_minishell *mini)
 {
 	int x;
-	
+
 	x = -1;
 	while (mini->env[++x] != NULL)
 		;
 	while (mini->env[++x])
 	{
-		if (!ft_strncmp(mini->env[x], "PWD=", 4)) 
+		if (!ft_strncmp(mini->env[x], "PWD=", 4))
 		{
 			printf("%s\n", mini->env[x] + 5);
 			break;
@@ -58,7 +70,7 @@ void	ft_echo(t_minishell *mini)
 */
 void	ft_echon(t_minishell *mini)
 {
-	int i;
+	int	i;
 
 	i = 1;
 	while (mini->argv[++i])
@@ -70,25 +82,25 @@ void	ft_echon(t_minishell *mini)
 	printf("%%\n");
 }
 
-void	ft_PATH(t_minishell *mini)
+void	ft_path(t_minishell *mini)
 {
-	int	i;
-	int	child_id;
-	char *strjoin;
-	char *strjoin2;
+	int		i;
+	int		child_id;
+	char	*strjoin;
+	char	*strjoin2;
 
 	printf("%s\n", mini->argv[0]);
-	child_id = fork();
 	i = -1;
+	child_id = fork();
 	if (child_id == -1)
 		printf("Error FORK\n");
 	else if (child_id == 0)
 	{
-		while(mini->PATH[++i])
+		while (mini->path[++i])
 		{
-			strjoin = ft_strjoin(mini->PATH[i], "/");	
+			strjoin = ft_strjoin(mini->path[i], "/");
 			strjoin2 = ft_strjoin(strjoin, mini->argv[0]);
-			if(execve(strjoin2, &mini->argv[0], NULL))
+			if (execve(strjoin2, &mini->argv[0], NULL))
 				;
 		}
 	}
