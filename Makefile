@@ -10,14 +10,14 @@ QUIT	= \033[0m
 # MACROS
 
 NAME	=	minishell
-SRCS	=	cfiles/minishell.c cfiles/minishell_builtins.c 
+SRCS	=	cfiles/minishell.c cfiles/minishell_builtins.c
 DIR_O	=	OBJ
 OBJS	=	$(SRCS:%.c=%.o)
 DOTH	=	extras/hfiles
 LIBFT	=	extras/libft
 LFT_EXE	=	extras/libft
 CC		=	gcc
-CFLAGS	=	-Wall -Wextra -Werror	
+CFLAGS	=	-Wall -Wextra -Werror
 LDFLAGS = 	-g #-fsanitize=address
 INCLUDE	=	-I./$(DOTH) -I./$(LIBFT)
 LINKS	=	-L./$(LIBFT) -lft -lreadline
@@ -62,5 +62,5 @@ fclean:	clean
 	@echo "$(RESET)"
 
 re:		fclean all
-	
+
 .PHONY	=	all clean fclean re

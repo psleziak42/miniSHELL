@@ -34,13 +34,13 @@ void	functions(t_minishell *mini)
 		ft_env(mini);
 	else if (!(ft_strncmp(mini->input, "exit", 4)))
 		ft_exit(mini);*/
-	else	
+	else
 		ft_PATH(mini);
 }
 
 char **ft_get_path(t_minishell *mini)
 {
-	while (!(ft_strncmp(mini->env->content, "PATH=", 5))) 
+	while (!(ft_strncmp(mini->env->content, "PATH=", 5)))
 		mini->env = mini->env->next;
 	return(ft_split(mini->env->value, ':'));
 }
@@ -69,6 +69,9 @@ t_list *ft_env_list(char **env, t_minishell *mini)
 	while (env[++i])
 	{
 		new = ft_lstnew(ft_split(env[i], '='));
+		//ft exit
+		if (!new)
+			return (NULL);
 		if (!head)
 			head = new;
 		ft_lstadd_back(&mini->env, new);
@@ -85,7 +88,7 @@ t_minishell	*ft_init(char **env)
 	mini = malloc(sizeof(t_minishell));
 	if (!mini)
 		return (0);
-	mini->env = ft_env_list(env, mini); 
+	mini->env = ft_env_list(env, mini);
 	/*while (mini->env)
 	{
 		printf("%s\n", mini->env->content);
