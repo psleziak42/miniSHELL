@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:56:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/13 18:12:26 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/09/14 00:15:20 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 	-> Ctrl-D == EOF aka close inputstream or shell
 */
 
-void	handler(int signal)
+void	ft_handler(int signal)
 {
 	// pid_t	pid;
 
@@ -40,6 +40,8 @@ void	handler(int signal)
 	{
 		// printf("SIGQUIT RECEIVED\n");
 	}
+	if (signal == SIGUSR1)
+		kill(0, SIGKILL);
 	return ;
 }
 
@@ -47,45 +49,38 @@ void	functions(t_minishell *mini)
 {
 	if (!(ft_strncmp(mini->input, "echo -n", 7)))
 		ft_echon(mini);
-	/*else if (!(ft_strncmp(mini->input, "echo", 4)))
+	else if (!(ft_strncmp(mini->input, "echo", 4)))
 		ft_echo(mini);
-	else if (!(ft_strncmp(mini->input, "cd", 2)))
-		ft_cd(mini);
+	/*else if (!(ft_strncmp(mini->input, "cd", 2)))
+		ft_cd(mini);*/
 	else if (!(ft_strncmp(mini->input, "pwd", 3)))
 		ft_pwd(mini);
 	else if (!(ft_strncmp(mini->input, "export", 6)))
-		ft_export(mini); printf("a\n");
-	else if (!(ft_strncmp(mini->input, "unset", 5)))
-		ft_unset(mini);  printf("a\n");
+		ft_export(mini);
+	/*else if (!(ft_strncmp(mini->input, "unset", 5)))
+		ft_unset(mini);  printf("a\n");*/
 	else if (!(ft_strncmp(mini->input, "env", 3)))
 		ft_env(mini);
 	else if (!(ft_strncmp(mini->input, "exit", 4)))
-		ft_exit(mini);*/
+		ft_exit(mini);
 	else
 		ft_path(mini);
 }
 
 //OBSOLETE function since getenv("PATH") does the trick
 
-// char	**ft_get_path(/*t_minishell *mini*/)
-// {
-// 	// while (!(ft_strncmp(mini->env->content, "PATH=", 5)))
-// 	// 	mini->env = mini->env->next;
-// 	// return (ft_split(mini->env->value, ':'));
-// 	return (ft_split(getenv("PATH"), ':'));
-// }
-
-/*char	**ft_get_path(char **env)
+char	**ft_get_path(t_minishell *mini)
 {
-	int	i;
+	while (mini->env)
+	{
+		if (!ft_strncmp(mini->env->keyword, "PATH", 4))
+			return (ft_split(mini->env->content, ':'));
+		mini->env = mini->env->next;
+	}
+	return(0); // if there is not path then return error
+}
 
-	i = -1;
-	while (env[++i])
-		;
-	while (ft_strncmp(env[++i], "PATH=", 5))
-		;
-	return (ft_split(env[i] + 5, ':'));
-}*/
+// CREATING LIST //
 
 t_list	*ft_env_list(char **env, t_minishell *mini)
 {
@@ -99,9 +94,11 @@ t_list	*ft_env_list(char **env, t_minishell *mini)
 	while (env[++i])
 	{
 		new = ft_lstnew(ft_split(env[i], '='));
-		//ft exit
 		if (!new)
+		{
+			//ft_exit
 			return (NULL);
+		}
 		if (!head)
 			head = new;
 		ft_lstadd_back(&mini->env, new);
@@ -119,21 +116,8 @@ t_minishell	*ft_init(char **env)
 	if (!mini)
 		return (NULL);
 	mini->env = ft_env_list(env, mini);
-	//test for the env variable (remove later)
-	t_list	*temp = mini->env;
-	while (temp)
-	{
-		printf("%s=", temp->content);
-		printf("%s\n", temp->value);
-		temp = temp->next;
-	}
-	//getpid is illegal
-	// mini->pid = getpid();
-	mini->path = ft_split(getenv("PATH"), ':');
-	//Debug printer (remove later)
+	mini->path = ft_get_path(mini);
 	i = -1;
-	while (mini->path[++i])
-		printf("%s\n", mini->path[i]);
 	return (mini);
 }
 
@@ -150,7 +134,7 @@ char	*rl_gnl(char *prompt)
 {
 	static char	*line;
 
-	if (line)
+	if (line) // what is this for Ben?? //
 	{
 		free(line);
 		line = NULL;
@@ -164,30 +148,26 @@ char	*rl_gnl(char *prompt)
 	return (line);
 }
 
-/*
-**	The 3rd parameter of main IS the environment always
-
-*/
-
 int	main(int argc, char **argv, char **env)
 {
 	t_minishell	*mini;
 	char		*prompt;
 
 	mini = ft_init(env);
-	signal(SIGINT, handler);
-	signal(SIGQUIT, handler);
+	signal(SIGINT, ft_handler);
+	signal(SIGQUIT, ft_handler);
 	while (argc)
 	{
 		//some fun way to make the prompt
 		prompt = ft_strtrim(argv[0], "./");
 		prompt = ft_strjoin(prompt, "42: ");
 		mini->input = rl_gnl(prompt);
-		// add_history(mini->input);
+		ft_init(env);
+		mini->argv = ft_split(mini->input, ' ');
 		//the escape chars + single/double quotes need to be handled
-		mini->argv = ft_split(mini->input, 32);
 		functions(mini);
 	}
+	//ft_exit
 	free(prompt);
 	free(mini);
 	// free mini->argv in a while loop

@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/17 21:05:58 by psleziak          #+#    #+#             */
-/*   Updated: 2021/09/10 15:22:15 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/14 00:15:27 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@
 
 typedef struct s_list
 {
+	char			*keyword;
 	char			*content;
-	char			*value;
 	struct s_list	*next;
-}				t_list;
+}					t_list;
 
 /*
 #MANDATORY PART: pt1. Libc functions

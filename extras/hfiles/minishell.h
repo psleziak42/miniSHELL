@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:52:05 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/13 13:14:08 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/14 00:15:25 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,16 +35,16 @@ typedef struct s_minishell
 	t_list	*env;
 	char	**path;
 	char	**argv;
-	pid_t	pid;
+	//pid_t	pid;
 }				t_minishell;
 
 //suggestion for updated linked list
-typedef struct s_env
+/*typedef struct s_env
 {
 	char				*keyword;
 	char				*content;
 	struct s_envvars	*next;
-}				t_env;
+}				t_env;*/
 
 void	ft_echon(t_minishell *mini);
 void	ft_echo(t_minishell *mini);
@@ -52,6 +52,9 @@ void	ft_cd(t_minishell *mini);
 void	ft_pwd(t_minishell *mini);
 void	ft_env(t_minishell *mini);
 void	ft_exit(t_minishell *mini);
+void	ft_export(t_minishell *mini);
 void	ft_path(t_minishell *mini);
+
+void	ft_handler(int signal);
 
 #endif

@@ -6,52 +6,46 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 15:14:50 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/13 16:58:11 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/14 00:15:23 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../extras/hfiles/minishell.h"
 
-/*void	ft_env(t_minishell *mini)
+void	ft_export(t_minishell *mini) // blad
 {
-	int x;
+	t_list *temp;
 
-	x = -1;
-
-	while (mini->env[++x] != NULL)
-		;
-	while (mini->env[++x] != NULL)
-		ft_putstr_fd(mini->env[x], 1);
-}*/
-
-/*void	ft_exit(t_minishell *mini)
-{
-	free all functions
-	free(mini);
-	kill(mini->pid, 2);
+	temp = mini->env;
+	ft_lstadd_back(&temp, ft_lstnew(ft_split(mini->argv[1], '=')));
 }
 
-void	ft_cd(t_minishell *mini)
+void	ft_env(t_minishell *mini)
+{
+	while (mini->env)	
+	{
+		printf("%s%s\n", ft_strjoin(mini->env->keyword, "="), mini->env->content);
+		mini->env = mini->env->next;
+	}
+}
+
+void	ft_exit(t_minishell *mini)
+{
+	//free all functions
+	free(mini);
+	ft_handler(SIGUSR1);
+}
+
+/*void	ft_cd(t_minishell *mini)
 {
 	chdir(mini->argv[1]);
-}
+}*/
 
 void	ft_pwd(t_minishell *mini)
 {
-	int x;
-
-	x = -1;
-	while (mini->env[++x] != NULL)
-		;
-	while (mini->env[++x])
-	{
-		if (!ft_strncmp(mini->env[x], "PWD=", 4))
-		{
-			printf("%s\n", mini->env[x] + 5);
-			break;
-		}
-	}
-	//ft_putstr_fd(getenv("PWD"), 1);
+	while (ft_strncmp(mini->env->keyword, "PWD", 3))
+		mini->env = mini->env->next;
+	ft_putstr_fd(mini->env->content, 1);
 }
 
 void	ft_echo(t_minishell *mini)
@@ -67,7 +61,7 @@ void	ft_echo(t_minishell *mini)
 	}
 	printf("\n");
 }
-*/
+
 void	ft_echon(t_minishell *mini)
 {
 	int	i;
@@ -89,7 +83,6 @@ void	ft_path(t_minishell *mini)
 	char	*strjoin;
 	char	*strjoin2;
 
-	// printf("%s\n", mini->argv[0]);
 	i = -1;
 	child_id = fork();
 	if (child_id == -1)
