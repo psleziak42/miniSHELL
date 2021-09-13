@@ -10,17 +10,18 @@ QUIT	= \033[0m
 # MACROS
 
 NAME	=	minishell
-SRCS	=	cfiles/minishell.c cfiles/minishell_builtins.c 
+SRCS	=	cfiles/minishell.c cfiles/minishell_builtins.c
 DIR_O	=	OBJ
 OBJS	=	$(SRCS:%.c=%.o)
 DOTH	=	extras/hfiles
 LIBFT	=	extras/libft
 LFT_EXE	=	extras/libft
 CC		=	gcc
-CFLAGS	=	-Wall -Wextra -Werror	
+CFLAGS	=	-Wall -Wextra -Werror
 LDFLAGS = 	-g #-fsanitize=address
-INCLUDE	=	-I./$(DOTH) -I./$(LIBFT)
-LINKS	=	-L./$(LIBFT) -lft -lreadline
+#UPDATE READLINE via brew because the Mac one is too old
+INCLUDE	=	-I./$(DOTH) -I./$(LIBFT) -I .brew/opt/readline/include
+LINKS	=	-L./$(LIBFT) -lft -lreadline -L .brew/opt/readline/lib -I .brew/opt/readline/include
 
 # RULES
 
@@ -28,7 +29,7 @@ all:	$(NAME)
 
 
 $(NAME): libft $(OBJS)
-	@$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) $(LINKS) -o $(NAME)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) -o $(NAME) $(LINKS)
 	@mkdir -p $(DIR_O)
 	@mv cfiles/*.o OBJ
 	@echo "\n$(GREEN)\n"
@@ -62,5 +63,5 @@ fclean:	clean
 	@echo "$(RESET)"
 
 re:		fclean all
-	
+
 .PHONY	=	all clean fclean re

@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:52:05 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/10 15:37:14 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/13 12:29:21 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,16 @@
 # include <unistd.h>
 # include <signal.h>
 # include <stdlib.h>
-# include <readline/readline.h>
-# include <readline/history.h>
+# include "~/.brew/Cellar/readline/8.1/include/readline/readline.h"
+# include "~/.brew/Cellar/readline/8.1/include/readline/history.h"
+# include <sys/stat.h>
+# include <sys/types.h>
+# include <dirent.h>
+# include <sys/ioctl.h>
+# include <sys/errno.h>
+# include <termios.h>
+# include <curses.h>
+# include <term.h>
 
 typedef struct s_minishell
 {

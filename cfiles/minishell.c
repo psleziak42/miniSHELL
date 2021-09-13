@@ -6,25 +6,38 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:56:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/10 16:49:36 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/13 12:13:55 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../extras/hfiles/minishell.h"
 
+/*
+**	Signal handler
+	-> Ctrl-C == SIGINT
+	-> Ctrl-\ == SIGQUIT
+	-> Ctrl-D == EOF aka close inputstream or shell
+*/
+
 void	handler(int signal)
 {
-	pid_t	pid;
+	// pid_t	pid;
 
 	//getpid is an illegal function
-	pid = getpid();
-	if (signal == 2)
+	// pid = getpid();
+	if (signal == SIGINT)
 	{
-		kill(0, SIGTERM);
+
+		kill(0, signal);
+		printf("\n");
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
 	}
-	if (signal == 3)
+	if (signal == SIGQUIT)
 	{
-		kill(0, SIGTERM);
+		// kill(-1, signal);
+		printf("SIGQUIT RECEIVED\n");
 	}
 }
 
@@ -101,7 +114,7 @@ t_minishell	*ft_init(char **env)
 	if (!mini)
 		return (NULL);
 	mini->env = ft_env_list(env, mini);
-	//test for the env variable
+	//test for the env variable (remove later)
 	t_list	*temp = mini->env;
 	while (temp)
 	{
@@ -110,15 +123,44 @@ t_minishell	*ft_init(char **env)
 		temp = temp->next;
 	}
 	//getpid is illegal
-	mini->pid = getpid();
+	// mini->pid = getpid();
 	mini->path = ft_split(getenv("PATH"), ':');
+	//Debug printer (remove later)
 	i = -1;
 	while (mini->path[++i])
 		printf("%s\n", mini->path[i]);
 	return (mini);
 }
 
-//the 3rd parameter of main IS the environment always
+/*
+**	Memory leak protected version of gnl with readline
+	-> Clears previously allocated memory before reading again
+	-> Reads from user with the given prompt
+	-> IF it's a valid line
+		-> Add it to the line history (ignoring empty lines)
+	-> RETURN the read line;
+*/
+
+char	*rl_gnl(char *prompt)
+{
+	static char	*line;
+
+	if (line)
+	{
+		free(line);
+		line = NULL;
+	}
+	line = readline(prompt);
+	if (line && *line)
+		add_history(line);
+	return (line);
+}
+
+/*
+**	The 3rd parameter of main IS the environment always
+
+*/
+
 int	main(int argc, char **argv, char **env)
 {
 	t_minishell	*mini;
@@ -132,12 +174,13 @@ int	main(int argc, char **argv, char **env)
 		//some fun way to make the prompt
 		prompt = ft_strtrim(argv[0], "./");
 		prompt = ft_strjoin(prompt, "42: ");
-		mini->input = readline(prompt);
+		mini->input = rl_gnl(prompt);
 		add_history(mini->input);
 		//the escape chars + single/double quotes need to be handled
 		mini->argv = ft_split(mini->input, 32);
 		functions(mini);
 	}
 	free(prompt);
+	free(mini);
 	//no memory getting cleared yet
 }
