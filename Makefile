@@ -19,8 +19,9 @@ LFT_EXE	=	extras/libft
 CC		=	gcc
 CFLAGS	=	-Wall -Wextra -Werror
 LDFLAGS = 	-g #-fsanitize=address
-INCLUDE	=	-I./$(DOTH) -I./$(LIBFT)
-LINKS	=	-L./$(LIBFT) -lft -lreadline
+#UPDATE READLINE via brew because the Mac one is too old
+INCLUDE	=	-I./$(DOTH) -I./$(LIBFT) -I .brew/Cellar/readline/8.1/include/readline
+LINKS	=	-L./$(LIBFT) -lft -L .brew/Cellar/readline/8.1/lib -lreadline -I .brew/Cellar/readline/8.1/include/readline
 
 # RULES
 
@@ -28,7 +29,7 @@ all:	$(NAME)
 
 
 $(NAME): libft $(OBJS)
-	@$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) $(LINKS) -o $(NAME)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) -o $(NAME) $(LINKS)
 	@mkdir -p $(DIR_O)
 	@mv cfiles/*.o OBJ
 	@echo "\n$(GREEN)\n"

@@ -3,26 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: psleziak <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/17 21:05:58 by psleziak          #+#    #+#             */
-/*   Updated: 2021/09/09 17:09:58 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/09/10 15:22:15 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
 
-# include<stdlib.h>
-# include<unistd.h>
+# include <stdlib.h>
+# include <unistd.h>
 
 typedef struct s_list
 {
-	char		*content;
-	char		*value;
+	char			*content;
+	char			*value;
 	struct s_list	*next;
-}
-t_list;
+}				t_list;
 
 /*
 #MANDATORY PART: pt1. Libc functions
@@ -74,7 +73,7 @@ void	ft_putnbr_fd(int n, int fd);
 
 t_list	*ft_lstnew(char	**content);
 void	ft_lstadd_front(t_list **lst, t_list *new);
-int	ft_lstsize(t_list *lst);
+int		ft_lstsize(t_list *lst);
 t_list	*ft_lstlast(t_list *lst);
 void	ft_lstadd_back(t_list **lst, t_list *new);
 void	ft_lstdelone(t_list *lst, void(*del)(void *));
