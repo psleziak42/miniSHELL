@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 15:14:50 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/10 15:14:51 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/13 16:58:11 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void	ft_path(t_minishell *mini)
 	char	*strjoin;
 	char	*strjoin2;
 
-	printf("%s\n", mini->argv[0]);
+	// printf("%s\n", mini->argv[0]);
 	i = -1;
 	child_id = fork();
 	if (child_id == -1)
@@ -102,6 +102,8 @@ void	ft_path(t_minishell *mini)
 			strjoin2 = ft_strjoin(strjoin, mini->argv[0]);
 			if (execve(strjoin2, &mini->argv[0], NULL))
 				;
+			free(strjoin);
+			free(strjoin2);
 		}
 	}
 	else

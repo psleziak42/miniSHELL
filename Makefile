@@ -20,8 +20,8 @@ CC		=	gcc
 CFLAGS	=	-Wall -Wextra -Werror
 LDFLAGS = 	-g #-fsanitize=address
 #UPDATE READLINE via brew because the Mac one is too old
-INCLUDE	=	-I./$(DOTH) -I./$(LIBFT) -I .brew/opt/readline/include
-LINKS	=	-L./$(LIBFT) -lft -lreadline -L .brew/opt/readline/lib -I .brew/opt/readline/include
+INCLUDE	=	-I./$(DOTH) -I./$(LIBFT) -I .brew/Cellar/readline/8.1/include/readline
+LINKS	=	-L./$(LIBFT) -lft -L .brew/Cellar/readline/8.1/lib -lreadline -I .brew/Cellar/readline/8.1/include/readline
 
 # RULES
 

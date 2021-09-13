@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:56:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/13 12:13:55 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/13 17:48:08 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,20 +25,20 @@ void	handler(int signal)
 
 	//getpid is an illegal function
 	// pid = getpid();
+	// printf("signal = %d\n", signal);
 	if (signal == SIGINT)
 	{
 
-		kill(0, signal);
 		printf("\n");
 		rl_on_new_line();
-		rl_replace_line("", 0);
+		// rl_replace_line("", 0);
 		rl_redisplay();
 	}
 	if (signal == SIGQUIT)
 	{
-		// kill(-1, signal);
-		printf("SIGQUIT RECEIVED\n");
+		// printf("SIGQUIT RECEIVED\n");
 	}
+	return ;
 }
 
 void	functions(t_minishell *mini)
@@ -151,7 +151,10 @@ char	*rl_gnl(char *prompt)
 		line = NULL;
 	}
 	line = readline(prompt);
-	if (line && *line)
+	//exit + free memory
+	if (!line)
+		exit(EXIT_SUCCESS);
+	if (line != NULL && line[0] != 0)
 		add_history(line);
 	return (line);
 }
@@ -167,20 +170,21 @@ int	main(int argc, char **argv, char **env)
 	char		*prompt;
 
 	mini = ft_init(env);
+	signal(SIGINT, handler);
+	signal(SIGQUIT, handler);
 	while (argc)
 	{
-		signal(SIGINT, handler);
-		signal(SIGQUIT, handler);
 		//some fun way to make the prompt
 		prompt = ft_strtrim(argv[0], "./");
 		prompt = ft_strjoin(prompt, "42: ");
 		mini->input = rl_gnl(prompt);
-		add_history(mini->input);
+		// add_history(mini->input);
 		//the escape chars + single/double quotes need to be handled
 		mini->argv = ft_split(mini->input, 32);
 		functions(mini);
 	}
 	free(prompt);
 	free(mini);
+	// free mini->argv in a while loop
 	//no memory getting cleared yet
 }
