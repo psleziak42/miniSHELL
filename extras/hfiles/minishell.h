@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:52:05 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/14 15:00:13 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/09/14 16:59:12 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,9 @@
 # include <termios.h>
 # include <curses.h>
 # include <term.h>
+
+# define A	0b00000001
+# define B	0b00000010
 
 typedef struct s_minishell
 {
@@ -56,5 +59,9 @@ void	ft_export(t_minishell *mini);
 void	ft_path(t_minishell *mini);
 
 void	ft_handler(int signal);
+
+/* ERROS AND CLEAN */
+
+int		ft_clear_data(t_minishell *mini, char c);
 
 #endif

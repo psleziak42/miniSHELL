@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 15:14:50 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/14 15:00:29 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/09/14 17:05:31 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	ft_export(t_minishell *mini) // blad
 
 	temp = mini->env;
 	ft_lstadd_back(&temp, ft_lstnew(ft_split(mini->argv[1], '=')));
-	free(temp);
+	//free(temp);
 }
 
 void	ft_env(t_minishell *mini)
@@ -31,14 +31,14 @@ void	ft_env(t_minishell *mini)
 		printf("%s%s\n", ft_strjoin(temp->keyword, "="), temp->content);
 		temp = temp->next;
 	}
-	free(temp);
 }
 
 void	ft_exit(t_minishell *mini)
 {
+	ft_clear_data(mini, B);
 	//free all functions
-	free(mini);
-	ft_handler(SIGUSR1);
+	//free(temp);
+	exit(EXIT_SUCCESS);
 }
 
 /*void	ft_cd(t_minishell *mini)

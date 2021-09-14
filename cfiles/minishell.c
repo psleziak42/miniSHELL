@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:56:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/14 15:46:02 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/09/14 17:02:02 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,25 +108,16 @@ t_list	*ft_env_list(char **env, t_minishell *mini)
 			head = new;
 		ft_lstadd_back(&temp, new);
 	}
-	free(temp);
+	//free(temp);
 	return (head);
 }
 
-t_minishell	*ft_init(char **env)
+void	ft_init(t_minishell *mini, char **env)
 {
-	int			i;
-	t_minishell	*mini;
-
-	i = -1;
-	mini = malloc(sizeof(t_minishell));
-	if (!mini)
-		return (NULL);
 	mini->input = NULL;
 	mini->argv = NULL;
 	mini->env = ft_env_list(env, mini);
 	mini->path = ft_get_path(mini);
-	i = -1;
-	return (mini);
 }
 
 /*
@@ -158,25 +149,25 @@ char	*rl_gnl(char *prompt)
 
 int	main(int argc, char **argv, char **env)
 {
-	t_minishell	*mini;
+	t_minishell	mini;
 	char		*prompt;
 
-	mini = ft_init(env);
+	ft_init(&mini, env);
 	signal(SIGINT, ft_handler);
 	signal(SIGQUIT, ft_handler);
 	while (argc)
 	{
 		//some fun way to make the prompt
+		//ft_clear_data(&mini, A);
 		prompt = ft_strtrim(argv[0], "./");
 		prompt = ft_strjoin(prompt, "42: ");
-		mini->input = rl_gnl(prompt);
-		mini->argv = ft_split(mini->input, ' ');
+		mini.input = rl_gnl(prompt);
+		mini.argv = ft_split(mini.input, ' ');
 		//the escape chars + single/double quotes need to be handled
-		functions(mini);
+		functions(&mini);
 	}
 	//ft_exit
 	free(prompt);
-	free(mini);
 	// free mini->argv in a while loop
 	//no memory getting cleared yet
 }

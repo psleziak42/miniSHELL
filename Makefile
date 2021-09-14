@@ -10,7 +10,7 @@ QUIT	= \033[0m
 # MACROS
 
 NAME	=	minishell
-SRCS	=	cfiles/minishell.c cfiles/minishell_builtins.c
+SRCS	=	$(wildcard cfiles/*.c)
 DIR_O	=	OBJ
 OBJS	=	$(SRCS:%.c=%.o)
 DOTH	=	extras/hfiles
@@ -28,7 +28,7 @@ LINKS	=	-L./$(LIBFT) -lft -L .brew/Cellar/readline/8.1/lib -lreadline -I .brew/C
 all:	$(NAME)
 
 $(NAME): libft $(OBJS)
-	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) -o $(NAME) $(LINKS)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(wildcard cfiles/*.c) -o $(NAME) $(LINKS)
 	@mkdir -p $(DIR_O)
 	@mv cfiles/*.o OBJ
 	@echo "\n$(GREEN)\n"
