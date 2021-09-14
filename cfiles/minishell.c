@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:56:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/14 00:15:20 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/09/14 15:00:27 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,11 +71,14 @@ void	functions(t_minishell *mini)
 
 char	**ft_get_path(t_minishell *mini)
 {
-	while (mini->env)
+	t_list	*temp;
+
+	temp = mini->env;
+	while (temp)
 	{
-		if (!ft_strncmp(mini->env->keyword, "PATH", 4))
-			return (ft_split(mini->env->content, ':'));
-		mini->env = mini->env->next;
+		if (!ft_strncmp(temp->keyword, "PATH", 4))
+			return (ft_split(temp->content, ':'));
+		temp = temp->next;
 	}
 	return(0); // if there is not path then return error
 }
@@ -115,6 +118,8 @@ t_minishell	*ft_init(char **env)
 	mini = malloc(sizeof(t_minishell));
 	if (!mini)
 		return (NULL);
+	mini->input = NULL;
+	mini->argv = NULL;
 	mini->env = ft_env_list(env, mini);
 	mini->path = ft_get_path(mini);
 	i = -1;
@@ -162,7 +167,6 @@ int	main(int argc, char **argv, char **env)
 		prompt = ft_strtrim(argv[0], "./");
 		prompt = ft_strjoin(prompt, "42: ");
 		mini->input = rl_gnl(prompt);
-		ft_init(env);
 		mini->argv = ft_split(mini->input, ' ');
 		//the escape chars + single/double quotes need to be handled
 		functions(mini);

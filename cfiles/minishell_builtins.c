@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 15:14:50 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/14 00:15:23 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/09/14 15:00:29 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,24 @@
 
 void	ft_export(t_minishell *mini) // blad
 {
-	t_list *temp;
+	t_list	*temp;
 
 	temp = mini->env;
 	ft_lstadd_back(&temp, ft_lstnew(ft_split(mini->argv[1], '=')));
+	free(temp);
 }
 
 void	ft_env(t_minishell *mini)
 {
-	while (mini->env)	
+	t_list	*temp;
+
+	temp = mini->env;
+	while (temp)	
 	{
-		printf("%s%s\n", ft_strjoin(mini->env->keyword, "="), mini->env->content);
-		mini->env = mini->env->next;
+		printf("%s%s\n", ft_strjoin(temp->keyword, "="), temp->content);
+		temp = temp->next;
 	}
+	free(temp);
 }
 
 void	ft_exit(t_minishell *mini)
@@ -43,9 +48,18 @@ void	ft_exit(t_minishell *mini)
 
 void	ft_pwd(t_minishell *mini)
 {
-	while (ft_strncmp(mini->env->keyword, "PWD", 3))
-		mini->env = mini->env->next;
-	ft_putstr_fd(mini->env->content, 1);
+	t_list	*temp;
+
+	temp = mini->env;
+	while (temp)
+	{
+		if (!ft_strncmp(temp->keyword, "PWD", 3))
+		{
+			ft_putstr_fd(temp->content, 1);
+			break;
+		}
+		temp = temp->next;
+	}
 }
 
 void	ft_echo(t_minishell *mini)
