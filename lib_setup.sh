@@ -3,7 +3,7 @@
 #	CHECK IF BREW IS INSTALLED
 which -s brew
 if [[ $? != 0 ]] ; then
-    echo Install Homebrew pls (check github or this shell script)
+    echo "Install Homebrew pls (check github or this shell script)"
     #ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 else
     brew update

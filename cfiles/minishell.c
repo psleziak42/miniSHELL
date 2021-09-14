@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:56:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/14 10:58:20 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/14 13:22:00 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,16 +25,16 @@ void	handler(int sig)
 {
 	if (sig == SIGINT)
 	{
-		printf("\n");
+		write(1, "\n", 1);
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
 	}
 	if (sig == SIGQUIT)
 	{
-		printf("");
-		rl_on_new_line();
-		rl_replace_line("", 0);
+		// printf("RECEIVED SIGQUIT\n");
+		// rl_on_new_line();
+		// rl_replace_line("^\\", 0);
 		rl_redisplay();
 	}
 	return ;
@@ -154,7 +154,10 @@ char	*rl_gnl(char *prompt)
 	}
 	line = readline(prompt);
 	//exit + free memory
+	// printf("%s, %p\n", line, line);
 	if (!line)
+		exit(EXIT_SUCCESS);
+	if (!*line)
 		exit(EXIT_SUCCESS);
 	if (line != NULL && line[0] != 0)
 		add_history(line);
