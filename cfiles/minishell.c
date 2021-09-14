@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:56:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/14 17:02:02 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/09/14 22:21:21 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,18 +47,20 @@ void	ft_handler(int signal)
 
 void	functions(t_minishell *mini)
 {
+	if (mini->argv[0][0] == '$')
+		ft_dollar_sign(mini); // working for argv[1];
 	if (!(ft_strncmp(mini->input, "echo -n", 7)))
 		ft_echon(mini);
 	else if (!(ft_strncmp(mini->input, "echo", 4)))
 		ft_echo(mini);
-	/*else if (!(ft_strncmp(mini->input, "cd", 2)))
-		ft_cd(mini);*/
+	else if (!(ft_strncmp(mini->input, "cd", 2)))
+		ft_cd(mini);
 	else if (!(ft_strncmp(mini->input, "pwd", 3)))
 		ft_pwd(mini);
 	else if (!(ft_strncmp(mini->input, "export", 6)))
 		ft_export(mini);
 	/*else if (!(ft_strncmp(mini->input, "unset", 5)))
-		ft_unset(mini);  printf("a\n");*/
+		ft_unset(mini);*/
 	else if (!(ft_strncmp(mini->input, "env", 3)))
 		ft_env(mini);
 	else if (!(ft_strncmp(mini->input, "exit", 4)))

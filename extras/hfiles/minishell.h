@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:52:05 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/14 16:59:12 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/09/14 21:14:54 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,10 @@ void	ft_echon(t_minishell *mini);
 void	ft_echo(t_minishell *mini);
 void	ft_cd(t_minishell *mini);
 void	ft_pwd(t_minishell *mini);
+void	ft_export(t_minishell *mini);
+void	ft_unset(t_minishell *mini);
 void	ft_env(t_minishell *mini);
 void	ft_exit(t_minishell *mini);
-void	ft_export(t_minishell *mini);
 void	ft_path(t_minishell *mini);
 
 void	ft_handler(int signal);
@@ -64,4 +65,8 @@ void	ft_handler(int signal);
 
 int		ft_clear_data(t_minishell *mini, char c);
 
+
+/* DOLLAR */
+
+int		ft_dollar_sign(t_minishell *mini);
 #endif
