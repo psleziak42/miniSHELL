@@ -27,7 +27,6 @@ LINKS	=	-L./$(LIBFT) -lft -L .brew/Cellar/readline/8.1/lib -lreadline -I .brew/C
 
 all:	$(NAME)
 
-
 $(NAME): libft $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) -o $(NAME) $(LINKS)
 	@mkdir -p $(DIR_O)

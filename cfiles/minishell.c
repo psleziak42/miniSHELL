@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:56:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/14 15:00:27 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/09/14 15:46:02 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,9 +90,11 @@ t_list	*ft_env_list(char **env, t_minishell *mini)
 	int		i;
 	t_list	*new;
 	t_list	*head;
+	t_list	*temp;
 
 	new = NULL;
 	head = NULL;
+	temp = mini->env;
 	i = -1;
 	while (env[++i])
 	{
@@ -104,8 +106,9 @@ t_list	*ft_env_list(char **env, t_minishell *mini)
 		}
 		if (!head)
 			head = new;
-		ft_lstadd_back(&mini->env, new);
+		ft_lstadd_back(&temp, new);
 	}
+	free(temp);
 	return (head);
 }
 
