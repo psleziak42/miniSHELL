@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:56:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/13 18:17:46 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/14 10:58:20 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,24 +21,21 @@
 	-> Ctrl-D == EOF aka close inputstream or shell
 */
 
-void	handler(int signal)
+void	handler(int sig)
 {
-	// pid_t	pid;
-
-	//getpid is an illegal function
-	// pid = getpid();
-	// printf("signal = %d\n", signal);
-	if (signal == SIGINT)
+	if (sig == SIGINT)
 	{
-
 		printf("\n");
 		rl_on_new_line();
-		// rl_replace_line("", 0);
+		rl_replace_line("", 0);
 		rl_redisplay();
 	}
-	if (signal == SIGQUIT)
+	if (sig == SIGQUIT)
 	{
-		// printf("SIGQUIT RECEIVED\n");
+		printf("");
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
 	}
 	return ;
 }
