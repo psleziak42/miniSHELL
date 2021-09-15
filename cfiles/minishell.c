@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:56:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/15 11:10:43 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/15 12:43:03 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ void	ft_handler(int sig)
 	{
 		// printf("RECEIVED SIGQUIT\n");
 		// rl_on_new_line();
-		// rl_replace_line("^\\", 0);
-		rl_redisplay();
+		// rl_replace_line("", 0);
+		// rl_redisplay();
 	}
 	if (sig == SIGUSR1)
 		kill(0, SIGKILL);
@@ -79,7 +79,7 @@ char	**ft_get_path(t_minishell *mini)
 			return (ft_split(temp->content, ':'));
 		temp = temp->next;
 	}
-	return(0); // if there is not path then return error
+	return (NULL); // if there is not path then return error
 }
 
 // CREATING LIST //
@@ -100,50 +100,60 @@ t_list	*ft_env_list(char **env, t_minishell *mini)
 		new = ft_lstnew(ft_split(env[i], '='));
 		if (!new)
 		{
-			//ft_exit
+			ft_lstclear(&head, free);
 			return (NULL);
 		}
 		if (!head)
 			head = new;
 		ft_lstadd_back(&temp, new);
 	}
-	//free(temp);
 	return (head);
 }
 
-void	ft_init(t_minishell *mini, char **env)
+void	ft_init(t_minishell *mini, char **argv, char **env)
 {
+	char	*temp_prompt;
+
+	temp_prompt = ft_strtrim(argv[0], "./");
+	mini->prompt = ft_strjoin(temp_prompt, "42: ");
+	if (!mini->prompt)
+		ft_error_exit(mini, "Error creating prompt string");
+	ft_strdel(&temp_prompt);
 	mini->input = NULL;
 	mini->argv = NULL;
 	mini->env = ft_env_list(env, mini);
+	if (!mini->env)
+		ft_error_exit(mini, "Malloc error while creating env list");
 	mini->path = ft_get_path(mini);
+	if (!mini->path)
+		ft_error_exit(mini, "No PATH variable found");
+	if (tcgetattr(STDIN_FILENO, &mini->term) != 0)
+		ft_error_exit(mini, "Error getting terminal settings");
+	mini->term.c_lflag &= ~ECHOCTL;
+	if (tcsetattr(STDIN_FILENO, TCSANOW, &mini->term) != 0)
+		ft_error_exit(mini, "Error setting terminal settings");
 }
 
 /*
 **	Memory leak protected version of gnl with readline
-	-> Clears previously allocated memory before reading again
+	-> Clears previously allocated memory for 'line' before reading again
 	-> Reads from user with the given prompt
 	-> IF it's a valid line
 		-> Add it to the line history (ignoring empty lines)
 	-> RETURN the read line;
 */
 
-char	*rl_gnl(char *prompt)
+char	*rl_gnl(t_minishell *mini)
 {
 	static char	*line;
 
-	if (line) // what is this for Ben?? //
-	{
-		free(line);
-		line = NULL;
-	}
-	line = readline(prompt);
-	//exit + free memory
-	// printf("%s, %p\n", line, line);
+	if (line) // what is this for Ben??  => read the comment above the function//
+		ft_strdel(&line);
+	line = readline(mini->prompt);
 	if (!line)
-		exit(EXIT_SUCCESS);
+		exit(ft_clear_data(mini, B));
 	if (!*line)
-		exit(EXIT_SUCCESS);
+		exit(ft_clear_data(mini, B));
 	if (line != NULL && line[0] != 0)
 		add_history(line);
 	return (line);
@@ -152,24 +162,15 @@ char	*rl_gnl(char *prompt)
 int	main(int argc, char **argv, char **env)
 {
 	t_minishell	mini;
-	char		*prompt;
 
-	ft_init(&mini, env);
+	ft_init(&mini, argv, env);
 	signal(SIGINT, ft_handler);
 	signal(SIGQUIT, ft_handler);
 	while (argc)
 	{
-		//some fun way to make the prompt
-		//ft_clear_data(&mini, A);
-		prompt = ft_strtrim(argv[0], "./");
-		prompt = ft_strjoin(prompt, "42: ");
-		mini.input = rl_gnl(prompt);
+		mini.input = rl_gnl(&mini);
 		mini.argv = ft_split(mini.input, ' ');
 		//the escape chars + single/double quotes need to be handled
 		functions(&mini);
 	}
-	//ft_exit
-	free(prompt);
-	// free mini->argv in a while loop
-	//no memory getting cleared yet
 }

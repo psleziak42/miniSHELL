@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:52:05 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/15 11:11:10 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/15 12:14:44 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,12 @@
 
 typedef struct s_minishell
 {
-	char	*input;
-	t_list	*env;
-	char	**path;
-	char	**argv;
+	char			*input;
+	t_list			*env;
+	char			**path;
+	char			**argv;
+	struct termios	term;
+	char			*prompt;
 }				t_minishell;
 
 //suggestion for updated linked list
@@ -63,7 +65,8 @@ void	ft_handler(int signal);
 /* ERROS AND CLEAN */
 
 int		ft_clear_data(t_minishell *mini, char c);
-
+void	ft_error_exit(t_minishell *mini, const char *errmessage);
+int		ft_error_handler(const char *errmessage, int err_code);
 
 /* DOLLAR */
 
