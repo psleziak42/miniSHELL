@@ -6,13 +6,13 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:56:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/14 22:21:21 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/09/15 11:10:43 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../extras/hfiles/minishell.h"
 
-//hello
+//hello przemek
 
 /*
 **	Signal handler
@@ -21,26 +21,23 @@
 	-> Ctrl-D == EOF aka close inputstream or shell
 */
 
-void	ft_handler(int signal)
+void	ft_handler(int sig)
 {
-	// pid_t	pid;
-
-	//getpid is an illegal function
-	// pid = getpid();
-	// printf("signal = %d\n", signal);
-	if (signal == SIGINT)
+	if (sig == SIGINT)
 	{
-
-		printf("\n");
+		write(1, "\n", 1);
 		rl_on_new_line();
-		// rl_replace_line("", 0);
+		rl_replace_line("", 0);
 		rl_redisplay();
 	}
-	if (signal == SIGQUIT)
+	if (sig == SIGQUIT)
 	{
-		// printf("SIGQUIT RECEIVED\n");
+		// printf("RECEIVED SIGQUIT\n");
+		// rl_on_new_line();
+		// rl_replace_line("^\\", 0);
+		rl_redisplay();
 	}
-	if (signal == SIGUSR1)
+	if (sig == SIGUSR1)
 		kill(0, SIGKILL);
 	return ;
 }
@@ -142,7 +139,10 @@ char	*rl_gnl(char *prompt)
 	}
 	line = readline(prompt);
 	//exit + free memory
+	// printf("%s, %p\n", line, line);
 	if (!line)
+		exit(EXIT_SUCCESS);
+	if (!*line)
 		exit(EXIT_SUCCESS);
 	if (line != NULL && line[0] != 0)
 		add_history(line);

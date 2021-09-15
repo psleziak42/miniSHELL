@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:52:05 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/14 21:14:54 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/09/15 11:11:10 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ typedef struct s_minishell
 	t_list	*env;
 	char	**path;
 	char	**argv;
-	//pid_t	pid;
 }				t_minishell;
 
 //suggestion for updated linked list
