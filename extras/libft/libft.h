@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/17 21:05:58 by psleziak          #+#    #+#             */
-/*   Updated: 2021/09/14 16:20:42 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/09/15 11:24:28 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,5 +80,12 @@ void	ft_lstdelone(t_list *lst, void(*del)(void *));
 void	ft_lstclear(t_list **lst, void (*del)(void *));
 void	ft_lstiter(t_list *lst, void (*f)(void *));
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
+
+/*
+ * Added functions
+*/
+
+void	ft_memdel(void **mem);
+void	ft_strdel(char **str);
 
 #endif

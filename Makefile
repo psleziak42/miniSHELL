@@ -11,8 +11,8 @@ QUIT	= \033[0m
 
 NAME	=	minishell
 SRCS	=	$(wildcard cfiles/*.c)
-DIR_O	=	OBJ
-OBJS	=	$(SRCS:%.c=%.o)
+DIR_O	=	OBJ/
+OBJS	=	$(SRCS:cfiles/%.c=OBJ/%.o)
 DOTH	=	extras/hfiles
 LIBFT	=	extras/libft
 LFT_EXE	=	extras/libft
@@ -27,17 +27,20 @@ LINKS	=	-L./$(LIBFT) -lft `pkg-config readline --libs`
 
 all:	$(NAME)
 
-$(NAME): libft $(OBJS)
+$(NAME): libft $(DIR_O) $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) $(wildcard cfiles/*.c) -o $(NAME) $(LINKS)
-	@mkdir -p $(DIR_O)
-	@mv cfiles/*.o OBJ
 	@echo "\n$(GREEN)\n"
 	@cat ./fonts/minishell_created.txt
 	@echo "\n$(RESET)\n"
 
-%.o: %.c
+$(DIR_O)%.o: cfiles/%.c
 	@$(CC) -c $(CFLAGS) $(INCLUDE) $< -o $@
 	@echo "$(GREEN)#$(RESET)\c"
+
+$(OBJS):	| $(DIR_O)
+
+$(DIR_O):
+	mkdir -p $(DIR_O)
 
 libft:
 	@echo "$(WHITE) [ .. ] Creating LIBFT [ .. ]$(RESET)"
