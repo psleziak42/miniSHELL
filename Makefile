@@ -19,7 +19,7 @@ LFT_EXE	=	extras/libft
 CC		=	gcc
 #UPDATE READLINE via brew because the Mac one is too old
 CFLAGS	=	-Wall -Wextra -Werror `pkg-config readline --cflags`
-LDFLAGS = 	-g `pkg-config readline --libs` -fsanitize=address
+LDFLAGS = 	-g `pkg-config readline --libs` #-fsanitize=address
 INCLUDE	=	-I./$(DOTH) -I./$(LIBFT) `pkg-config readline --cflags`
 LINKS	=	-L./$(LIBFT) -lft `pkg-config readline --libs`
 
@@ -28,7 +28,7 @@ LINKS	=	-L./$(LIBFT) -lft `pkg-config readline --libs`
 all:	$(NAME)
 
 $(NAME): libft $(DIR_O) $(OBJS)
-	$(CC) $(CFLAGS) $(LDFLAGS) $(wildcard cfiles/*.c) -o $(NAME) $(LINKS)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(wildcard cfiles/*.c) $(wildcard extras/libft/*c) -o $(NAME) $(LINKS)
 	@echo "\n$(GREEN)\n"
 	@cat ./fonts/minishell_created.txt
 	@echo "\n$(RESET)\n"
@@ -40,7 +40,7 @@ $(DIR_O)%.o: cfiles/%.c
 $(OBJS):	| $(DIR_O)
 
 $(DIR_O):
-	mkdir -p $(DIR_O)
+	@mkdir -p $(DIR_O)
 
 libft:
 	@echo "$(WHITE) [ .. ] Creating LIBFT [ .. ]$(RESET)"
