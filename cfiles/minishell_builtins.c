@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 15:14:50 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/14 21:22:13 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/09/15 15:10:33 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	ft_unset(t_minishell *mini) // co za kurwa gowno
 {
 	t_list	*temp;
 	t_list	*current;
-	int	i;
+	int		i;
 
 	temp = mini->env;
 	current = mini->env;
@@ -51,7 +51,7 @@ void	ft_env(t_minishell *mini)
 	t_list	*temp;
 
 	temp = mini->env;
-	while (temp)	
+	while (temp)
 	{
 		printf("%s%s\n", ft_strjoin(temp->keyword, "="), temp->content);
 		temp = temp->next;
@@ -67,9 +67,8 @@ void	ft_exit(t_minishell *mini)
 void	ft_cd(t_minishell *mini)
 {
 	if (chdir(mini->argv[1]) == -1)
-	{	
-		ft_exit(mini);
-		exit(EXIT_SUCCESS);  // return error;
+	{
+		ft_error_handler("Builtin CD", ENOENT);
 	}
 }
 

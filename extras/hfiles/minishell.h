@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:52:05 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/15 12:14:44 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/15 15:10:44 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ typedef struct s_minishell
 	char			**argv;
 	struct termios	term;
 	char			*prompt;
+	char			*cwd;
 }				t_minishell;
 
 //suggestion for updated linked list

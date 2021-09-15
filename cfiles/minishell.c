@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:56:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/15 13:24:40 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/15 15:17:20 by bcosters         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ void	ft_handler(int sig)
 		printf("minishell42: ");
 		rl_redisplay();
 	}
-	if (sig == SIGUSR1)
-		kill(0, SIGKILL);
+	// if (sig == SIGUSR1)
+	// 	kill(0, SIGKILL);
 	return ;
 }
 
@@ -108,17 +108,23 @@ t_list	*ft_env_list(char **env, t_minishell *mini)
 	return (head);
 }
 
+/*
+*	Initialize the struct
+	-> ft_memset => sets all the variables of the struct to 0
+*/
+
 void	ft_init(t_minishell *mini, char **argv, char **env)
 {
 	char	*temp_prompt;
 
+	ft_memset(mini, 0, sizeof(t_minishell));
 	temp_prompt = ft_strtrim(argv[0], "./");
 	mini->prompt = ft_strjoin(temp_prompt, "42: ");
 	if (!mini->prompt)
 		ft_error_exit(mini, "Error creating prompt string");
 	ft_strdel(&temp_prompt);
-	mini->input = NULL;
-	mini->argv = NULL;
+	// mini->input = NULL;
+	// mini->argv = NULL;
 	mini->env = ft_env_list(env, mini);
 	if (!mini->env)
 		ft_error_exit(mini, "Malloc error while creating env list");

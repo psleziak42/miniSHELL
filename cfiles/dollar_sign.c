@@ -14,23 +14,37 @@
 	Every strjoin call needs a free
 */
 
-int	ft_dollar_sign(t_minishell *mini)
+int	ft_dollar_sign(t_minishell *mini, int i)
 {
 	t_list	*temp;
-	char	*env_var;
 
 	temp = mini->env;
 	while (temp)
 	{
-		env_var = ft_strjoin("$", temp->keyword);
-		if (!ft_strncmp(env_var, mini->argv[0], ft_strlen(mini->argv[0])))
+		if (!ft_strncmp(temp->keyword,
+				mini->argv[i] + 1, ft_strlen(mini->argv[0] + 1)))
 		{
 			ft_putstr_fd(temp->content, 1);
-			ft_strdel(&env_var);
 			return (1);
 		}
 		temp = temp->next;
-		ft_strdel(&env_var);
 	}
 	return (0);
+}
+
+/*
+**	STILL NEED TO IMPLEMENT: a way to print what is before the $
+	=> EXAMPLE: ben$PATH => ben + expanded PATH
+	=> Only in "" !
+*/
+
+int	ft_expand_var(t_minishell *mini)
+{
+	int	i;
+
+	i = -1;
+	while (mini->argv[++i])
+	{
+		ft_dollar_sign(mini, i);
+	}
 }
