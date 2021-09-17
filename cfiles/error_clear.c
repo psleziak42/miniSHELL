@@ -8,26 +8,26 @@
 	4.	Free && NULL the prompt string since it has allocated memory from init
 */
 
-int	ft_clear_data(t_minishell *mini, char c)
+int	ft_clear_data(char c)
 {
 	int	i;
 
-	ft_lstclear(&mini->env, free);
+	ft_lstclear(&g_mini.env, free);
 	i = -1;
-	if (mini->path && c | B)
+	if (g_mini.path && c | B)
 	{
-		while (mini->path[++i])
-			ft_strdel(&mini->path[i]);
-		free(mini->path);
+		while (g_mini.path[++i])
+			ft_strdel(&g_mini.path[i]);
+		free(g_mini.path);
 	}
 	i = -1;
-	if (mini->argv && (c | A || c | B))
+	if (g_mini.argv && (c | A || c | B))
 	{
-		while (mini->argv[++i])
-			ft_strdel(&mini->argv[i]);
-		free(mini->argv);
+		while (g_mini.argv[++i])
+			ft_strdel(&g_mini.argv[i]);
+		free(g_mini.argv);
 	}
-	ft_strdel(&mini->prompt);
+	ft_strdel(&g_mini.prompt);
 	return (0);
 }
 
@@ -35,15 +35,16 @@ int	ft_clear_data(t_minishell *mini, char c)
  * Error codes still need to be figured out
 */
 
-void	ft_error_exit(t_minishell *mini, const char *errmessage)
+void	ft_error_exit(const char *errmessage)
 {
-	ft_clear_data(mini, B);
+	ft_clear_data(B);
 	perror(errmessage);
 	exit(EXIT_FAILURE);
 }
 
 int	ft_error_handler(const char *errmessage, int err_code)
 {
+	// get errno number //
 	perror(errmessage);
 	return (err_code);
 }

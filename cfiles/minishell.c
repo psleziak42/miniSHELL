@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.c                                        :+:      :+:    :+:   */
+/*   g_minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:56:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/15 15:17:20 by bcosters         ###   ########.fr       */
+/*   Updated: 2021/09/17 00:05:06 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 	-> Ctrl-D == EOF aka close inputstream or shell
 */
 
-void	ft_handler(int sig)
+/*void	ft_handler(int sig)
 {
 	if (sig == SIGINT)
 	{
@@ -32,45 +32,45 @@ void	ft_handler(int sig)
 	}
 	if (sig == SIGQUIT)
 	{
-		printf("minishell42: ");
+		printf("g_minishell42: ");
 		rl_redisplay();
 	}
 	// if (sig == SIGUSR1)
 	// 	kill(0, SIGKILL);
 	return ;
-}
+}*/
 
-void	functions(t_minishell *mini)
+void	functions(void)
 {
-	if (mini->argv[0][0] == '$')
-		ft_dollar_sign(mini); // working for argv[1];
-	if (!(ft_strncmp(mini->input, "echo -n", 7)))
-		ft_echon(mini);
-	else if (!(ft_strncmp(mini->input, "echo", 4)))
-		ft_echo(mini);
-	else if (!(ft_strncmp(mini->input, "cd", 2)))
-		ft_cd(mini);
-	else if (!(ft_strncmp(mini->input, "pwd", 3)))
-		ft_pwd(mini);
-	else if (!(ft_strncmp(mini->input, "export", 6)))
-		ft_export(mini);
-	/*else if (!(ft_strncmp(mini->input, "unset", 5)))
-		ft_unset(mini);*/
-	else if (!(ft_strncmp(mini->input, "env", 3)))
-		ft_env(mini);
-	else if (!(ft_strncmp(mini->input, "exit", 4)))
-		ft_exit(mini);
+	if (g_mini.argv[0][0] == '$')
+		ft_expand_var(); // working for argv[1];
+	else if (!(ft_strncmp(g_mini.input, "echo -n", 7)))
+		ft_echon();
+	else if (!(ft_strncmp(g_mini.input, "echo", 4)))
+		ft_echo();
+	else if (!(ft_strncmp(g_mini.input, "cd", 2)))
+		ft_cd();
+	else if (!(ft_strncmp(g_mini.input, "pwd", 3)))
+		ft_pwd();
+	else if (!(ft_strncmp(g_mini.input, "export", 6)))
+		ft_export();
+	/*else if (!(ft_strncmp(g_mini.input, "unset", 5)))
+		ft_unset(void);*/
+	else if (!(ft_strncmp(g_mini.input, "env", 3)))
+		ft_env();
+	else if (!(ft_strncmp(g_mini.input, "exit", 4)))
+		ft_exit();
 	else
-		ft_path(mini);
+		ft_path();
 }
 
 //OBSOLETE function since getenv("PATH") does the trick
 
-char	**ft_get_path(t_minishell *mini)
+char	**ft_get_path(void)
 {
 	t_list	*temp;
 
-	temp = mini->env;
+	temp = g_mini.env;
 	while (temp)
 	{
 		if (!ft_strncmp(temp->keyword, "PATH", 4))
@@ -82,7 +82,7 @@ char	**ft_get_path(t_minishell *mini)
 
 // CREATING LIST //
 
-t_list	*ft_env_list(char **env, t_minishell *mini)
+t_list	*ft_env_list(char **env)
 {
 	int		i;
 	t_list	*new;
@@ -91,7 +91,7 @@ t_list	*ft_env_list(char **env, t_minishell *mini)
 
 	new = NULL;
 	head = NULL;
-	temp = mini->env;
+	temp = g_mini.env;
 	i = -1;
 	while (env[++i])
 	{
@@ -113,29 +113,27 @@ t_list	*ft_env_list(char **env, t_minishell *mini)
 	-> ft_memset => sets all the variables of the struct to 0
 */
 
-void	ft_init(t_minishell *mini, char **argv, char **env)
+void	ft_init(char **argv, char **env)
 {
 	char	*temp_prompt;
 
-	ft_memset(mini, 0, sizeof(t_minishell));
+	ft_memset(&g_mini, 0, sizeof(g_mini));
 	temp_prompt = ft_strtrim(argv[0], "./");
-	mini->prompt = ft_strjoin(temp_prompt, "42: ");
-	if (!mini->prompt)
-		ft_error_exit(mini, "Error creating prompt string");
+	g_mini.prompt = ft_strjoin(temp_prompt, "42: ");
+	if (!g_mini.prompt)
+		ft_error_exit("Error creating prompt string");
 	ft_strdel(&temp_prompt);
-	// mini->input = NULL;
-	// mini->argv = NULL;
-	mini->env = ft_env_list(env, mini);
-	if (!mini->env)
-		ft_error_exit(mini, "Malloc error while creating env list");
-	mini->path = ft_get_path(mini);
-	if (!mini->path)
-		ft_error_exit(mini, "No PATH variable found");
-	if (tcgetattr(STDIN_FILENO, &mini->term) != 0)
-		ft_error_exit(mini, "Error getting terminal settings");
-	mini->term.c_lflag &= ~ECHOCTL;
-	if (tcsetattr(STDIN_FILENO, TCSANOW, &mini->term) != 0)
-		ft_error_exit(mini, "Error setting terminal settings");
+	g_mini.env = ft_env_list(env);
+	if (!g_mini.env)
+		ft_error_exit("Malloc error while creating env list");
+	g_mini.path = ft_get_path();
+	if (!g_mini.path)
+		ft_error_exit("No PATH variable found");
+	if (tcgetattr(STDIN_FILENO, &g_mini.term) != 0)
+		ft_error_exit( "Error getting terminal settings");
+	g_mini.term.c_lflag &= ~ECHOCTL;
+	if (tcsetattr(STDIN_FILENO, TCSANOW, &g_mini.term) != 0)
+		ft_error_exit( "Error setting terminal settings");
 }
 
 /*
@@ -147,17 +145,17 @@ void	ft_init(t_minishell *mini, char **argv, char **env)
 	-> RETURN the read line;
 */
 
-char	*rl_gnl(t_minishell *mini)
+char	*rl_gnl(void)
 {
 	static char	*line;
 
-	if (line) // what is this for Ben??  => read the comment above the function//
+	if (line) 
 		ft_strdel(&line);
-	line = readline(mini->prompt);
+	line = readline(g_mini.prompt);
 	if (!line)
-		exit(ft_clear_data(mini, B));
+		exit(ft_clear_data(B));
 	// if (!*line)
-	// 	exit(ft_clear_data(mini, B));
+	// 	exit(ft_clear_data(g_mini, B));
 	if (line != NULL && line[0] != 0)
 		add_history(line);
 	return (line);
@@ -165,16 +163,14 @@ char	*rl_gnl(t_minishell *mini)
 
 int	main(int argc, char **argv, char **env)
 {
-	t_minishell	mini;
-
-	ft_init(&mini, argv, env);
-	signal(SIGINT, ft_handler);
-	signal(SIGQUIT, ft_handler);
+	ft_init(argv, env);
+	//signal(SIGINT, ft_handler);
+	//signal(SIGQUIT, ft_handler);
 	while (argc)
 	{
-		mini.input = rl_gnl(&mini);
-		mini.argv = ft_split(mini.input, ' ');
+		g_mini.input = rl_gnl();
+		g_mini.argv = ft_split(g_mini.input, ' ');
 		//the escape chars + single/double quotes need to be handled
-		functions(&mini);
+		functions();
 	}
 }

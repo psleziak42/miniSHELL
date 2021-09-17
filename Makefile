@@ -17,11 +17,13 @@ DOTH	=	extras/hfiles
 LIBFT	=	extras/libft
 LFT_EXE	=	extras/libft
 CC		=	gcc
+
 #UPDATE READLINE via brew because the Mac one is too old
-CFLAGS	=	-Wall -Wextra -Werror `pkg-config readline --cflags`
-LDFLAGS = 	-g `pkg-config readline --libs` #-fsanitize=address
-INCLUDE	=	-I./$(DOTH) -I./$(LIBFT) `pkg-config readline --cflags`
-LINKS	=	-L./$(LIBFT) -lft `pkg-config readline --libs`
+
+CFLAGS	=	-Wall -Wextra -Werror #`pkg-config readline --cflags`
+LDFLAGS = 	-g #`pkg-config readline --libs` #-fsanitize=address
+INCLUDE	=	-I./$(DOTH) -I./$(LIBFT) #`pkg-config readline --cflags`
+LINKS	=	-L./$(LIBFT) -lft -lreadline #`pkg-config readline --libs`
 
 # RULES
 
