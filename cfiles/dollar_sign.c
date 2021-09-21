@@ -1,19 +1,21 @@
 #include "../extras/hfiles/minishell.h"
 
 /*
-	Every strjoin call needs a free
+*	Every strjoin call needs a free
 */
 
-void	ft_dollar_sign(int i)
+void	ft_dollar_sign(char *argv)
 {
 	t_list	*temp;
 
 	temp = g_mini.env;
 	while (temp)
 	{
-		if (!ft_strncmp(temp->keyword,
-				g_mini.argv[i] + 1, ft_strlen(g_mini.argv[0] + 1)))
+		if (!ft_strncmp(temp->keyword, argv, ft_strlen(argv)))
+		{
 			ft_putstr_fd(temp->content, 1);
+			break ;
+		}
 		temp = temp->next;
 	}
 }
@@ -24,11 +26,16 @@ void	ft_dollar_sign(int i)
 	=> Only in "" !
 */
 
-void	ft_expand_var()
+void	ft_expand_var(char *argv)
 {
 	int	i;
 
 	i = -1;
-	while (g_mini.argv[++i])
-		ft_dollar_sign(i);
+	if (argv[0] == '?')
+	{
+		ft_putnbr_fd(g_mini.exit_code, g_mini.fd);
+		return ;
+	}
+	//while (g_mini.argv)
+	ft_dollar_sign(argv);
 }

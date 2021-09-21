@@ -32,7 +32,7 @@ int	ft_clear_data(char c)
 }
 
 /*
- * Error codes still need to be figured out
+ * ft_error_handler handles errno 
 */
 
 void	ft_error_exit(const char *errmessage)
@@ -42,9 +42,11 @@ void	ft_error_exit(const char *errmessage)
 	exit(EXIT_FAILURE);
 }
 
-int	ft_error_handler(const char *errmessage, int err_code)
+int	ft_error_handler(const char *errmessage)
 {
-	// get errno number //
+	int	save_errno;
+
+	save_errno = errno;
 	perror(errmessage);
-	return (err_code);
+	return (errno);
 }

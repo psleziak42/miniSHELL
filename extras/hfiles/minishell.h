@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:52:05 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/16 23:27:10 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/09/21 00:25:51 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,18 +43,11 @@ typedef struct s_minishell
 	struct termios	term;
 	char			*prompt;
 	char			*cwd;
+	int				fd;
 	unsigned char	exit_code;
 }				t_minishell;
 
 t_minishell	g_mini;
-
-//suggestion for updated linked list
-/*typedef struct s_env
-{
-	char				*keyword;
-	char				*content;
-	struct s_envvars	*next;
-}				t_env;*/
 
 void	ft_echon(void);
 void	ft_echo(void);
@@ -72,10 +65,13 @@ void	ft_handler(int signal);
 
 int		ft_clear_data(char c);
 void	ft_error_exit(const char *errmessage);
-int		ft_error_handler(const char *errmessage, int err_code);
+int		ft_error_handler(const char *errmessage);
 
 /* DOLLAR */
 
-void	ft_dollar_sign(int i);
-void	ft_expand_var();
+void	ft_dollar_sign(char *argv);
+void	ft_expand_var(char *argv);
+
+/* LINKED LIST EXTRAS */
+
 #endif

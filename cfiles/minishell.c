@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:56:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/17 00:05:06 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/09/21 00:25:12 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,9 @@
 
 void	functions(void)
 {
-	if (g_mini.argv[0][0] == '$')
-		ft_expand_var(); // working for argv[1];
-	else if (!(ft_strncmp(g_mini.input, "echo -n", 7)))
+//	if (g_mini.argv[0][0] == '$')
+//		ft_expand_var(); // working for argv[1];
+	if (!(ft_strncmp(g_mini.input, "echo -n", 7)))
 		ft_echon();
 	else if (!(ft_strncmp(g_mini.input, "echo", 4)))
 		ft_echo();
@@ -54,8 +54,8 @@ void	functions(void)
 		ft_pwd();
 	else if (!(ft_strncmp(g_mini.input, "export", 6)))
 		ft_export();
-	/*else if (!(ft_strncmp(g_mini.input, "unset", 5)))
-		ft_unset(void);*/
+	else if (!(ft_strncmp(g_mini.input, "unset", 5)))
+		ft_unset();
 	else if (!(ft_strncmp(g_mini.input, "env", 3)))
 		ft_env();
 	else if (!(ft_strncmp(g_mini.input, "exit", 4)))
@@ -120,6 +120,7 @@ void	ft_init(char **argv, char **env)
 	ft_memset(&g_mini, 0, sizeof(g_mini));
 	temp_prompt = ft_strtrim(argv[0], "./");
 	g_mini.prompt = ft_strjoin(temp_prompt, "42: ");
+	g_mini.fd = 1;
 	if (!g_mini.prompt)
 		ft_error_exit("Error creating prompt string");
 	ft_strdel(&temp_prompt);
