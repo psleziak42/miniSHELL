@@ -6,7 +6,7 @@
 /*   By: psleziak <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/19 17:55:03 by psleziak          #+#    #+#             */
-/*   Updated: 2021/09/22 15:41:49 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/09/22 16:41:17 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ static int	ft_word(char const *s, int *i, char c)
 		{
 			g_quote.on_quote = 1;
 			g_quote.quote = s[*i];
+			(*i)++;
 			return (k);
 		}
 		k++;
@@ -89,10 +90,15 @@ static char	*ft_quote_arg(char const *s, char c, int *i)
 		j++;
 	}
 	handmade_arg = malloc((j + 1) * sizeof(char));
+	if (!handmade_arg)
+		return (0);
 	j = -1;
 	while (s[*i] != c)
+	{
+		printf("%c\n", s[*i]);	
 		handmade_arg[++j] = s[(*i)++];	
-	handmade_arg[j] = '\0';
+	}
+	handmade_arg[++j] = '\0';
 	g_quote.on_quote = 0;
 	return (handmade_arg);
 }
@@ -121,7 +127,7 @@ char	**ft_split_updated(char const *s, char c)
 		else
 		{
 			k = ft_word(s, &i, c);
-			if (!k)
+			if (!k && !g_quote.on_quote)
 				break ; // bys moze continue jest potrzebne zeby nie wychodzil jak znajdzie " na poczatku.
 			small = ft_calloc((k + 1), sizeof(char));
 			if (!small)
