@@ -16,6 +16,8 @@
 
 # include <stdlib.h>
 # include <unistd.h>
+# include <stdbool.h>
+# include <stdio.h>
 
 typedef struct s_list
 {
@@ -23,6 +25,14 @@ typedef struct s_list
 	char			*content;
 	struct s_list	*next;
 }					t_list;
+
+typedef	struct	s_quote
+{
+	int		on_quote;
+	char	quote;
+}				t_quote;
+
+t_quote	g_quote;
 
 /*
 #MANDATORY PART: pt1. Libc functions
@@ -63,6 +73,7 @@ char	*ft_strtrim(char const *s1, char const *set);
 char	*ft_itoa(int n);
 char	*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 char	**ft_split(char const *s, char c);
+char	**ft_split_updated(char const *s, char c);
 void	ft_putchar_fd(char c, int fd);
 void	ft_putstr_fd(char *s, int fd);
 void	ft_putendl_fd(char *s, int fd);

@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 15:14:50 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/21 00:25:59 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/09/21 22:52:39 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ void	ft_pwd(void)
 	}
 }
 
-/*void	ft_echo(void)
+void	ft_echo(void)
 {
 	int i;
 
@@ -108,7 +108,7 @@ void	ft_pwd(void)
 			printf(" ");
 	}
 	printf("\n");
-}*/
+}
 
 void	ft_echon(void)
 {

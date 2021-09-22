@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:56:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/21 00:25:12 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/09/22 15:42:45 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,12 +165,19 @@ char	*rl_gnl(void)
 int	main(int argc, char **argv, char **env)
 {
 	ft_init(argv, env);
+	int k;
+
+	k = -1;
 	//signal(SIGINT, ft_handler);
 	//signal(SIGQUIT, ft_handler);
 	while (argc)
 	{
 		g_mini.input = rl_gnl();
-		g_mini.argv = ft_split(g_mini.input, ' ');
+		//g_mini.argv = ft_arguments(g_mini.input);
+		g_mini.argv = ft_split_updated(g_mini.input, ' ');
+		while (g_mini.argv[++k])
+			printf("%s\n", g_mini.argv[k]);
+		//g_mini.argv = ft_update_arg(g_mini.input);
 		//the escape chars + single/double quotes need to be handled
 		functions();
 	}
