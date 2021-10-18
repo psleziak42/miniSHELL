@@ -32,8 +32,6 @@ typedef	struct	s_quote
 	char	quote;
 }				t_quote;
 
-t_quote	g_quote;
-
 /*
 #MANDATORY PART: pt1. Libc functions
 */

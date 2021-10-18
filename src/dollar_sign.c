@@ -1,4 +1,4 @@
-#include "../extras/hfiles/minishell.h"
+#include "minishell.h"
 
 /*
 *	Every strjoin call needs a free

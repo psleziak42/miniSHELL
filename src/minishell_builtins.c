@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_builtins.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 15:14:50 by bcosters          #+#    #+#             */
-/*   Updated: 2021/10/18 15:52:24 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/10/18 16:51:25 by tosilva          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../extras/hfiles/minishell.h"
+#include "minishell.h"
 
 /*
  * we must cover just "cd" withouth notihing, it goes to root

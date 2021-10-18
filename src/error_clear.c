@@ -1,4 +1,4 @@
-#include "../extras/hfiles/minishell.h"
+#include "minishell.h"
 
 /*
  * Clear all data from the struct

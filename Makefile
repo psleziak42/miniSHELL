@@ -10,12 +10,12 @@ QUIT	= \033[0m
 # MACROS
 
 NAME	=	minishell
-SRCS	=	$(wildcard cfiles/*.c)
+SRCS	=	$(wildcard src/*.c)
 DIR_O	=	OBJ/
-OBJS	=	$(SRCS:cfiles/%.c=OBJ/%.o)
-DOTH	=	extras/hfiles
-LIBFT	=	extras/libft
-LFT_EXE	=	extras/libft
+OBJS	=	$(SRCS:src/%.c=OBJ/%.o)
+DOTH	=	include
+LIBFT	=	libs/libft
+LFT_EXE	=	libs/libft
 CC		=	gcc
 
 #UPDATE READLINE via brew because the Mac one is too old
@@ -30,12 +30,12 @@ LINKS	=	-L./$(LIBFT) -lft -lreadline #`pkg-config readline --libs`
 all:	$(NAME)
 
 $(NAME): libft $(DIR_O) $(OBJS)
-	@$(CC) $(CFLAGS) $(LDFLAGS) $(wildcard cfiles/*.c) $(wildcard extras/libft/*c) -o $(NAME) $(LINKS)
+	@$(CC) $(CFLAGS) $(LDFLAGS) $(INCLUDE) $(wildcard src/*.c) $(wildcard libs/libft/*c) -o $(NAME) $(LINKS)
 	@echo "\n$(GREEN)\n"
 	@cat ./fonts/minishell_created.txt
 	@echo "\n$(RESET)\n"
 
-$(DIR_O)%.o: cfiles/%.c
+$(DIR_O)%.o: src/%.c
 	@$(CC) -c $(CFLAGS) $(INCLUDE) $< -o $@
 	@echo "$(GREEN)#$(RESET)\c"
 

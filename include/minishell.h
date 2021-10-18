@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:52:05 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/21 20:52:36 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/10/18 17:03:58 by tosilva          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include "../libft/libft.h"
+# include "libft.h"
 # include <stdio.h>
 # include <unistd.h>
 # include <signal.h>
@@ -31,7 +31,7 @@
 # include <curses.h>
 # include <term.h>
 
-# define A	0b00000001 // A and B, look on it
+# define A	0b00000001 // A and B, look on it     
 # define B	0b00000010
 
 typedef struct s_minishell
@@ -41,6 +41,7 @@ typedef struct s_minishell
 	char			**path;
 	char			**argv;
 	struct termios	term;
+	t_quote			quote;
 	char			*prompt;
 	char			*cwd;
 	int				fd;

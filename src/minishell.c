@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../extras/hfiles/minishell.h"
+#include "minishell.h"
 
 //hello przemek
 
