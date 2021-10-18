@@ -6,11 +6,45 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 15:14:50 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/21 22:52:39 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/10/18 15:52:24 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../extras/hfiles/minishell.h"
+
+/*
+ * we must cover just "cd" withouth notihing, it goes to root
+ * we must cover echoo, or any other wrong command so it displays "command not found:echoo" and exit code is 127
+ *
+*/
+void	ft_cd(void) // we must cover just "cd" without nothing to go to root.
+{
+	char	buf[4096];
+	
+	if (g_mini.argv[1][0] == '~')
+	{
+		if (g_mini.argv[1][1] == '\0')
+			chdir(ft_lstfind_content(&g_mini.env, "HOME"));
+		else
+		{
+			chdir(ft_lstfind_content(&g_mini.env, "HOME"));
+			g_mini.argv[1][0] = ' ';
+			if (g_mini.argv[1][1] == '/')
+				g_mini.argv[1][1] = ' ';
+			ft_cd();	
+		}
+	}
+	else if(!ft_strncmp(g_mini.argv[0], "cd", 3)
+			&& g_mini.argv[1] && !ft_strncmp(g_mini.argv[1], "", 2)) 
+		chdir(ft_lstfind_content(&g_mini.env, "HOME"));
+	else
+	{
+		if (chdir(g_mini.argv[1]) == -1)
+			g_mini.exit_code = ft_error_handler("wrong chdir");
+	}
+	getcwd(buf, 100);
+	ft_lstfind_update(&g_mini.env, buf, "PWD");
+}
 
 void	ft_export(void) // 2 razy ta sama zmienna update zmienna 
 {
@@ -44,7 +78,10 @@ void	ft_unset(void)
 				g_mini.env = temp->next;
 				break ;
 		}
-		temp = temp->next;
+		if (temp->next)
+			temp = temp->next;
+		else
+			break;
 		if (!ft_strncmp(temp->keyword, g_mini.argv[1], i)) 
 		{
 			previous->next = temp->next;
@@ -100,7 +137,8 @@ void	ft_echo(void)
 	{
 		if (!ft_strncmp(g_mini.argv[i], "$?", 2))
 		{
-			printf("%d", g_mini.exit_code);
+			printf("%d ", g_mini.exit_code);
+			
 			continue ;
 		}
 		printf("%s", g_mini.argv[i]);

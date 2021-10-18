@@ -6,7 +6,7 @@
 /*   By: psleziak <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/19 17:55:03 by psleziak          #+#    #+#             */
-/*   Updated: 2021/09/22 16:41:17 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/10/18 16:18:06 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ static char	*ft_copy(char *a, char const *s, int i, int k)
 	z = -1;
 	while (++z < k)
 		a[z] = s[i - k + z];
-	printf("%s\n", a);
 	return (a);
 }	
 
@@ -94,10 +93,8 @@ static char	*ft_quote_arg(char const *s, char c, int *i)
 		return (0);
 	j = -1;
 	while (s[*i] != c)
-	{
-		printf("%c\n", s[*i]);	
 		handmade_arg[++j] = s[(*i)++];	
-	}
+	(*i)++;
 	handmade_arg[++j] = '\0';
 	g_quote.on_quote = 0;
 	return (handmade_arg);
@@ -116,18 +113,17 @@ char	**ft_split_updated(char const *s, char c)
 		return (0);
 	i = 0;
 	y = -1;
-	big = ft_calloc((ft_count(s, c) + 1), sizeof(char *));
+	big = ft_calloc((ft_count(s, c) + 2), sizeof(char *));
 	if (!big)
 		return (0);
 	while (s[i] != '\0')
 	{
-		printf("%d\n", g_quote.on_quote);
 		if (g_quote.on_quote)
 			big[++y] = ft_quote_arg(s, g_quote.quote, &i);
 		else
 		{
 			k = ft_word(s, &i, c);
-			if (!k && !g_quote.on_quote)
+			if (!k && g_quote.on_quote)
 				break ; // bys moze continue jest potrzebne zeby nie wychodzil jak znajdzie " na poczatku.
 			small = ft_calloc((k + 1), sizeof(char));
 			if (!small)
@@ -135,5 +131,6 @@ char	**ft_split_updated(char const *s, char c)
 			big[++y] = ft_copy(small, s, i, k);
 		}
 	}
+	big[++y] = NULL;
 	return (big);
 }

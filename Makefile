@@ -30,7 +30,7 @@ LINKS	=	-L./$(LIBFT) -lft -lreadline #`pkg-config readline --libs`
 all:	$(NAME)
 
 $(NAME): libft $(DIR_O) $(OBJS)
-	$(CC) $(CFLAGS) $(LDFLAGS) $(wildcard cfiles/*.c) $(wildcard extras/libft/*c) -o $(NAME) $(LINKS)
+	@$(CC) $(CFLAGS) $(LDFLAGS) $(wildcard cfiles/*.c) $(wildcard extras/libft/*c) -o $(NAME) $(LINKS)
 	@echo "\n$(GREEN)\n"
 	@cat ./fonts/minishell_created.txt
 	@echo "\n$(RESET)\n"

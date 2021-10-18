@@ -8,10 +8,7 @@ char	*ft_lstfind_content(t_list **lst, char *find)
 	while (temp)
 	{
 		if (!ft_strncmp(temp->keyword, find, ft_strlen(find)))
-		{
 			return (temp->content);
-			break ;
-		}
 		temp = temp->next;
 	}
 	return ("Element not found, check spelling");
