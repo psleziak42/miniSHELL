@@ -6,7 +6,7 @@
 /*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:52:05 by bcosters          #+#    #+#             */
-/*   Updated: 2021/10/18 17:03:58 by tosilva          ###   ########.fr       */
+/*   Updated: 2021/10/19 15:50:05 by tosilva          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,9 @@ void	ft_exit(void);
 void	ft_path(void);
 
 void	ft_handler(int signal);
+
+/* PARSER FUNCTIONS */
+char	**ft_split_updated(char *input, char delimiter);
 
 /* ERROS AND CLEAN */
 

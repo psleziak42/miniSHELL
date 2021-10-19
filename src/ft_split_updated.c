@@ -6,86 +6,58 @@
 /*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/19 17:55:03 by psleziak          #+#    #+#             */
-/*   Updated: 2021/10/18 18:56:12 by tosilva          ###   ########.fr       */
+/*   Updated: 2021/10/19 18:48:39 by tosilva          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static char	*ft_copy(char *a, char const *s, int i, int k)
+static int	ft_count_words(char *input, char delimiter)
 {
-	int	z;
+	int	nr_words;
+	int	i;
 
-	z = -1;
-	while (++z < k)
-		a[z] = s[i - k + z];
-	return (a);
-}	
-
-static int	ft_word(char const *s, int *i, char c)
-{
-	int	k;
-	int	temp_i;
-
-	temp_i = *i;
-	k = 0;
-	while (s[*i] == c)
-		(*i)++;
-	while (s[*i] != c && s[*i] != '\0')
+	nr_words = 0;
+	i = -1;
+	while (input[++i])
 	{
-		if (s[*i] == '\'' || s[*i] == '\"') 
+		if (!nr_words
+		|| (input[i] == delimiter && input[i + 1] != delimiter))
+			nr_words++;
+		else if (input[i] == '\'' || input[i] == '\"')
 		{
 			g_mini.quote.on_quote = 1;
-			g_mini.quote.quote = s[*i];
-			*i = temp_i;
-			return (k);
+			g_mini.quote.quote = input[i];
+			while (input[++i])
+			{
+				if (input[i] == g_mini.quote.quote)
+				{
+					g_mini.quote.on_quote = 0;
+					break ;
+				}
+			}
+			if (g_mini.quote.on_quote)
+			{
+				errno = 1;
+				ft_error_handler("quotes must be closed");
+				return (-1);
+			}
 		}
-		k++;
-		(*i)++;
 	}
-	if (k == 0)
-		return (0);
-	else
-		return (k);
+	return (nr_words);
 }
 
-static int	ft_count(char const *s, char c) // tutaj by pasowalo zeby ucinac i kopiowac do " lub ' i jesli znajde to ustawiac zmienna na 1 i przenosic do funkcji ktora stworzy string '
+static int	ft_count_words_and_malloc(char ***argv, char *input, char delimiter)
 {
-	int	i;
-	int	j;
+	int		nr_words;
 
-	i = 0;
-	j = 0;
-	while (s[i] != '\0')
-	{
-		if ((s[0] != c && i == 0))
-		{
-			j++;
-			i++;
-		}
-		if (s[i] == c && s[i + 1] != c && s[i + 1] != '\0')
-		{
-			j++;
-			i++;
-		}
-		else
-			i++;
-	}
-	return (j);
-}
-
-static char *get_content_from_keyword(char *str, int length)
-{
-	t_list *temp;
-
-	temp = g_mini.env;
-	while (temp->next)
-	{
-		if (ft_strncmp(str, temp->keyword, length) == 0)
-			return (temp->content);
-		temp = temp->next;
-	}
-	return (NULL);
+	nr_words = ft_count_words(input, delimiter);
+	if (nr_words == -1)
+		return (-1);
+	*argv = ft_calloc((nr_words + 1), sizeof(char *));
+	if (!(*argv))
+		return (-1);
+	return (nr_words);
 }
 
 static int	is_end_character(char c)
@@ -95,111 +67,120 @@ static int	is_end_character(char c)
 			|| c == '\"');
 }
 
-static int	ft_keyword_length(char *str)
+static int	ft_keyword_length(char *input)
 {
 	int		length;
 
 	length = 0;
-	while (is_end_character(str[length]))
+	while (is_end_character(input[length]))
 		length++;
 	return (length);
 }
 
-static int	ft_get_countent_length(char *str, int *j)
+static char *get_content_from_keyword(char *input, int length)
 {
-	int		length;
+	t_list *temp;
+
+	temp = g_mini.env;
+	while (temp->next)
+	{
+		if (ft_strncmp(input, temp->keyword, length) == 0)
+			return (temp->content);
+		temp = temp->next;
+	}
+	return (NULL);
+}
+
+static int	ft_get_countent_length(char *input, int kw_length)
+{
 	char	*shell_variable;
 
-	length = ft_keyword_length(str);
-	shell_variable = get_content_from_keyword(str, length);
+	shell_variable = get_content_from_keyword(input, kw_length);
 	if (!shell_variable)
 		return (0);
-	*j += length;
 	return (ft_strlen(shell_variable));
 }
 
-static char	*ft_quote_arg(char const *s, char c, int *i)
+static char	*ft_expand_dollar(char *input, int *i)
 {
-	int		j;
-	int		length;
-	char	*handmade_arg;
-	char	*env_var;
-	int		env_var_length;
+	int	arg_len;
+	int	keyword_len;
 
-	j = *i;
-	while (s[j] != c)
+	arg_len = 0;
+	while (input[++(*i)] != g_mini.quote.quote)
 	{
-		if (s[j] == '\0')
+		if (input[*i] == '$')
 		{
-			errno = 1;
-			ft_error_handler("quotes must be closed");
-			//ft_error_exit("quotes arent closed");
-			return (0);
-		}
-		if (s[j] == '$'
-			&& (g_mini.quote.quote == '\"' || !(g_mini.quote.on_quote)))
-		{
-			length = ft_get_countent_length((char *)&s[j + 1], &j);
+			keyword_len = ft_keyword_length(&input[*i + 1]);
+			arg_len += ft_get_countent_length(&input[*i + 1], keyword_len);
+			*i += keyword_len;
 		}
 		else
-			length++;
-		j++;
+			arg_len++;
 	}
-	handmade_arg = malloc((length + 1) * sizeof(char));
-	if (!handmade_arg)
-		return (0);
-	j = 0;
-	while (s[*i] != c)
+}
+static void	ft_copy_words(char **argv, char *input, char delimiter, int nr_words)
+{
+	int		word_len;
+	int		wd;
+	int		i;
+	bool 	dollar;
+
+	wd = -1;
+	i = 0;
+	dollar = FALSE;
+	while (++wd < nr_words)
 	{
-		if (s[*i] == '$'
-			&& (g_mini.quote.quote == '\"' || !(g_mini.quote.on_quote)))
+		word_len = 0;
+		ft_bzero(&g_mini.quote, sizeof(t_quote));
+		while (input[i] == delimiter)
+			i++;
+		if (input[i] == '\'' || input[i] == '\"')
 		{
-			env_var_length = ft_keyword_length((char *)&s[*i + 1]);
-			env_var = get_content_from_keyword((char *)&s[*i + 1], env_var_length);
-			ft_memcpy(&handmade_arg[j], env_var, ft_strlen(env_var));
-			j += env_var_length - 1;
+			g_mini.quote.quote = input[i];
+			while (input[++i] != g_mini.quote.quote)
+			{
+				if (input[i] == '$')
+				{
+					dollar = TRUE;
+					argv[wd++] = ft_expand_dollar(&input[i - word_len], &i);
+					break ;
+				}
+			}
+			if (dollar)
+			{
+				dollar = FALSE;
+				continue ;
+			}
+				word_len++;
+			argv[wd] = ft_calloc(word_len + 1, sizeof(char));
+			ft_memcpy(argv[wd], &input[i - word_len], word_len);
+			i++;
 		}
 		else
-			handmade_arg[j] = s[*i];
-		j++;
+		{
+			while (input[i] && input[i] != delimiter)
+			{
+				word_len++;
+				i++;
+			}
+			argv[wd] = ft_calloc(word_len + 1, sizeof(char));
+			ft_memcpy(argv[wd], &input[i - (word_len)], word_len);
+		}
 	}
-	handmade_arg[++j] = '\0';
-	*i += j;
-	g_mini.quote.on_quote = 0;
-	return (handmade_arg);
 }
 
-char	**ft_split_updated(char const *s, char c)
+char	**ft_split_updated(char *input, char delimiter)
 {
-	int		i;
-	int		k;
-	int		y;
-	char	*small;
-	char	**big;
+	char	**argv;
+	int		nr_words;
 
-	if (!s)
-		return (0);
-	ft_memset(&g_mini.quote, 0, sizeof(g_mini.quote));
-	i = 0;
-	y = -1;
-	big = ft_calloc((ft_count(s, c) + 2), sizeof(char *));
-	if (!big)
-		return (0);
-	while (s[i] != '\0')
-	{
-		if (g_mini.quote.on_quote)
-			big[++y] = ft_quote_arg(s, g_mini.quote.quote, &i);
-		else
-		{
-			k = ft_word(s, &i, c);
-			if (!k && g_mini.quote.on_quote)
-				continue ; // maybe continue is necesary so it wont leave this loop when " is first
-			small = ft_calloc((k + 1), sizeof(char));
-			if (!small)
-				return (0);
-			big[++y] = ft_copy(small, s, i, k);
-		}
-	}
-	big[++y] = NULL;
-	return (big);
+	if (!input)
+		return (NULL);
+	ft_bzero(&(g_mini.quote), sizeof(t_quote));
+	nr_words = ft_count_words_and_malloc(&argv, input, delimiter);
+	if (nr_words == -1)
+		return (NULL);
+	ft_copy_words(argv, input, delimiter, nr_words);
+	return (argv);
 }
