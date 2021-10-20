@@ -57,7 +57,7 @@ Mkfile.old
 dkms.conf
 
 # Others
+minishell
 .DS_Store
 .vscode/
 .vs/
-minishell

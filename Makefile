@@ -1,71 +1,269 @@
-# COLORS
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2021/09/28 18:49:28 by tosilva           #+#    #+#              #
+#    Updated: 2021/10/20 14:26:56 by tosilva          ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
 
-GREEN	= \033[0;32m
-RED		= \033[0;31m
-BLUE	= \033[0;34m
-GREY	= \033[38;5;240m
-WHITE	= \033[0;37m
-QUIT	= \033[0m
+################################################################################
+### Variables																 ###
+################################################################################
 
-# MACROS
+########################################
+## Target Name						  ##
+########################################
 
-NAME	=	minishell
-SRCS	=	$(wildcard src/*.c)
-DIR_O	=	OBJ/
-OBJS	=	$(SRCS:src/%.c=OBJ/%.o)
-DOTH	=	include
-LIBFT	=	libs/libft
-LFT_EXE	=	libs/libft
-CC		=	gcc
+NAME	= minishell
+BONUS	=
 
-#UPDATE READLINE via brew because the Mac one is too old
 
-CFLAGS	=	-Wall -Wextra -Werror #`pkg-config readline --cflags`
-LDFLAGS = 	-g -fsanitize=address #`pkg-config readline --libs`
-INCLUDE	=	-I./$(DOTH) -I./$(LIBFT) #`pkg-config readline --cflags`
-LINKS	=	-L./$(LIBFT) -lft -lreadline #`pkg-config readline --libs`
+########################################
+## Folders & Files					  ##
+########################################
 
-# RULES
+DEBUG_FILES	= $(NAME).dSYM/
 
-all:	$(NAME)
+# DEFAULT FOLDERS
+BIN_DIR	= bin/
+INC_DIR	= include/
+SRC_DIR	= src/
+OBJ_DIR	= obj/
+DEP_DIR	= dep/
+SRC_DIR_BONUS	= src_bonus/
+OBJ_DIR_BONUS	= obj_bonus/
+DEP_DIR_BONUS	= dep_bonus/
 
-$(NAME): libft $(DIR_O) $(OBJS)
-	@$(CC) $(CFLAGS) $(LDFLAGS) $(INCLUDE) $(wildcard src/*.c) $(wildcard libs/libft/*c) -o $(NAME) $(LINKS)
-	@echo "\n$(GREEN)\n"
-	@cat ./fonts/minishell_created.txt
-	@echo "\n$(RESET)\n"
+# LIBRARIES
+LIBFT_DIR	= libs/libft/
+LIBFT_FILE	= libft.a
+LIBFT		:= ${addprefix $(LIBFT_DIR), $(LIBFT_FILE)}
 
-$(DIR_O)%.o: src/%.c
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $< -o $@
-	@echo "$(GREEN)#$(RESET)\c"
+# FILES
+HFILES	:= minishell.h
+CFILES	:= dollar_sign.c \
+			error_clear.c \
+			ft_split_updated.c \
+			minishell_builtins.c \
+			minishell.c
 
-$(OBJS):	| $(DIR_O)
+HFILES_BONUS	:=
+CFILES_BONUS	:=
+	
+INC	:= ${foreach file, $(INC_DIR), ${addprefix $(INC_DIR), $(HFILES)}}
+SRC	:= ${foreach file, $(SRC_DIR), ${addprefix $(SRC_DIR), $(CFILES)}}
+OBJ	:= ${subst $(SRC_DIR), $(OBJ_DIR), $(SRC:.c=.o)}
+DEP	:= ${subst $(SRC_DIR), $(DEP_DIR), $(SRC:.c=.d)}
 
-$(DIR_O):
-	@mkdir -p $(DIR_O)
+INC_BONUS	:= ${foreach file, $(INC_DIR), ${addprefix $(INC_DIR), $(HFILES_BONUS)}}
+SRC_BONUS	:= ${foreach file, $(SRC_DIR_BONUS), ${addprefix $(SRC_DIR_BONUS), $(CFILES_BONUS)}}
+OBJ_BONUS	:= ${subst $(SRC_DIR_BONUS), $(OBJ_DIR_BONUS), $(SRC_BONUS:.c=.o)}
+DEP_BONUS	:= ${subst $(SRC_DIR_BONUS), $(DEP_DIR_BONUS), $(SRC_BONUS:.c=.d)}
 
-libft:
-	@echo "$(WHITE) [ .. ] Creating LIBFT [ .. ]$(RESET)"
-	@make -C $(LIBFT)
-	@echo "\n$(GREEN)\n"
+
+########################################
+## Colors							  ##
+########################################
+
+# Reset
+COLOR_RESET		=[0m
+
+COLORF_RED		=[31m
+COLORF_GREEN	=[32m
+COLORF_YELLOW	=[33m
+COLORF_CYAN		=[36m
+
+CL_NORM_OK		:=$(COLORF_GREEN)
+CL_NORM_WARN	:=$(COLORF_YELLOW)
+CL_NORM_ERROR	:=$(COLORF_RED)
+CL_NORM_NUM		:=$(COLORF_CYAN)
+
+
+########################################
+## Commands & Flags					  ##
+########################################
+
+CC			= gcc
+CFLAGS		= -Wall -Werror -Wextra -O3 #`pkg-config readline --cflags`
+DEBFLAGS	= -g -fsanitize=address
+INCFLAGS	:= -I./$(LIBFT_DIR) -I./$(INC_DIR)
+LIBFLAGS	:= -L./$(LIBFT_DIR) -lft -lreadline  #`pkg-config readline --libs`
+
+NORM		= norminette
+NORM_COLORS	:= sed "s/OK!/$(CL_NORM_OK)OK!$/$(COLOR_RESET)/g"
+NORM_COLORS	+= | sed -E "s/Error(!|:)/$(CL_NORM_ERROR)Error\1$/$(COLOR_RESET)/g"
+NORM_COLORS	+= | sed -E "s/Warning(!|:)/$(CL_NORM_WARN)Warning\1$/$(COLOR_RESET)/g"
+NORM_COLORS	+= | sed -E "s/line:[[:blank:]]+([0-9]+)/$(CL_NORM_NUM)\1$/$(COLOR_RESET)/g"
+NORM_COLORS	+= | sed -E "s/col:[[:blank:]]+([0-9]+)/$(CL_NORM_NUM)\1$/$(COLOR_RESET)/g"
+
+MKDIR	= mkdir -p
+RM		= rm -fr
+
+
+
+################################################################################
+### Rules																	 ###
+################################################################################
+
+.DELETE_ON_ERROR:
+
+########################################
+## Compile							  ##
+########################################
+
+all: libft target bonus
+
+libft $(LIBFT): | $(LIBFT_DIR)
+	@echo "[ .. ] Creating LIBFT [ .. ]"
+	@$(MAKE) -C $(LIBFT_DIR)
+	@echo "\n\n$(COLORF_GREEN)"
 	@cat ./fonts/libft_created.txt
-	@echo "$(WHITE) \n\n\n[ .. ] Creating '$(NAME)' [ .. ]$(RESET)"
+	@echo "$(COLOR_RESET)"
+
+target: print_create $(NAME) print_created
+
+print_create:
+	@echo "\n"
+	@echo "[ .. ] Creating '$(NAME)' [ .. ]"
+
+print_created:
+	@echo "\n$(COLORF_GREEN)"
+	@cat ./fonts/minishell_created.txt
+	@echo "$(COLOR_RESET)"
+
+$(NAME): $(LIBFT) $(OBJ)
+	@$(CC) $(CFLAGS) $(INCFLAGS) $^ $(LIBFLAGS) -o $@
+
+$(OBJ): $(OBJ_DIR)%.o: $(SRC_DIR)%.c | $(DEP_DIR)%.d $(OBJ_DIR)
+	@$(CC) $(CFLAGS) $(INCFLAGS) -c $< -o $@
+	@echo "$(COLORF_GREEN)#$(COLOR_RESET)\c"
+
+$(DEP): $(DEP_DIR)%.d: $(SRC_DIR)%.c $(LIBFT) | $(DEP_DIR)
+	@$(CC) $(CFLAGS) $(INCFLAGS) -M \
+		-MT '${patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$<} \
+			${patsubst $(SRC_DIR)%.c,$(DEP_DIR)%.d,$<}' $< \
+		-MF ${patsubst $(SRC_DIR)%.c,$(DEP_DIR)%.d,$<}
+
+bonus: $(BONUS)
+
+$(BONUS): $(LIBFT) $(OBJ_BONUS)
+	$(CC) $(CFLAGS) $(INCFLAGS) $^ $(LIBFLAGS) -o $@
+
+$(OBJ_BONUS): $(OBJ_DIR_BONUS)%.o: $(SRC_DIR_BONUS)%.c | $(DEP_DIR_BONUS)%.d $(OBJ_DIR_BONUS)
+	$(CC) $(CFLAGS) $(INCFLAGS) -c $< -o $@
+
+$(DEP_BONUS): $(DEP_DIR_BONUS)%.d: $(SRC_DIR_BONUS)%.c $(LIBFT) | $(DEP_DIR_BONUS)
+	@$(CC) $(CFLAGS) $(INCFLAGS) -M \
+		-MT '${patsubst $(SRC_DIR_BONUS)%.c,$(OBJ_DIR_BONUS)%.o,$<} \
+			${patsubst $(SRC_DIR_BONUS)%.c,$(DEP_DIR_BONUS)%.d,$<}' $< \
+		-MF ${patsubst $(SRC_DIR_BONUS)%.c,$(DEP_DIR_BONUS)%.d,$<}
+
+########################################
+## Debug							  ##
+########################################
+
+debug: CFLAGS += $(DEBFLAGS)
+debug: debug_libft all
+
+debug_libft: libft
+
+
+########################################
+## Make dirs						  ##
+########################################
+
+$(OBJ_DIR) $(DEP_DIR):
+	@$(MKDIR) $@
+
+$(OBJ_DIR_BONUS) $(DEP_DIR_BONUS):
+	@$(MKDIR) $@
+
+
+########################################
+## Norm								  ##
+########################################
+
+norm:
+	@echo "[ .. ] Norminette [ .. ]"
+	@echo "»»»»» HEADERS «««««"
+	@$(NORM) $(INC) | $(NORM_COLORS)
+	@echo 
+	@echo "»»»»» SOURCES  «««««"
+	@$(NORM) $(SRC) | $(NORM_COLORS)
+	@echo
+
+norm_bonus:
+	@echo "[ .. ] Norminette BONUS [ .. ]"
+	@echo "»»»»» HEADERS «««««"
+	@$(NORM) $(INC_BONUS) | $(NORM_COLORS)
+	@echo 
+	@echo "»»»»» SOURCES  «««««"
+	@$(NORM) $(SRC_BONUS) | $(NORM_COLORS)
+	@echo
+
+norm_libft:
+	@echo "[ .. ] Norminette LIBFT [ .. ]"
+	@$(NORM) $(LIBFT_DIR) | $(NORM_COLORS)
+
+
+########################################
+## Clear							  ##
+########################################
 
 clean:
-	@echo "$(RED) [ .. ] Deleting LIBFT [ .. ]"
-	@echo "$(RED)"
-	@make -C $(LIBFT) fclean
+	@echo "[ .. ] Deleting LIBFT [ .. ]"
+	@$(MAKE) $@ -C $(LIBFT_DIR)
+	@echo "$(COLORF_RED)"
 	@cat ./fonts/libft_deleted.txt
-	@echo "$(RESET)"
-	@echo "$(RED) [ .. ] Deleting .o files [ .. ]$(RESET)"
-	@rm -fr $(DIR_O)
+	@echo "$(COLOR_RESET)"
+	@echo "[ .. ] Deleting .o files [ .. ]"
+	@$(RM) $(OBJ_DIR) $(OBJ_DIR_BONUS)
 
-fclean:	clean
-	@echo "$(RED) [ .. ] Deleting '$(NAME)' executable  [ .. ]$(RESET)"
-	@rm -fr $(NAME)
+fclean: clean
+	@echo "[ .. ] Deleting '$(NAME)' executable  [ .. ]"
+	@$(RM) $(BIN_DIR) $(NAME) $(BONUS)
+	@echo "$(COLORF_RED)"
 	@cat	./fonts/minishell_deleted.txt
-	@echo "$(RESET)"
+	@echo "$(COLOR_RESET)"
 
-re:		fclean all
+clean_dep:
+	@echo "[ .. ] Deleting prerequisites files  [ .. ]"
+	@$(RM) $(DEP_DIR) $(DEP_DIR_BONUS)
 
-.PHONY	=	all clean fclean re
+clean_debug:
+	@echo "[ .. ] Deleting debug files  [ .. ]"
+	@$(RM) $(DEBUG_FILES)
+
+clean_all: fclean clean_debug clean_dep
+
+
+########################################
+## Reload							  ##
+########################################
+
+re_debug: fclean debug
+
+re: fclean all
+
+
+
+################################################################################
+### Phony																	 ###
+################################################################################
+
+.PHONY: all libft bonus target print_create print_created debug
+.PHONY: norm norm_libft
+.PHONY: clean fclean clean_dep clean_debug clean_all
+.PHONY: re_debug re
+
+
+
+################################################################################
+### Includes																 ###
+################################################################################
+
+-include ${shell find . -maxdepth 2 -type f -name '*.d'}

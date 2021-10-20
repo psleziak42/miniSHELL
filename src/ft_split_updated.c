@@ -6,7 +6,7 @@
 /*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/19 17:55:03 by psleziak          #+#    #+#             */
-/*   Updated: 2021/10/19 18:48:39 by tosilva          ###   ########.fr       */
+/*   Updated: 2021/10/20 14:08:23 by tosilva          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,7 @@ static char	*ft_expand_dollar(char *input, int *i)
 		else
 			arg_len++;
 	}
+	return (NULL); // compiling
 }
 static void	ft_copy_words(char **argv, char *input, char delimiter, int nr_words)
 {
