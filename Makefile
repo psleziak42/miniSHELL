@@ -6,7 +6,7 @@
 #    By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/09/28 18:49:28 by tosilva           #+#    #+#              #
-#    Updated: 2021/10/20 14:26:56 by tosilva          ###   ########.fr        #
+#    Updated: 2021/10/20 16:30:52 by psleziak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,6 @@ BONUS	=
 DEBUG_FILES	= $(NAME).dSYM/
 
 # DEFAULT FOLDERS
-BIN_DIR	= bin/
 INC_DIR	= include/
 SRC_DIR	= src/
 OBJ_DIR	= obj/
@@ -88,7 +87,7 @@ CL_NORM_NUM		:=$(COLORF_CYAN)
 ########################################
 
 CC			= gcc
-CFLAGS		= -Wall -Werror -Wextra -O3 #`pkg-config readline --cflags`
+CFLAGS		= -Wall -Werror -Wextra # -03 `pkg-config readline --cflags`
 DEBFLAGS	= -g -fsanitize=address
 INCFLAGS	:= -I./$(LIBFT_DIR) -I./$(INC_DIR)
 LIBFLAGS	:= -L./$(LIBFT_DIR) -lft -lreadline  #`pkg-config readline --libs`

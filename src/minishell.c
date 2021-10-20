@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:56:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/10/18 16:05:55 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/10/20 19:11:37 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,11 @@
 	// 	kill(0, SIGKILL);
 	return ;
 }*/
+
+/*	 to do list by friday
+ *-> access
+ *-> signals and library connection
+*/ 
 
 void	functions(void)
 {

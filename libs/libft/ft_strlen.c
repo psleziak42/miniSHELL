@@ -6,7 +6,7 @@
 /*   By: psleziak <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/17 22:19:49 by psleziak          #+#    #+#             */
-/*   Updated: 2021/09/17 18:23:04 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/10/20 19:13:23 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ size_t	ft_strlen(const char *s)
 	int	i;
 
 	i = -1;
+	if (!s)
+		return (0);
 	while (s[++i] != '\0')
 		;
 	return (i);
