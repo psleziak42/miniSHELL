@@ -6,7 +6,7 @@
 #    By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/09/28 18:49:28 by tosilva           #+#    #+#              #
-#    Updated: 2021/10/20 16:30:52 by psleziak         ###   ########.fr        #
+#    Updated: 2021/10/21 18:13:36 by psleziak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -87,10 +87,11 @@ CL_NORM_NUM		:=$(COLORF_CYAN)
 ########################################
 
 CC			= gcc
-CFLAGS		= -Wall -Werror -Wextra # -03 `pkg-config readline --cflags`
+CFLAGS		= -Wall -Werror -Wextra # -03
 DEBFLAGS	= -g -fsanitize=address
-INCFLAGS	:= -I./$(LIBFT_DIR) -I./$(INC_DIR)
-LIBFLAGS	:= -L./$(LIBFT_DIR) -lft -lreadline  #`pkg-config readline --libs`
+INCFLAGS	:= -I./$(LIBFT_DIR) -I./$(INC_DIR) -I ~/.brew/opt/readline/include#'pkg-config readline --cflags'
+LIBFLAGS	:= -L./$(LIBFT_DIR) -lft -L ~/.brew/opt/readline/lib -lreadline
+#PKGFLAGS	= 'pkg-config readline --cflags' 'pkg-config readline --libs'
 
 NORM		= norminette
 NORM_COLORS	:= sed "s/OK!/$(CL_NORM_OK)OK!$/$(COLOR_RESET)/g"
@@ -135,7 +136,7 @@ print_created:
 	@echo "$(COLOR_RESET)"
 
 $(NAME): $(LIBFT) $(OBJ)
-	@$(CC) $(CFLAGS) $(INCFLAGS) $^ $(LIBFLAGS) -o $@
+	@$(CC) $(CFLAGS) $(PKGFLAGS) $(INCFLAGS) $^ $(LIBFLAGS) -o $@
 
 $(OBJ): $(OBJ_DIR)%.o: $(SRC_DIR)%.c | $(DEP_DIR)%.d $(OBJ_DIR)
 	@$(CC) $(CFLAGS) $(INCFLAGS) -c $< -o $@

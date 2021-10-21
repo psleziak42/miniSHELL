@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:56:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/10/20 19:11:37 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/10/21 19:00:47 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,24 +21,19 @@
 	-> Ctrl-D == EOF aka close inputstream or shell
 */
 
-/*void	ft_handler(int sig)
+void	ft_handler(int sig)
 {
 	if (sig == SIGINT)
 	{
-		write(1, "\n", 1);
+		printf("%s\n", g_mini.prompt);
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
 	}
-	if (sig == SIGQUIT)
-	{
-		printf("g_minishell42: ");
-		rl_redisplay();
-	}
-	// if (sig == SIGUSR1)
-	// 	kill(0, SIGKILL);
+	if (sig == SIGQUIT) // shouldnt move cursor
+		printf("%s%s", g_mini.prompt, rl_line_buffer);
 	return ;
-}*/
+}
 
 /*	 to do list by friday
  *-> access
@@ -176,8 +171,8 @@ int	main(int argc, char **argv, char **env)
 	int k;
 
 
-	//signal(SIGINT, ft_handler);
-	//signal(SIGQUIT, ft_handler);
+	signal(SIGINT, ft_handler);
+	signal(SIGQUIT, ft_handler);
 	while (argc)
 	{
 		g_mini.input = rl_gnl();
