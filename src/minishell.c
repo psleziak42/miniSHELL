@@ -25,6 +25,7 @@ void	ft_handler(int sig)
 {
 	if (sig == SIGINT)
 	{
+		g_mini.exit_code = 130;
 		printf("%s\n", g_mini.prompt);
 		rl_on_new_line();
 		rl_replace_line("", 0);
@@ -32,7 +33,6 @@ void	ft_handler(int sig)
 	}
 	if (sig == SIGQUIT) // shouldnt move cursor
 		printf("%s%s", g_mini.prompt, rl_line_buffer);
-	return ;
 }
 
 /*	 to do list by friday
@@ -44,21 +44,24 @@ void	functions(void)
 {
 //	if (g_mini.argv[0][0] == '$')
 //		ft_expand_var(); // working for argv[1];
-	if (!(ft_strncmp(g_mini.input, "echo -n", 7)))
-		ft_echon();
-	else if (!(ft_strncmp(g_mini.input, "echo", 4)))
+	
+	if (!(ft_strncmp(g_mini.argv[0], "echo", 5)))
+	{
 		ft_echo();
-	else if (!(ft_strncmp(g_mini.input, "cd", 2)))
+		if (!(g_mini.argv[1] && !ft_strncmp(g_mini.argv[1], "-n", 3)))
+			printf("\n");
+	}
+	else if (!(ft_strncmp(g_mini.argv[0], "cd", 3)))
 		ft_cd();
-	else if (!(ft_strncmp(g_mini.input, "pwd", 3)))
+	else if (!(ft_strncmp(g_mini.argv[0], "pwd", 4)))
 		ft_pwd();
-	else if (!(ft_strncmp(g_mini.input, "export", 6)))
+	else if (!(ft_strncmp(g_mini.argv[0], "export", 7)))
 		ft_export();
-	else if (!(ft_strncmp(g_mini.input, "unset", 5)))
+	else if (!(ft_strncmp(g_mini.argv[0], "unset", 6)))
 		ft_unset();
-	else if (!(ft_strncmp(g_mini.input, "env", 3)))
+	else if (!(ft_strncmp(g_mini.argv[0], "env", 4)))
 		ft_env();
-	else if (!(ft_strncmp(g_mini.input, "exit", 4)))
+	else if (!(ft_strncmp(g_mini.argv[0], "exit", 5)))
 		ft_exit();
 	else
 		ft_path();
@@ -87,11 +90,9 @@ t_list	*ft_env_list(char **env)
 	int		i;
 	t_list	*new;
 	t_list	*head;
-	t_list	*temp;
 
 	new = NULL;
 	head = NULL;
-	temp = g_mini.env;
 	i = -1;
 	while (env[++i])
 	{
@@ -101,9 +102,9 @@ t_list	*ft_env_list(char **env)
 			ft_lstclear(&head, free);
 			return (NULL);
 		}
-		if (!head)
-			head = new;
-		ft_lstadd_back(&temp, new);
+		// if (!head)
+		// 	head = new;
+		ft_lstadd_back(&head, new);
 	}
 	return (head);
 }
@@ -155,7 +156,11 @@ char	*rl_gnl(void)
 		ft_strdel(&line_trimmed);
 	line = readline(g_mini.prompt);
 	if (!line)
-		exit(ft_clear_data(B));
+	{
+		//printf("%s\n", "exit");
+		ft_clear_data();
+		exit(1);
+	}
 	// if (!*line)
 	// 	exit(ft_clear_data(g_mini, B));
 	if (line != NULL && line[0] != 0)
@@ -176,7 +181,7 @@ int	main(int argc, char **argv, char **env)
 	while (argc)
 	{
 		g_mini.input = rl_gnl();
-		if (!g_mini.input)
+		if (ft_strncmp(g_mini.input, "", 1) == 0)
 			continue ;
 		//g_mini.argv = ft_arguments(g_mini.input);
 		g_mini.argv = ft_split_updated(g_mini.input, ' ');
@@ -184,8 +189,8 @@ int	main(int argc, char **argv, char **env)
 			continue ;
 		//g_mini.argv = ft_split(g_mini.input, ' ');
 		k = -1;
-		while (g_mini.argv[++k])
-			printf("argv: %d %s\n", k, g_mini.argv[k]);
+		// while (g_mini.argv[++k])
+		// 	printf("argv: %d %s\n", k, g_mini.argv[k]);
 		//g_mini.argv = ft_update_arg(g_mini.input);
 		//the escape chars + single/double quotes need to be handled
 		functions();

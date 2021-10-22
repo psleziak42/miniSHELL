@@ -6,7 +6,7 @@
 /*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:52:05 by bcosters          #+#    #+#             */
-/*   Updated: 2021/10/20 19:13:27 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/10/22 19:05:08 by tosilva          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,6 @@
 # include <curses.h>
 # include <term.h>
 
-# define A	0b00000001 // A and B, look on it     
-# define B	0b00000010
-
 typedef struct s_minishell
 {
 	char			*input;
@@ -50,7 +47,6 @@ typedef struct s_minishell
 
 t_minishell	g_mini;
 
-void	ft_echon(void);
 void	ft_echo(void);
 void	ft_cd(void);
 void	ft_pwd(void);
@@ -67,7 +63,7 @@ char	**ft_split_updated(char *input, char delimiter);
 
 /* ERROS AND CLEAN */
 
-int		ft_clear_data(char c);
+int		ft_clear_data(void);
 void	ft_error_exit(const char *errmessage);
 int		ft_error_handler(const char *errmessage);
 

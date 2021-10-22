@@ -6,7 +6,7 @@
 /*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 15:14:50 by bcosters          #+#    #+#             */
-/*   Updated: 2021/10/18 16:51:25 by tosilva          ###   ########.fr       */
+/*   Updated: 2021/10/22 19:04:31 by tosilva          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,26 +17,22 @@
  * we must cover echoo, or any other wrong command so it displays "command not found:echoo" and exit code is 127
  *
 */
+// TODO: join ~/Doc with full path
 void	ft_cd(void) // we must cover just "cd" without nothing to go to root.
 {
 	char	buf[4096];
 	
-	if (g_mini.argv[1][0] == '~')
+	if (!ft_strncmp(g_mini.argv[0], "cd", 3) && !g_mini.argv[1]) 
+		chdir(ft_lstfind_content(&g_mini.env, "HOME"));
+	else if (g_mini.argv[1][0] == '~')
 	{
-		if (g_mini.argv[1][1] == '\0')
-			chdir(ft_lstfind_content(&g_mini.env, "HOME"));
-		else
+		chdir(ft_lstfind_content(&g_mini.env, "HOME"));
+		if (g_mini.argv[1][1] != '\0')
 		{
-			chdir(ft_lstfind_content(&g_mini.env, "HOME"));
-			g_mini.argv[1][0] = ' ';
-			if (g_mini.argv[1][1] == '/')
-				g_mini.argv[1][1] = ' ';
-			ft_cd();	
+			ft_memmove(&g_mini.argv[1][0], &g_mini.argv[1][2], ft_strlen(g_mini.argv[1]) - 1);
+			chdir(g_mini.argv[1]);
 		}
 	}
-	else if(!ft_strncmp(g_mini.argv[0], "cd", 3)
-			&& g_mini.argv[1] && !ft_strncmp(g_mini.argv[1], "", 2)) 
-		chdir(ft_lstfind_content(&g_mini.env, "HOME"));
 	else
 	{
 		if (chdir(g_mini.argv[1]) == -1)
@@ -46,16 +42,24 @@ void	ft_cd(void) // we must cover just "cd" without nothing to go to root.
 	ft_lstfind_update(&g_mini.env, buf, "PWD");
 }
 
-void	ft_export(void) // 2 razy ta sama zmienna update zmienna 
+void	ft_export(void) //* Fully working
 {
 	t_list	*temp;
 	char	**export_split;
 	temp = g_mini.env;
 	
-	export_split = ft_split(g_mini.argv[1], '=');
-	if (ft_lstfind_update(&g_mini.env, export_split[1], export_split[0]) == 1)
+	if (!ft_strchr(g_mini.argv[1], '='))
 		return ;
-	ft_lstadd_back(&temp, ft_lstnew(ft_split(g_mini.argv[1], '=')));
+	export_split = ft_split(g_mini.argv[1], '=');
+	if (!export_split[1])
+		export_split[1] = ft_strdup("");
+	if (ft_lstfind_update(&g_mini.env, export_split[1], export_split[0]) == 1)
+	{
+		free(export_split[0]);
+		free(export_split[1]);
+		return ;
+	}
+	ft_lstadd_back(&temp, ft_lstnew(export_split));
 }
 
 void	ft_unset(void)
@@ -108,7 +112,8 @@ void	ft_env(void)
 
 void	ft_exit(void)
 {
-	ft_clear_data(B);
+	printf("%s\n", "exit");
+	ft_clear_data();
 	exit(EXIT_SUCCESS);
 }
 
@@ -133,38 +138,17 @@ void	ft_echo(void)
 	int i;
 
 	i = 0;
+	if (g_mini.argv[1] && !ft_strncmp(g_mini.argv[1], "-n", 3))
+		i = 1;
 	while (g_mini.argv[++i])
 	{
 		if (!ft_strncmp(g_mini.argv[i], "$?", 2))
-		{
-			printf("%d ", g_mini.exit_code);
-			
-			continue ;
-		}
-		printf("%s", g_mini.argv[i]);
-		if (g_mini.argv[i + 1])
-			printf(" ");
-	}
-	printf("\n");
-}
-
-void	ft_echon(void)
-{
-	int	i;
-
-	i = 1;
-	while (g_mini.argv[++i])
-	{
-		if (!ft_strncmp(g_mini.argv[i], "$?", 2))
-		{
 			printf("%d", g_mini.exit_code);
-			continue ;
-		}
-		printf("%s", g_mini.argv[i]);
+		else
+			printf("%s", g_mini.argv[i]);
 		if (g_mini.argv[i + 1])
 			printf(" ");
 	}
-	printf("%%\n");
 }
 
 /*

@@ -8,24 +8,26 @@
 	4.	Free && NULL the prompt string since it has allocated memory from init
 */
 
-int	ft_clear_data(char c)
+int	ft_clear_data(void)
 {
 	int	i;
 
 	ft_lstclear(&g_mini.env, free);
 	i = -1;
-	if (g_mini.path && c | B)
+	if (g_mini.path)
 	{
 		while (g_mini.path[++i])
 			ft_strdel(&g_mini.path[i]);
 		free(g_mini.path);
+		g_mini.path = NULL;
 	}
 	i = -1;
-	if (g_mini.argv && (c | A || c | B))
+	if (g_mini.argv)
 	{
 		while (g_mini.argv[++i])
 			ft_strdel(&g_mini.argv[i]);
 		free(g_mini.argv);
+		g_mini.argv = NULL;
 	}
 	ft_strdel(&g_mini.prompt);
 	return (0);
@@ -37,7 +39,7 @@ int	ft_clear_data(char c)
 
 void	ft_error_exit(const char *errmessage)
 {
-	ft_clear_data(B);
+	ft_clear_data();
 	perror(errmessage);
 	exit(EXIT_FAILURE);
 }

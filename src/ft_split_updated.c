@@ -6,7 +6,7 @@
 /*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/19 17:55:03 by psleziak          #+#    #+#             */
-/*   Updated: 2021/10/20 19:13:18 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/10/22 18:20:57 by tosilva          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,8 @@ static int	is_end_character(char c)
 {
 	return (c == ' '
 			|| c == '\''
-			|| c == '\"');
+			|| c == '\"'
+			|| c == '\0');
 }
 
 static int	ft_keyword_length(char *input)
@@ -175,7 +176,8 @@ static void	ft_copy_words(char **argv, char *input, char delimiter, int nr_words
 			g_mini.quote.quote = input[i];
 			while (input[++i] != g_mini.quote.quote)
 			{
-				if (input[i] == '$'	&& g_mini.quote.quote != '\'')
+				if (input[i] == '$'	&& g_mini.quote.quote != '\''
+					&& input[i + 1] != '?')
 				{
 					dollar = TRUE;
 					argv[wd++] = ft_expand_dollar(&input[i - word_len], &i);
@@ -192,7 +194,7 @@ static void	ft_copy_words(char **argv, char *input, char delimiter, int nr_words
 			ft_memcpy(argv[wd], &input[i - word_len], word_len);
 			i++;
 		}
-		else if (input[i] == '$')
+		else if (input[i] == '$' && input[i + 1] != '?')
 			argv[wd++] = ft_expand_dollar(&input[i - word_len], &i);
 		else
 		{
