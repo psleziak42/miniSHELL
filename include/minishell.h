@@ -6,7 +6,7 @@
 /*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:52:05 by bcosters          #+#    #+#             */
-/*   Updated: 2021/10/22 19:05:08 by tosilva          ###   ########.fr       */
+/*   Updated: 2021/10/23 19:17:16 by tosilva          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,26 @@
 # include <curses.h>
 # include <term.h>
 
+typedef struct s_arguments
+{
+	char				**args;
+	char				pipe_type;
+	char				*full_arg_path;
+	struct s_arguments	*next_arg;
+	
+}				t_arguments;
+
+
 typedef struct s_minishell
 {
 	char			*input;
 	t_list			*env;
 	char			**path;
+
 	char			**argv;
+
+	// t_arguments		*argv;
+
 	struct termios	term;
 	t_quote			quote;
 	char			*prompt;

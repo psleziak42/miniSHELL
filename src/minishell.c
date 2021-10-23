@@ -40,6 +40,28 @@ void	ft_handler(int sig)
  *-> signals and library connection
 */ 
 
+short	check_valid_cmd(void)
+{
+	char	*full_cmd_path;
+	char	*temp;
+	size_t	i;
+
+	i = -1;
+	while (g_mini.path[++i])
+	{
+		temp = ft_strjoin(g_mini.path[i], "/");
+		full_cmd_path = ft_strjoin(temp, g_mini.argv[0]);
+		free(temp);
+		if (access(full_cmd_path, F_OK | X_OK) == 0)
+		{
+			free(full_cmd_path);
+			return (1);
+		}
+		free(full_cmd_path);
+	}
+	return (0);
+}
+
 void	functions(void)
 {
 //	if (g_mini.argv[0][0] == '$')
@@ -63,8 +85,10 @@ void	functions(void)
 		ft_env();
 	else if (!(ft_strncmp(g_mini.argv[0], "exit", 5)))
 		ft_exit();
-	else
+	else if (check_valid_cmd())
 		ft_path();
+	else
+		ft_error_exit("error execve");
 }
 
 //OBSOLETE function since getenv("PATH") does the trick
@@ -185,6 +209,7 @@ int	main(int argc, char **argv, char **env)
 			continue ;
 		//g_mini.argv = ft_arguments(g_mini.input);
 		g_mini.argv = ft_split_updated(g_mini.input, ' ');
+		// g_mini.argv = split_commands(g_mini.argv);
 		if (!g_mini.argv)
 			continue ;
 		//g_mini.argv = ft_split(g_mini.input, ' ');
