@@ -6,7 +6,7 @@
 /*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:56:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/10/21 19:00:47 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/10/24 15:10:55 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,7 +208,8 @@ int	main(int argc, char **argv, char **env)
 		if (ft_strncmp(g_mini.input, "", 1) == 0)
 			continue ;
 		//g_mini.argv = ft_arguments(g_mini.input);
-		g_mini.argv = ft_split_updated(g_mini.input, ' ');
+		//g_mini.argv = ft_split_updated(g_mini.input, ' ');
+		g_mini.args = split_commands(g_mini.args); // ????
 		// g_mini.argv = split_commands(g_mini.argv);
 		if (!g_mini.argv)
 			continue ;

@@ -6,7 +6,7 @@
 /*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:52:05 by bcosters          #+#    #+#             */
-/*   Updated: 2021/10/23 19:17:16 by tosilva          ###   ########.fr       */
+/*   Updated: 2021/10/24 15:03:53 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,9 @@ typedef struct s_minishell
 	t_list			*env;
 	char			**path;
 
-	char			**argv;
+	//char			**argv;
 
-	// t_arguments		*argv;
+	t_arguments		*argv;
 
 	struct termios	term;
 	t_quote			quote;
