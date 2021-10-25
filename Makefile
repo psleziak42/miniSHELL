@@ -6,7 +6,7 @@
 #    By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/09/28 18:49:28 by tosilva           #+#    #+#              #
-#    Updated: 2021/10/21 18:13:36 by psleziak         ###   ########.fr        #
+#    Updated: 2021/10/25 15:56:21 by tosilva          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,9 +46,11 @@ LIBFT		:= ${addprefix $(LIBFT_DIR), $(LIBFT_FILE)}
 HFILES	:= minishell.h
 CFILES	:= dollar_sign.c \
 			error_clear.c \
-			ft_split_updated.c \
-			minishell_builtins.c \
+			ft_expand_dollar.c \
+			ft_parser.c \
+			lst_arguments.c \
 			minishell.c
+#			minishell_builtins.c \
 
 HFILES_BONUS	:=
 CFILES_BONUS	:=

@@ -6,7 +6,7 @@
 /*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/19 17:55:03 by psleziak          #+#    #+#             */
-/*   Updated: 2021/10/22 18:20:57 by tosilva          ###   ########.fr       */
+/*   Updated: 2021/10/25 15:34:14 by tosilva          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,101 +60,8 @@ static int	ft_count_words_and_malloc(char ***argv, char *input, char delimiter)
 	return (nr_words);
 }
 
-static int	is_end_character(char c)
-{
-	return (c == ' '
-			|| c == '\''
-			|| c == '\"'
-			|| c == '\0');
-}
 
-static int	ft_keyword_length(char *input)
-{
-	int		length;
 
-	length = 0;
-	while (!is_end_character(input[length]))
-		length++;
-	return (length);
-}
-
-static char *get_content_from_keyword(char *input, int length)
-{
-	t_list *temp;
-
-	temp = g_mini.env;
-	while (temp->next)
-	{
-		if (ft_strncmp(input, temp->keyword, length) == 0)
-			return (temp->content);
-		temp = temp->next;
-	}
-	return (NULL);
-}
-
-static int	ft_get_countent_length(char *input, int kw_length)
-{
-	char	*shell_variable;
-
-	shell_variable = get_content_from_keyword(input, kw_length);
-	if (!shell_variable)
-		return (0);
-	return (ft_strlen(shell_variable));
-}
-
-static char	*ft_fill_arg(char *input, int arg_len)
-{
-	char	*arg;
-	char	*kw_content;
-	int		keyword_len;
-	int		j;
-	int		k;
-
-	arg = ft_calloc(arg_len + 1, sizeof(char));
-	if (!arg)
-		return (0);
-	j = -1;
-	k = 0;
-	while (input[++j] != g_mini.quote.quote && input[j])
-	{
-		if (input[j] == '$')
-		{
-			keyword_len = ft_keyword_length(&input[j + 1]);
-			kw_content = get_content_from_keyword(&input[j + 1], keyword_len); 
-			ft_memcpy(&arg[k], kw_content, ft_strlen(kw_content));
-			j += keyword_len;
-			k += ft_strlen(kw_content);
-		}
-		else
-			arg[k++] = input[j];
-	}
-	return (arg);
-}
-
-static char	*ft_expand_dollar(char *input, int *i)
-{
-	int		j;
-	int		arg_len;
-	int		keyword_len;
-	char	*arg;
-
-	arg_len = 0;
-	j = -1;
-	while (input[++j] != g_mini.quote.quote && input[j])
-	{
-		if (input[j] == '$')
-		{
-			keyword_len = ft_keyword_length(&input[j + 1]);
-			arg_len += ft_get_countent_length(&input[j + 1], keyword_len);
-			j += keyword_len;
-		}
-		else
-			arg_len++;
-	}
-	*i += j;
-	arg = ft_fill_arg(input, arg_len);
-	return (arg); // compiling
-}
 static void	ft_copy_words(char **argv, char *input, char delimiter, int nr_words)
 {
 	int		word_len;

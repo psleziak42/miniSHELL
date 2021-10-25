@@ -23,12 +23,14 @@ int	ft_clear_data(void)
 	}
 	i = -1;
 	if (g_mini.argv)
-	{
-		while (g_mini.argv[++i])
-			ft_strdel(&g_mini.argv[i]);
-		free(g_mini.argv);
-		g_mini.argv = NULL;
-	}
+		ft_free_args(g_mini.argv);
+	// if (g_mini.argv)
+	// {
+	// 	while (g_mini.argv[++i])
+	// 		ft_strdel(&g_mini.argv[i]);
+	// 	free(g_mini.argv);
+	// 	g_mini.argv = NULL;
+	// }
 	ft_strdel(&g_mini.prompt);
 	return (0);
 }
