@@ -40,56 +40,56 @@ void	ft_handler(int sig)
  *-> signals and library connection
 */ 
 
-short	check_valid_cmd(void)
-{
-	char	*full_cmd_path;
-	char	*temp;
-	size_t	i;
+// short	check_valid_cmd(void)
+// {
+// 	char	*full_cmd_path;
+// 	char	*temp;
+// 	size_t	i;
 
-	i = -1;
-	while (g_mini.path[++i])
-	{
-		temp = ft_strjoin(g_mini.path[i], "/");
-		full_cmd_path = ft_strjoin(temp, g_mini.argv[0]);
-		free(temp);
-		if (access(full_cmd_path, F_OK | X_OK) == 0)
-		{
-			free(full_cmd_path);
-			return (1);
-		}
-		free(full_cmd_path);
-	}
-	return (0);
-}
+// 	i = -1;
+// 	while (g_mini.path[++i])
+// 	{
+// 		temp = ft_strjoin(g_mini.path[i], "/");
+// 		full_cmd_path = ft_strjoin(temp, g_mini.argv[0]);
+// 		free(temp);
+// 		if (access(full_cmd_path, F_OK | X_OK) == 0)
+// 		{
+// 			free(full_cmd_path);
+// 			return (1);
+// 		}
+// 		free(full_cmd_path);
+// 	}
+// 	return (0);
+// }
 
-void	functions(void)
-{
-//	if (g_mini.argv[0][0] == '$')
-//		ft_expand_var(); // working for argv[1];
+// void	functions(void)
+// {
+// //	if (g_mini.argv[0][0] == '$')
+// //		ft_expand_var(); // working for argv[1];
 	
-	if (!(ft_strncmp(g_mini.argv[0], "echo", 5)))
-	{
-		ft_echo();
-		if (!(g_mini.argv[1] && !ft_strncmp(g_mini.argv[1], "-n", 3)))
-			printf("\n");
-	}
-	else if (!(ft_strncmp(g_mini.argv[0], "cd", 3)))
-		ft_cd();
-	else if (!(ft_strncmp(g_mini.argv[0], "pwd", 4)))
-		ft_pwd();
-	else if (!(ft_strncmp(g_mini.argv[0], "export", 7)))
-		ft_export();
-	else if (!(ft_strncmp(g_mini.argv[0], "unset", 6)))
-		ft_unset();
-	else if (!(ft_strncmp(g_mini.argv[0], "env", 4)))
-		ft_env();
-	else if (!(ft_strncmp(g_mini.argv[0], "exit", 5)))
-		ft_exit();
-	else if (check_valid_cmd())
-		ft_path();
-	else
-		ft_error_exit("error execve");
-}
+// 	if (!(ft_strncmp(g_mini.argv[0], "echo", 5)))
+// 	{
+// 		ft_echo();
+// 		if (!(g_mini.argv[1] && !ft_strncmp(g_mini.argv[1], "-n", 3)))
+// 			printf("\n");
+// 	}
+// 	else if (!(ft_strncmp(g_mini.argv[0], "cd", 3)))
+// 		ft_cd();
+// 	else if (!(ft_strncmp(g_mini.argv[0], "pwd", 4)))
+// 		ft_pwd();
+// 	else if (!(ft_strncmp(g_mini.argv[0], "export", 7)))
+// 		ft_export();
+// 	else if (!(ft_strncmp(g_mini.argv[0], "unset", 6)))
+// 		ft_unset();
+// 	else if (!(ft_strncmp(g_mini.argv[0], "env", 4)))
+// 		ft_env();
+// 	else if (!(ft_strncmp(g_mini.argv[0], "exit", 5)))
+// 		ft_exit();
+// 	else if (check_valid_cmd())
+// 		ft_path();
+// 	else
+// 		ft_error_exit("error execve");
+// }
 
 //OBSOLETE function since getenv("PATH") does the trick
 
@@ -142,7 +142,7 @@ void	ft_init(char **argv, char **env)
 {
 	char	*temp_prompt;
 
-	ft_memset(&g_mini, 0, sizeof(g_mini));
+	ft_bzero(&g_mini, sizeof(g_mini));
 	temp_prompt = ft_strtrim(argv[0], "./");
 	g_mini.prompt = ft_strjoin(temp_prompt, "42: ");
 	g_mini.fd = 1;
@@ -194,23 +194,45 @@ char	*rl_gnl(void)
 	return (line_trimmed);
 }
 
+//! REMOVE
+void	print_args()
+{
+	int i;
+	t_arguments *temp = g_mini.argv;
+
+	while (temp)
+	{
+		printf("\n\n");
+		printf("%p\n", temp);
+		printf("pipe: %s\n", temp->pipe_type);
+		i = 0;
+		while (temp->args[i])
+		{
+			printf("arg %i: %s\n", i, temp->args[i]);
+			i++;
+		}
+		temp = temp->next_arg;
+	}
+	
+}
+
 int	main(int argc, char **argv, char **env)
 {
 	ft_init(argv, env);
 	int k;
 
 
-	signal(SIGINT, ft_handler);
-	signal(SIGQUIT, ft_handler);
+	// signal(SIGINT, ft_handler);
+	// signal(SIGQUIT, ft_handler);
 	while (argc)
 	{
 		g_mini.input = rl_gnl();
 		if (ft_strncmp(g_mini.input, "", 1) == 0)
 			continue ;
 		//g_mini.argv = ft_arguments(g_mini.input);
-		//g_mini.argv = ft_split_updated(g_mini.input, ' ');
-		g_mini.args = split_commands(g_mini.args); // ????
-		// g_mini.argv = split_commands(g_mini.argv);
+		// g_mini.argv = ft_split_updated(g_mini.input, ' ');
+		g_mini.argv = split_commands(g_mini.argv);
+		print_args();
 		if (!g_mini.argv)
 			continue ;
 		//g_mini.argv = ft_split(g_mini.input, ' ');
@@ -219,6 +241,6 @@ int	main(int argc, char **argv, char **env)
 		// 	printf("argv: %d %s\n", k, g_mini.argv[k]);
 		//g_mini.argv = ft_update_arg(g_mini.input);
 		//the escape chars + single/double quotes need to be handled
-		functions();
+		// functions();
 	}
 }
