@@ -6,13 +6,13 @@
 /*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/23 16:21:54 by tosilva           #+#    #+#             */
-/*   Updated: 2021/10/25 18:25:14 by tosilva          ###   ########.fr       */
+/*   Updated: 2021/10/26 18:05:05 by tosilva          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	is_pipe(char *str)
+int	is_pipe(char *str)
 {
 	return (str[0] == '|'
 		|| str[0] == '<'
@@ -52,7 +52,9 @@ static int	count_words_until_pipe(int input_i)
 	i = input_i - 1;
 	while (g_mini.input[++i] && !is_pipe(&g_mini.input[i]))
 	{
-		if (!nr_words || (g_mini.input[i] == ' '
+		if (!nr_words)
+			nr_words++;
+		if ((g_mini.input[i] == ' '
 				&& g_mini.input[i + 1] != ' ' && !is_pipe(&g_mini.input[i + 1])))
 			nr_words++;
 		else if (g_mini.input[i] == '\'' || g_mini.input[i] == '\"')
@@ -82,19 +84,19 @@ static char	*copy_word(int *input_i, int word_len)
 		(*input_i)++;	
 	i = *input_i;
 	j = 0;
-	while (word_len-- > 0)
+	while (word_len--)
 	{
 		if (g_mini.input[i] == '\'' || g_mini.input[i] == '\"')
 		{
 			g_mini.quote.quote = g_mini.input[i++];
-			quote_len = 2;
+			quote_len = 0;
 			while (g_mini.input[i] != g_mini.quote.quote)
 			{
 				arg[j++] = g_mini.input[i++];
 				quote_len++;
 			}
 			i++;
-			word_len -= quote_len;
+			word_len -= (quote_len - 1);
 		}
 		else
 			arg[j++] = g_mini.input[i++];
@@ -115,22 +117,22 @@ static int	count_word_length(int *input_i)
 	ft_bzero(&g_mini.quote, sizeof(t_quote));
 	while (g_mini.input[i] == ' ')
 		i++;
-	if (g_mini.input[i] == '\'' || g_mini.input[i] == '\"')
+	while (g_mini.input[i]
+		&& g_mini.input[i] != ' ' && !is_pipe(&g_mini.input[i]))
 	{
-		g_mini.quote.quote = g_mini.input[i];
-		while (g_mini.input[++i] != g_mini.quote.quote)
+		if (g_mini.input[i] == '\'' || g_mini.input[i] == '\"')
 		{
-			if (g_mini.input[i] == '$' && g_mini.input[i + 1] != '?'
-				&& g_mini.quote.quote != '\'')
-				return (-1);
-			word_len++;
+			g_mini.quote.quote = g_mini.input[i];
+			while (g_mini.input[++i] != g_mini.quote.quote)
+			{
+				if (g_mini.input[i] == '$' && g_mini.input[i + 1] != '?'
+					&& g_mini.quote.quote != '\'')
+					return (-1);
+				word_len++;
+			}
+			i++;
 		}
-		i++;
-	}
-	else
-	{
-		while (g_mini.input[i]
-			&& g_mini.input[i] != ' ' && !is_pipe(&g_mini.input[i]))
+		else
 		{
 			if (g_mini.input[i] == '$' && g_mini.input[i + 1] != '?')
 				return (-1);
@@ -138,7 +140,6 @@ static int	count_word_length(int *input_i)
 			i++;
 		}
 	}
-	printf("word_len: %i\n", word_len);
 	return (word_len);
 }
 
@@ -150,8 +151,8 @@ static void	copy_args(t_arguments **new_arg, int *input_i, int nr_words)
 	wd = -1;
 	while (++wd < nr_words)
 	{
-		// ft_bzero(&g_mini.quote, sizeof(t_quote));
 		word_len = count_word_length(input_i);
+		ft_bzero(&g_mini.quote, sizeof(t_quote));
 		if (word_len == -1)
 			(*new_arg)->args[wd] = ft_expand_dollar(input_i);
 		else
@@ -166,8 +167,12 @@ static int	split_args_and_add_pipe(t_arguments **new_arg, int *input_i)
 
 	if (is_pipe(&g_mini.input[*input_i]))
 		(*new_arg)->pipe_type[0] = g_mini.input[(*input_i)++];
+	while (g_mini.input[*input_i] == ' ')
+		*input_i += 1;
 	if (g_mini.input[*input_i] == '<' || g_mini.input[*input_i] == '>')
 		(*new_arg)->pipe_type[1] = g_mini.input[(*input_i)++];
+	while (g_mini.input[*input_i] == ' ')
+		(*input_i)++;
 	nr_words = count_words_until_pipe(*input_i);
 	if (nr_words == -1)
 		return (-2);
@@ -175,7 +180,6 @@ static int	split_args_and_add_pipe(t_arguments **new_arg, int *input_i)
 	if (!((*new_arg)->args))
 		return (-1);
 	copy_args(new_arg, input_i, nr_words);
-	//(*input_i)++;
 	while (g_mini.input[*input_i] && g_mini.input[*input_i] == ' '
 		&& !is_pipe(&g_mini.input[*input_i]))
 		(*input_i)++;

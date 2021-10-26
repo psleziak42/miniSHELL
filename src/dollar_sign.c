@@ -1,9 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   dollar_sign.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/26 16:31:57 by tosilva           #+#    #+#             */
+/*   Updated: 2021/10/26 16:33:09 by tosilva          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-/*
-*	Every strjoin call needs a free
-*/
-
+/**
+ * Every strjoin call needs a free
+**/
 void	ft_dollar_sign(char *argv)
 {
 	t_list	*temp;
@@ -25,7 +36,6 @@ void	ft_dollar_sign(char *argv)
 	=> EXAMPLE: ben$PATH => ben + expanded PATH
 	=> Only in "" !
 */
-
 void	ft_expand_var(char *argv)
 {
 	int	i;
@@ -36,6 +46,5 @@ void	ft_expand_var(char *argv)
 		ft_putnbr_fd(g_mini.exit_code, g_mini.fd);
 		return ;
 	}
-	//while (g_mini.argv)
 	ft_dollar_sign(argv);
 }

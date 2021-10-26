@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   error_clear.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/26 16:33:54 by tosilva           #+#    #+#             */
+/*   Updated: 2021/10/26 16:33:54 by tosilva          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 /*
@@ -7,7 +19,6 @@
 	3.	Clear the argv ** if it's != NULL && A OR B is specified
 	4.	Free && NULL the prompt string since it has allocated memory from init
 */
-
 int	ft_clear_data(void)
 {
 	int	i;
@@ -24,13 +35,6 @@ int	ft_clear_data(void)
 	i = -1;
 	if (g_mini.argv)
 		ft_free_args(g_mini.argv);
-	// if (g_mini.argv)
-	// {
-	// 	while (g_mini.argv[++i])
-	// 		ft_strdel(&g_mini.argv[i]);
-	// 	free(g_mini.argv);
-	// 	g_mini.argv = NULL;
-	// }
 	ft_strdel(&g_mini.prompt);
 	return (0);
 }
@@ -38,7 +42,6 @@ int	ft_clear_data(void)
 /*
  * ft_error_handler handles errno 
 */
-
 void	ft_error_exit(const char *errmessage)
 {
 	ft_clear_data();

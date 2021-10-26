@@ -6,7 +6,7 @@
 /*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/25 15:29:49 by tosilva           #+#    #+#             */
-/*   Updated: 2021/10/25 16:29:56 by tosilva          ###   ########.fr       */
+/*   Updated: 2021/10/26 16:19:23 by tosilva          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	add_to_end_of_the_list(t_arguments **all_args, t_arguments *new_arg)
 void	ft_free_args(t_arguments *old_argv)
 {
 	int			i;
-	t_arguments *temp;
+	t_arguments	*temp;
 
 	while (old_argv)
 	{

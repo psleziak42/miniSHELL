@@ -6,77 +6,34 @@
 /*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/25 14:18:10 by tosilva           #+#    #+#             */
-/*   Updated: 2021/10/25 18:14:42 by tosilva          ###   ########.fr       */
+/*   Updated: 2021/10/26 17:32:07 by tosilva          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	is_end_character(char c)
-{
-	return (c == ' '
-			|| c == '\'' || c == '\"'
-			|| c == '|'
-			|| c == '<' || c == '>'
-			|| c == '\0');
-}
-
-static int	ft_keyword_length(char *input)
-{
-	int		length;
-
-	length = 0;
-	while (!is_end_character(input[length]))
-		length++;
-	return (length);
-}
-
-static char *get_content_from_keyword(char *input, int length)
-{
-	t_list *temp;
-
-	temp = g_mini.env;
-	while (temp->next)
-	{
-		if (ft_strncmp(input, temp->keyword, length) == 0)
-			return (temp->content);
-		temp = temp->next;
-	}
-	return (NULL);
-}
-
-static int	ft_get_countent_length(char *input, int kw_length)
-{
-	char	*shell_variable;
-
-	shell_variable = get_content_from_keyword(input, kw_length);
-	if (!shell_variable)
-		return (0);
-	return (ft_strlen(shell_variable));
-}
-
 static char	*ft_fill_arg(char *input, int arg_len)
 {
 	char	*arg;
 	char	*kw_content;
-	int		keyword_len;
+	int		content_len;
 	int		i;
 	int		j;
 
 	arg = ft_calloc(arg_len + 1, sizeof(char));
 	if (!arg)
-		return (0);
+		return (NULL);
+	kw_content = NULL;
 	i = -1;
 	j = 0;
-	while (input[++i] != g_mini.quote.quote && input[i])
+	while (j < arg_len)
 	{
+		++i;
 		if (input[i] == '$')
 		{
-			keyword_len = ft_keyword_length(&input[i + 1]);
-			kw_content = get_content_from_keyword(&input[i + 1], keyword_len); 
-			ft_memcpy(&arg[j], kw_content, ft_strlen(kw_content));
-			i += keyword_len;
-			j += ft_strlen(kw_content);
+			i += get_var_info(&input[i + 1], &kw_content, &content_len);
+			ft_memcpy(&arg[j], kw_content, content_len);
+			j += content_len;
 		}
 		else if (!g_mini.quote.quote
 			&& (input[i] == '\'' || input[i] == '\"'))
@@ -87,11 +44,9 @@ static char	*ft_fill_arg(char *input, int arg_len)
 				if (input[i] == '$' && input[i + 1] != '?'
 					&& g_mini.quote.quote != '\'')
 				{
-					keyword_len = ft_keyword_length(&input[i + 1]);
-					kw_content = get_content_from_keyword(&input[i + 1], keyword_len); 
-					ft_memcpy(&arg[j], kw_content, ft_strlen(kw_content));
-					i += keyword_len;
-					j += ft_strlen(kw_content);
+					i += get_var_info(&input[i + 1], &kw_content, &content_len);
+					ft_memcpy(&arg[j], kw_content, content_len);
+					j += content_len;
 				}
 				else
 					arg[j++] = input[i];
@@ -104,52 +59,61 @@ static char	*ft_fill_arg(char *input, int arg_len)
 	return (arg);
 }
 
-char	*ft_expand_dollar(int *input_i)
+static int	count_arg_len(int *i)
 {
-	int		j;
 	int		arg_len;
-	int		keyword_len;
-	char	*arg;
+	char	*kw_content;
+	int		content_len;
 
+	kw_content = NULL;
 	arg_len = 0;
-	while (g_mini.input[*input_i] == ' '
-		|| g_mini.input[*input_i] == g_mini.quote.quote)
-		(*input_i)++;
-	j = *input_i;
-	while (g_mini.input[j] && g_mini.input[j] != g_mini.quote.quote)
+	while (g_mini.input[*i] && g_mini.input[*i] != g_mini.quote.quote
+		&& g_mini.input[*i] != ' ' && !is_pipe(&g_mini.input[*i]))
 	{
-		if (g_mini.input[j] == '$')
+		if (g_mini.input[*i] == '$')
 		{
-			keyword_len = ft_keyword_length(&g_mini.input[j + 1]);
-			arg_len += ft_get_countent_length(&g_mini.input[j + 1], keyword_len);
-			j += keyword_len;
+			*i += get_var_info(&g_mini.input[*i + 1], &kw_content, &content_len);
+			arg_len += content_len;
 		}
 		else if (!g_mini.quote.quote
-			&& (g_mini.input[j] == '\'' || g_mini.input[j] == '\"'))
+			&& (g_mini.input[*i] == '\'' || g_mini.input[*i] == '\"'))
 		{
-			g_mini.quote.quote = g_mini.input[j];
-			while (g_mini.input[++j] != g_mini.quote.quote)
+			g_mini.quote.quote = g_mini.input[*i];
+			while (g_mini.input[++(*i)] != g_mini.quote.quote)
 			{
-				if (g_mini.input[j] == '$' && g_mini.input[j + 1] != '?'
+				if (g_mini.input[*i] == '$' && g_mini.input[*i + 1] != '?'
 					&& g_mini.quote.quote != '\'')
 				{
-					keyword_len = ft_keyword_length(&g_mini.input[j + 1]);
-					arg_len += ft_get_countent_length(&g_mini.input[j + 1], keyword_len);
-					j += keyword_len;
+					*i += get_var_info(&g_mini.input[*i + 1],
+							&kw_content, &content_len);
+					arg_len += content_len;
 				}
 				else
 					arg_len++;
 			}
-			//j++;
-			ft_bzero(&g_mini.quote, sizeof(t_quote));
+			ft_bzero((void *)&g_mini.quote, sizeof(t_quote));
 		}
 		else
 			arg_len++;
-		j++;
+		*i += 1;
 	}
+	return (arg_len);
+}
+
+char	*ft_expand_dollar(int *input_i)
+{
+	char	*arg;
+	int		arg_len;
+	int		i;
+
+	while (g_mini.input[*input_i] == ' ')
+		(*input_i)++;
+	arg_len = 0;
+	i = *input_i;
+	arg_len = count_arg_len(&i);
 	arg = ft_fill_arg(&g_mini.input[*input_i], arg_len);
 	if (g_mini.quote.quote)
-		j++;
-	*input_i = j;
+		i++;
+	*input_i = i;
 	return (arg);
 }
