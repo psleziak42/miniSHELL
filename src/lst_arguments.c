@@ -6,7 +6,7 @@
 /*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/25 15:29:49 by tosilva           #+#    #+#             */
-/*   Updated: 2021/10/26 16:19:23 by tosilva          ###   ########.fr       */
+/*   Updated: 2021/10/28 19:28:16 by tosilva          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,10 @@ static t_arguments	*ft_lstlast_arg(t_arguments *lst)
 		return (lst);
 	while (current != NULL)
 	{
-		if (current->next_arg == NULL)
+		if (current->next == NULL)
 			return (current);
 		previous = current;
-		current = current->next_arg;
+		current = current->next;
 	}
 	return (previous);
 }
@@ -35,11 +35,11 @@ void	add_to_end_of_the_list(t_arguments **all_args, t_arguments *new_arg)
 {
 	if (*all_args == NULL)
 	{
-		new_arg->next_arg = *all_args;
+		new_arg->next = *all_args;
 		*all_args = new_arg;
 	}
 	else
-		ft_lstlast_arg(*all_args)->next_arg = new_arg;
+		ft_lstlast_arg(*all_args)->next = new_arg;
 }
 
 void	ft_free_args(t_arguments *old_argv)
@@ -49,7 +49,7 @@ void	ft_free_args(t_arguments *old_argv)
 
 	while (old_argv)
 	{
-		temp = old_argv->next_arg;
+		temp = old_argv->next;
 		i = -1;
 		while (old_argv->args[++i])
 			ft_strdel(&(old_argv->args[i]));

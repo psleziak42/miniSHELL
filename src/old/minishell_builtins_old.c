@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell_builtins.c                               :+:      :+:    :+:   */
+/*   minishell_builtins_old.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 15:14:50 by bcosters          #+#    #+#             */
-/*   Updated: 2021/10/22 19:04:31 by tosilva          ###   ########.fr       */
+/*   Updated: 2021/10/28 18:00:24 by tosilva          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	ft_cd(void) // we must cover just "cd" without nothing to go to root.
 		if (chdir(g_mini.argv[1]) == -1)
 			g_mini.exit_code = ft_error_handler("wrong chdir");
 	}
-	getcwd(buf, 100);
+	getcwd(buf, 4096);
 	ft_lstfind_update(&g_mini.env, buf, "PWD");
 }
 

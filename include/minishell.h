@@ -6,7 +6,7 @@
 /*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:52:05 by psleziak          #+#    #+#             */
-/*   Updated: 2021/10/26 18:13:22 by tosilva          ###   ########.fr       */
+/*   Updated: 2021/10/28 19:07:57 by tosilva          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,25 +31,40 @@
 # include <curses.h>
 # include <term.h>
 
+# define General Error	1
+
+
 typedef struct s_arguments
 {
 	char				**args;
 	char				pipe_type[3];
 	char				*full_arg_path;
-	struct s_arguments	*next_arg;
+	bool				is_valid;
+	struct s_arguments	*next;
 }				t_arguments;
 
+typedef struct s_builtins
+{
+	char	**cmd;
+	void	(**builtin_func)(void);
+}				t_builtins;
+
+
+/**
+ * Note: "t_builtins builtins" is not a pointer becaus
+**/
 typedef struct s_minishell
 {
 	char			*input;
-	t_list			*env;
 	char			**path;
+	t_list			*env;
 	t_arguments		*argv;
-	struct termios	term;
+	t_builtins		builtins;
 	t_quote			quote;
 	char			*prompt;
 	char			*cwd;
 	int				fd;
+	struct termios	term;
 	unsigned char	exit_code;
 }				t_minishell;
 
@@ -85,5 +100,9 @@ void		ft_expand_var(char *argv);
 void		add_to_end_of_the_list(t_arguments **all_args,
 				t_arguments *new_arg);
 void		ft_free_args(t_arguments *old_argv);
+
+/* ACCESS */
+void		fill_builtins_struct(void);
+void		check_commands(void);
 
 #endif
