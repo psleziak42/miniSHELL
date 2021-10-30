@@ -234,7 +234,7 @@ int	main(int argc, char **argv, char **env)
 		//g_mini.argv = ft_arguments(g_mini.input);
 		// g_mini.argv = ft_split_updated(g_mini.input, ' ');
 		g_mini.argv = split_commands(g_mini.argv);
-		print_args();
+		//print_args();
 		check_commands();
 		if (!g_mini.argv)
 			continue ;

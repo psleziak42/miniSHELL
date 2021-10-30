@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_commands.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
+/*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 16:38:52 by tosilva           #+#    #+#             */
-/*   Updated: 2021/10/28 19:32:14 by tosilva          ###   ########.fr       */
+/*   Updated: 2021/10/30 19:03:15 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ static char	*check_n_get_cmd_path(char *cmd)
 			return (full_cmd_path);
 		free(full_cmd_path);
 	}
+	// TODO error with command name
 	ft_error_handler("Command not found"); //? to verify if errno set message automatically 
 	return (NULL);
 }
