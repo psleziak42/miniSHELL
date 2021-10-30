@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+         #
+#    By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/09/28 18:49:28 by tosilva           #+#    #+#              #
-#    Updated: 2021/10/28 19:12:34 by tosilva          ###   ########.fr        #
+#    Updated: 2021/10/29 16:29:30 by psleziak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -52,7 +52,8 @@ CFILES	:= check_commands.c \
 			ft_expand_dollar.c \
 			ft_parser.c \
 			lst_arguments.c \
-			minishell.c
+			minishell.c \
+			pipes.c
 #			minishell_builtins.c \
 
 HFILES_BONUS	:=

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
+/*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:52:05 by psleziak          #+#    #+#             */
-/*   Updated: 2021/10/28 19:07:57 by tosilva          ###   ########.fr       */
+/*   Updated: 2021/10/29 17:14:18 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@
 typedef struct s_arguments
 {
 	char				**args;
-	char				pipe_type[3];
+	char				pipe_type[4];
 	char				*full_arg_path;
 	bool				is_valid;
 	struct s_arguments	*next;
@@ -101,8 +101,9 @@ void		add_to_end_of_the_list(t_arguments **all_args,
 				t_arguments *new_arg);
 void		ft_free_args(t_arguments *old_argv);
 
-/* ACCESS */
+/* ACCESS and PIPES*/
 void		fill_builtins_struct(void);
 void		check_commands(void);
+void		run_commands(void);
 
 #endif

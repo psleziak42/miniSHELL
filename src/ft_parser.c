@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_parser.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
+/*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/23 16:21:54 by tosilva           #+#    #+#             */
-/*   Updated: 2021/10/26 18:05:05 by tosilva          ###   ########.fr       */
+/*   Updated: 2021/10/29 17:07:28 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,13 +164,23 @@ static void	copy_args(t_arguments **new_arg, int *input_i, int nr_words)
 static int	split_args_and_add_pipe(t_arguments **new_arg, int *input_i)
 {
 	int	nr_words;
+	int	pipe_i;
 
+	pipe_i = 0;
 	if (is_pipe(&g_mini.input[*input_i]))
-		(*new_arg)->pipe_type[0] = g_mini.input[(*input_i)++];
+		(*new_arg)->pipe_type[pipe_i++] = g_mini.input[(*input_i)++];
 	while (g_mini.input[*input_i] == ' ')
-		*input_i += 1;
+		(*input_i)++;
 	if (g_mini.input[*input_i] == '<' || g_mini.input[*input_i] == '>')
-		(*new_arg)->pipe_type[1] = g_mini.input[(*input_i)++];
+	{
+		if (g_mini.input[*input_i] != g_mini.input[*input_i + 1])
+			(*new_arg)->pipe_type[pipe_i++] = g_mini.input[(*input_i)++];
+		else
+		{
+			(*new_arg)->pipe_type[pipe_i++] = g_mini.input[(*input_i)++];
+			(*new_arg)->pipe_type[pipe_i++] = g_mini.input[(*input_i)++];
+		}
+	}
 	while (g_mini.input[*input_i] == ' ')
 		(*input_i)++;
 	nr_words = count_words_until_pipe(*input_i);
