@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+         #
+#    By: tony <tony@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/09/28 18:49:28 by tosilva           #+#    #+#              #
-#    Updated: 2021/10/29 16:29:30 by psleziak         ###   ########.fr        #
+#    Updated: 2021/11/05 00:56:03 by tony             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -53,7 +53,7 @@ CFILES	:= check_commands.c \
 			ft_parser.c \
 			lst_arguments.c \
 			minishell.c \
-			pipes.c
+			pipes2.c
 #			minishell_builtins.c \
 
 HFILES_BONUS	:=
@@ -93,7 +93,7 @@ CL_NORM_NUM		:=$(COLORF_CYAN)
 ########################################
 
 CC			= gcc
-CFLAGS		= -Wall -Werror -Wextra # -03
+CFLAGS		= -Wall -Werror -Wextra -g # -03
 DEBFLAGS	= -g -fsanitize=address
 INCFLAGS	:= -I./$(LIBFT_DIR) -I./$(INC_DIR) -I ~/.brew/opt/readline/include#'pkg-config readline --cflags'
 LIBFLAGS	:= -L./$(LIBFT_DIR) -lft -L ~/.brew/opt/readline/lib -lreadline

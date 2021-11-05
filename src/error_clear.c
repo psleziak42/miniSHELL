@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error_clear.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
+/*   By: tony <tony@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/26 16:33:54 by tosilva           #+#    #+#             */
-/*   Updated: 2021/10/28 17:17:36 by tosilva          ###   ########.fr       */
+/*   Updated: 2021/11/02 00:47:07 by tony             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,9 @@ void	ft_error_exit(const char *errmessage)
 
 int	ft_error_handler(const char *errmessage)
 {
-	int	save_errno;
+	//int	save_errno;
 
-	save_errno = errno;
+	//save_errno = errno;
 	perror(errmessage);
 	return (errno);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tony <tony@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:52:05 by psleziak          #+#    #+#             */
-/*   Updated: 2021/10/29 17:14:18 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/02 01:15:24 by tony             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/errno.h>
+# include <sys/wait.h>
 # include <dirent.h>
 # include <sys/ioctl.h>
 # include <sys/errno.h>
@@ -104,6 +105,6 @@ void		ft_free_args(t_arguments *old_argv);
 /* ACCESS and PIPES*/
 void		fill_builtins_struct(void);
 void		check_commands(void);
-void		run_commands(void);
+void		run_commands2(void);
 
 #endif

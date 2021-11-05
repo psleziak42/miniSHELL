@@ -222,7 +222,7 @@ void	print_args()
 int	main(int argc, char **argv, char **env)
 {
 	ft_init(argv, env);
-	int k;
+	//int k;
 
 	// signal(SIGINT, ft_handler);
 	// signal(SIGQUIT, ft_handler);
@@ -238,9 +238,10 @@ int	main(int argc, char **argv, char **env)
 		check_commands();
 		if (!g_mini.argv)
 			continue ;
-		run_commands();
+		//run_commands();
+		run_commands2();
 		//g_mini.argv = ft_split(g_mini.input, ' ');
-		k = -1;
+		// -----> k = -1; <------ //
 		// while (g_mini.argv[++k])
 		// 	printf("argv: %d %s\n", k, g_mini.argv[k]);
 		//g_mini.argv = ft_update_arg(g_mini.input);

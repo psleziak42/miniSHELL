@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dollar_sign.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
+/*   By: tony <tony@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/26 16:31:57 by tosilva           #+#    #+#             */
-/*   Updated: 2021/10/26 16:33:09 by tosilva          ###   ########.fr       */
+/*   Updated: 2021/11/02 00:46:36 by tony             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,9 @@ void	ft_dollar_sign(char *argv)
 */
 void	ft_expand_var(char *argv)
 {
-	int	i;
+	//int	i;
 
-	i = -1;
+	//i = -1;
 	if (argv[0] == '?')
 	{
 		ft_putnbr_fd(g_mini.exit_code, g_mini.fd);
