@@ -6,7 +6,7 @@
 /*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 00:35:06 by psleziak          #+#    #+#             */
-/*   Updated: 2021/11/05 17:07:48 by tosilva          ###   ########.fr       */
+/*   Updated: 2021/11/05 17:48:45 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ void	run_one_command(void)
  *  Pipe reads from poprzedniej and write to the next one
  *  In order for pipe to read, write part must be closed
  *  If write is open, pipe is in constantt loop expectin new input
- * 	
+ *  writing to a pipe in child process results in writing to a pipe in main process too BUT	
+ *  closing fd's in child doesnt close processes in mine too
  * ***/
 
 
