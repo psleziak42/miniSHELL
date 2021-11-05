@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipes2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tony <tony@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 00:35:06 by psleziak          #+#    #+#             */
-/*   Updated: 2021/11/05 01:04:35 by tony             ###   ########.fr       */
+/*   Updated: 2021/11/05 17:07:48 by tosilva          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,14 @@ void	run_one_command(void)
 		wait(NULL);
 }
 
+/*****
+ *  Pipe reads from poprzedniej and write to the next one
+ *  In order for pipe to read, write part must be closed
+ *  If write is open, pipe is in constantt loop expectin new input
+ * 	
+ * ***/
+
+
 void	run_all_commands(int nr_of_commands)
 {
 	int			i;
@@ -63,23 +71,21 @@ void	run_all_commands(int nr_of_commands)
 				printf("1st?\n");
 				dup2(pipe_fd[i][1], STDOUT_FILENO);
 				close(pipe_fd[i][1]);
-				close(pipe_fd[i][0]);
 			}
 			else if (nr_of_commands - 1 == 0) // input z pipe
 			{
 				printf("last?\n");
-				dup2(pipe_fd[i][0], STDIN_FILENO);
-				close(pipe_fd[i][1]);
-				close(pipe_fd[i][0]);
+				dup2(pipe_fd[i-1][0], STDIN_FILENO);
+				close(pipe_fd[i-1][1]);
 			}
 			else
 			{
-				dup2(pipe_fd[i][0], STDIN_FILENO); // stdin reads from pipe
+				dup2(pipe_fd[i-1][0], STDIN_FILENO); // stdin reads from pipe
 				dup2(pipe_fd[i][1], STDOUT_FILENO); // stdout writes to pipe
-				close(pipe_fd[i][0]);
+				close(pipe_fd[i-1][0]);
 				close(pipe_fd[i][1]);
 			}
-			printf("arg path: %s\n", temp->full_arg_path);
+			fprintf(stderr, "arg path: %s\n", temp->full_arg_path);
 			if (execve(temp->full_arg_path, temp->args, NULL) == -1)
 				ft_error_handler("execve error");
 			exit(1);
@@ -88,13 +94,17 @@ void	run_all_commands(int nr_of_commands)
 		{
 			waitpid(fork_id, NULL, 0);
 			printf("nr commands: %d, i = %d\n", nr_of_commands, i);
-			close(pipe_fd[i][0]);
-			//close(pipe_fd[i][1]);
+			if (i > 0)
+				close(pipe_fd[i-1][0]);
+			ft_putstr_fd("ola ", pipe_fd[i][1]);
+			close(pipe_fd[i][1]);
 			temp = temp->next;
 			nr_of_commands--;
 		}
 		printf("stop?\n");
 	}
+	close(pipe_fd[i][0]);
+	close(pipe_fd[i][1]);
 }
 
 void	run_commands2(void)
