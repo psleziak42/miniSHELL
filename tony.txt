@@ -1,5 +1,1 @@
-abc
-abc
-cda
-ok
-
+       0

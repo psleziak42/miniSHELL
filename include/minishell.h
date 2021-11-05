@@ -105,6 +105,6 @@ void		ft_free_args(t_arguments *old_argv);
 /* ACCESS and PIPES*/
 void		fill_builtins_struct(void);
 void		check_commands(void);
-void		run_commands2(void);
+void		run_commands(void);
 
 #endif

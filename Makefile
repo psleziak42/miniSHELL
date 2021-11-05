@@ -6,7 +6,7 @@
 #    By: tony <tony@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/09/28 18:49:28 by tosilva           #+#    #+#              #
-#    Updated: 2021/11/05 00:56:03 by tony             ###   ########.fr        #
+#    Updated: 2021/11/05 18:01:41 by psleziak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -53,7 +53,7 @@ CFILES	:= check_commands.c \
 			ft_parser.c \
 			lst_arguments.c \
 			minishell.c \
-			pipes2.c
+			pipes.c
 #			minishell_builtins.c \
 
 HFILES_BONUS	:=

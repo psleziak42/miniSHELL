@@ -238,8 +238,8 @@ int	main(int argc, char **argv, char **env)
 		check_commands();
 		if (!g_mini.argv)
 			continue ;
-		//run_commands();
-		run_commands2();
+		run_commands();
+		//run_commands2();
 		//g_mini.argv = ft_split(g_mini.input, ' ');
 		// -----> k = -1; <------ //
 		// while (g_mini.argv[++k])

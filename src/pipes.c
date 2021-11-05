@@ -1,14 +1,14 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    pipes                                              :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: tony <tony@student.42.fr>                  +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2021/10/29 15:58:14 by psleziak          #+#    #+#              #
-#    Updated: 2021/11/02 02:50:30 by tony             ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipes2.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/11/02 00:35:06 by psleziak          #+#    #+#             */
+/*   Updated: 2021/11/05 17:48:45 by psleziak         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
@@ -72,7 +72,7 @@ void	run_commands(void)
 	}
 }*/
 
-int	count_nr_of_commands(void)
+static int	count_nr_of_commands(void)
 {
 	t_arguments	*temp;
 	int	nr_of_commands;
@@ -87,7 +87,7 @@ int	count_nr_of_commands(void)
 	return (nr_of_commands);
 }
 
-void	run_single_command()
+static void	run_single_command()
 {
 	pid_t	process;
 
@@ -103,7 +103,98 @@ void	run_single_command()
 		wait(NULL);
 }
 
-void	run_pipes(int nr_of_commands)
+static bool	is_redirection(char *pipe_type)
+{
+	int i;
+
+	i = 0;
+	if (pipe_type[i] == '|')
+		i++;
+	if (pipe_type[i] && pipe_type[i] != '|')
+		return (TRUE);
+	return (FALSE);
+}
+
+static int get_type_of_pipe(char *pipe_type)
+{
+	int i;
+
+	i = 0;
+	if (pipe_type[i] == '|')
+		i++;
+	if (pipe_type[i] == '<' && pipe_type[i + 1] == '\0')
+		return (1);
+	if (pipe_type[i] == '<' && pipe_type[i + 1] == '<')
+		return (2);
+	if (pipe_type[i] == '>' && pipe_type[i + 1] == '\0')
+		return (3);
+	if (pipe_type[i] == '>' && pipe_type[i + 1] == '>')
+		return (4);
+}
+
+void	ft_ouptut_append(int *out, t_arguments *temp)
+{
+	int	file_fd;
+
+	file_fd = open(temp->args[0], O_CREAT | O_WRONLY | O_APPEND);
+	if (file_fd == -1)
+		ft_error_handler("FILE doesnt exist, ft_output_append");
+	*out = file_fd;
+}
+
+void	ft_ouptut(int *out, t_arguments *temp)
+{
+	int	file_fd;
+
+	file_fd = open(temp->args[0], O_CREAT | O_WRONLY | O_TRUNC);
+	if (file_fd == -1)
+		ft_error_handler("FILE doesnt exist, ft_output_append");
+	*out = file_fd;
+}
+
+void	ft_input(int *in, t_arguments *temp)
+{
+	int	file_fd;
+
+	file_fd = open(temp->args[0], O_RDONLY);
+	if (file_fd == -1)
+		ft_error_handler("FILE doesnt exist, ft_input");
+	*in = file_fd;
+}
+
+void	ft_input_heredoc(int *in, t_arguments *temp)
+{
+	char	*heredoc; // save here the lines with \n
+	char	*line;
+	size_t	eof_length;
+
+	line = "";
+	eof_length = ft_strlen(temp->args[0]);
+	while (!ft_strcmp(temp->args[0], line, eof_length)
+	{
+		line = read; // copy char by char
+
+		free(line);
+	}
+	// create file -> deal with it later // 
+	if (file_fd == -1)
+		ft_error_handler("FILE doesnt exist, ft_input");
+	*in = file_fd;
+}
+
+
+static void io_table_manipulation(int *in, int *out, t_arguments *temp, int pipe_type)
+{
+	if (pipe_type == 1)
+		ft_input(in, out, temp);
+	if (pipe_type == 2)
+		ft_input_heredoc(in, out, temp);
+	if (pipe_type == 3)
+		ft_output(in, out, temp);
+	if (pipe_type == 4)
+		ft_ouptut_append(out, temp);
+}
+static void	run_pipes(int nr_of_commands)
 {
 	t_arguments	*temp;
 	pid_t		process;
@@ -112,14 +203,17 @@ void	run_pipes(int nr_of_commands)
 	int			fd_out;
 
 	temp = g_mini.argv;
-	dup2(101, STDOUT_FILENO);
 	fd_in = STDIN_FILENO; // read part -> read FROM
 	fd_out = -1;
 	while (nr_of_commands-- > 0)
 	{
 		if (fd_out != -1)
 			close(fd_out);
-		if (nr_of_commands == 0)
+		if (is_redirection(temp->pipe_type))
+		{
+			changing_fd_depending_on_pipe(&fd_in, &fd_out, temp, get_type_of_pipe(temp->pipe_type));
+		}
+		else if (nr_of_commands == 0)
 			fd_out = STDOUT_FILENO; // write part -> write TO
 		else
 		{
