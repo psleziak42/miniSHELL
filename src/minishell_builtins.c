@@ -6,7 +6,7 @@
 /*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 15:14:50 by bcosters          #+#    #+#             */
-/*   Updated: 2021/10/28 18:00:24 by tosilva          ###   ########.fr       */
+/*   Updated: 2021/11/06 22:49:26 by tosilva          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,36 +160,36 @@ void	ft_echo(char **args)
  *	
 */
 
-void	ft_path(char **args)
-{
-	int		i;
-	int		child_id;
-	char	*strjoin;
-	char	*strjoin2;
+// void	ft_path(char **args)
+// {
+// 	int		i;
+// 	int		child_id;
+// 	char	*strjoin;
+// 	char	*strjoin2;
 
-	i = -1;
-	child_id = fork();
-	if (child_id == -1)
-		printf("Error FORK\n");
-	else if (child_id == 0)
-	{
-		while (g_mini.path[++i])
-		{
-			strjoin = ft_strjoin(g_mini.path[i], "/");
-			strjoin2 = ft_strjoin(strjoin, args[0]);
-			if (execve(strjoin2, &args[0], NULL))
-				;
-			free(strjoin); // this wont be freed if because execve kills the process
-			free(strjoin2);
-		}
-		ft_error_exit("error execve");
-	}
-	else
-	{
-		wait(NULL);
-		/*if (strjoin)
-			free(strjoin);
-		if (strjoin2)
-			free(strjoin2);*/
-	}
-}
+// 	i = -1;
+// 	child_id = fork();
+// 	if (child_id == -1)
+// 		printf("Error FORK\n");
+// 	else if (child_id == 0)
+// 	{
+// 		while (g_mini.path[++i])
+// 		{
+// 			strjoin = ft_strjoin(g_mini.path[i], "/");
+// 			strjoin2 = ft_strjoin(strjoin, args[0]);
+// 			if (execve(strjoin2, &args[0], NULL))
+// 				;
+// 			free(strjoin); // this wont be freed if because execve kills the process
+// 			free(strjoin2);
+// 		}
+// 		ft_error_exit("error execve");
+// 	}
+// 	else
+// 	{
+// 		wait(NULL);
+// 		/*if (strjoin)
+// 			free(strjoin);
+// 		if (strjoin2)
+// 			free(strjoin2);*/
+// 	}
+// }
