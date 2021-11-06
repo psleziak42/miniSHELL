@@ -52,9 +52,9 @@ CFILES	:= check_commands.c \
 			ft_expand_dollar.c \
 			ft_parser.c \
 			lst_arguments.c \
+			minishell_builtins.c \
 			minishell.c \
 			pipes.c
-#			minishell_builtins.c \
 
 HFILES_BONUS	:=
 CFILES_BONUS	:=

@@ -21,6 +21,7 @@
 # include <stdlib.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <fcntl.h>
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/errno.h>
@@ -47,7 +48,7 @@ typedef struct s_arguments
 typedef struct s_builtins
 {
 	char	**cmd;
-	void	(**builtin_func)(void);
+	void	(**builtin_func)(char **);
 }				t_builtins;
 
 
@@ -71,14 +72,14 @@ typedef struct s_minishell
 
 t_minishell	g_mini;
 
-void		ft_echo(void);
-void		ft_cd(void);
-void		ft_pwd(void);
-void		ft_export(void);
-void		ft_unset(void);
-void		ft_env(void);
-void		ft_exit(void);
-void		ft_path(void);
+void		ft_echo(char **args);
+void		ft_cd(char **args);
+void		ft_pwd(char **args);
+void		ft_export(char **args);
+void		ft_unset(char **args);
+void		ft_env(char **args);
+void		ft_exit(char **args);
+void		ft_path(char **args);
 
 void		ft_handler(int signal);
 
@@ -106,5 +107,6 @@ void		ft_free_args(t_arguments *old_argv);
 void		fill_builtins_struct(void);
 void		check_commands(void);
 void		run_commands(void);
+int 		get_type_of_pipe(char *pipe_type);
 
 #endif

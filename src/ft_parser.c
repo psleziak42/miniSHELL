@@ -66,7 +66,6 @@ static int	count_words_until_pipe(int input_i)
 				return (-1);
 		}
 	}
-	printf("nr_words: %i\n", nr_words);
 	return (nr_words);
 }
 

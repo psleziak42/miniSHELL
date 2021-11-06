@@ -27,13 +27,13 @@ static	void	fill_cmd(void)
 static	void	fill_builtins_func(void)
 {
 	g_mini.builtins.builtin_func = ft_calloc(8, sizeof(char *));
-	// g_mini.builtins.builtin_func[0] = &ft_echo;
-	// g_mini.builtins.builtin_func[1] = &ft_cd;
-	// g_mini.builtins.builtin_func[2] = &ft_pwd;
-	// g_mini.builtins.builtin_func[3] = &ft_env;
-	// g_mini.builtins.builtin_func[4] = &ft_export;
-	// g_mini.builtins.builtin_func[5] = &ft_unset;
-	// g_mini.builtins.builtin_func[6] = &ft_exit;
+	g_mini.builtins.builtin_func[0] = &ft_echo;
+	g_mini.builtins.builtin_func[1] = &ft_cd;
+	g_mini.builtins.builtin_func[2] = &ft_pwd;
+	g_mini.builtins.builtin_func[3] = &ft_env;
+	g_mini.builtins.builtin_func[4] = &ft_export;
+	g_mini.builtins.builtin_func[5] = &ft_unset;
+	g_mini.builtins.builtin_func[6] = &ft_exit;
 }
 
 void	fill_builtins_struct(void)

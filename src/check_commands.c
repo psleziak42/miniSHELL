@@ -12,12 +12,6 @@
 
 #include "minishell.h"
 
-static bool	is_redirection(char	*pipe_type)
-{
-	return (pipe_type[0] != 0
-		&& (pipe_type[0] != '|' && pipe_type[1] == 0));
-}
-
 static char	*check_n_get_cmd_path(char *cmd)
 {
 	char	*temp;
@@ -55,25 +49,32 @@ void	check_commands(void)
 	list_args = g_mini.argv;
 	while (list_args)
 	{
-		if (is_redirection(list_args->pipe_type))
+		if (get_type_of_pipe(list_args->pipe_type) == 1)
 		{
-			if ((list_args->pipe_type[0] == '<' && list_args->pipe_type[1] == 0)
-				&& list_args->args[0])
+			temp = ft_strjoin(getcwd(buf, 4095), "/");
+			full_file_path = ft_strjoin(temp, list_args->args[0]);
+			free(temp);
+			if (access(full_file_path, F_OK | R_OK) == 0)
 			{
-				temp = ft_strjoin(getcwd(buf, 4095), "/");
-				full_file_path = ft_strjoin(temp, list_args->args[0]);
-				free(temp);
-				if (access(full_file_path, F_OK | R_OK) == 0)
-				{
-					free(full_file_path);
-					if (list_args->args[1])
-						list_args->full_arg_path
-							= check_n_get_cmd_path(list_args->args[1]);
-				}
+				free(full_file_path);
+				if (list_args->args[1])
+					list_args->full_arg_path
+						= check_n_get_cmd_path(list_args->args[1]);
 				else
-					ft_error_handler(NULL); //? to verify if errno set message automatically 
-			}	
+					list_args->is_valid = 1;
+			}
+			else
+				ft_error_handler(NULL); //? to verify if errno set message automatically 
 		}
+		else if (get_type_of_pipe(list_args->pipe_type) == 2)
+		{
+			if (list_args->args[1])
+				list_args->full_arg_path = check_n_get_cmd_path(list_args->args[1]);
+			else
+				list_args->is_valid = 1;
+		}
+		else if (get_type_of_pipe(list_args->pipe_type) >= 3)
+			list_args->is_valid = 1;
 		else if (list_args->args[0])
 			list_args->full_arg_path = check_n_get_cmd_path(list_args->args[0]);
 		if (list_args->full_arg_path)
