@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/23 16:21:54 by tosilva           #+#    #+#             */
-/*   Updated: 2021/10/29 17:07:28 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/08 18:18:02 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,7 @@ static int	is_closed_quote(int input_i)
 	}
 	if (g_mini.quote.on_quote)
 	{
-		errno = 1;
-		ft_error_handler("Quotes must be closed");
+		ft_default_error_handler(strerror(22), "quotes must be closed");
 		return (-1);
 	}
 	return (i);
@@ -100,6 +99,9 @@ static char	*copy_word(int *input_i, int word_len)
 		else
 			arg[j++] = g_mini.input[i++];
 	}
+	if (g_mini.input[i]
+		&& (g_mini.input[i] == '\'' || g_mini.input[i] == '\"'))
+		i += 2;
 	*input_i = i;
 	return (arg);
 }
@@ -124,7 +126,7 @@ static int	count_word_length(int *input_i)
 			g_mini.quote.quote = g_mini.input[i];
 			while (g_mini.input[++i] != g_mini.quote.quote)
 			{
-				if (g_mini.input[i] == '$' && g_mini.input[i + 1] != '?'
+				if (g_mini.input[i] == '$' && g_mini.input[i + 1] != '?' && g_mini.input[i + 1] != ' '
 					&& g_mini.quote.quote != '\'')
 					return (-1);
 				word_len++;
@@ -133,8 +135,11 @@ static int	count_word_length(int *input_i)
 		}
 		else
 		{
-			if (g_mini.input[i] == '$' && g_mini.input[i + 1] != '?')
+			if (g_mini.input[i] == '$' && g_mini.input[i + 1] != '?' && g_mini.input[i + 1] != ' ')
 				return (-1);
+			if ((i == 0 || (i > 0 && g_mini.input[i - 1] == ' ')) && g_mini.input[i] == '~'
+				&& (g_mini.input[i + 1] == '\0' || g_mini.input[i + 1] == '/' || g_mini.input[i + 1] == ' '))
+				return (-2);
 			word_len++;
 			i++;
 		}
@@ -154,6 +159,8 @@ static void	copy_args(t_arguments **new_arg, int *input_i, int nr_words)
 		ft_bzero(&g_mini.quote, sizeof(t_quote));
 		if (word_len == -1)
 			(*new_arg)->args[wd] = ft_expand_dollar(input_i);
+		else if (word_len == -2)
+			(*new_arg)->args[wd] = ft_expand_tilde(input_i);
 		else
 			(*new_arg)->args[wd] = copy_word(input_i, word_len);
 	}

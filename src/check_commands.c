@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 16:38:52 by tosilva           #+#    #+#             */
-/*   Updated: 2021/10/30 19:03:15 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/08 16:03:03 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ static char	*check_n_get_cmd_path(char *cmd)
 		free(full_cmd_path);
 	}
 	// TODO error with command name
-	ft_error_handler("Command not found"); //? to verify if errno set message automatically 
+	// ft_error_handler(cmd, NULL); //? to verify if errno set message automatically 
+	ft_cmd_error_handler(cmd, NULL, INVALID_COMMAND);
 	return (NULL);
 }
 
@@ -64,7 +65,7 @@ void	check_commands(void)
 					list_args->is_valid = 1;
 			}
 			else
-				ft_error_handler(NULL); //? to verify if errno set message automatically 
+				ft_cmd_error_handler(list_args->args[0], NULL, strerror(2));
 		}
 		else if (get_type_of_pipe(list_args->pipe_type) == 2)
 		{

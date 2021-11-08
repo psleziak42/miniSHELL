@@ -13,5 +13,5 @@ char	*ft_lstfind_content(t_list **lst, char *find)
 			return (temp->content);
 		temp = temp->next;
 	}
-	return ("Element not found, check spelling");
+	return (NULL);
 }

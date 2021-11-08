@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: tony <tony@student.42.fr>                  +#+  +:+       +#+         #
+#    By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/09/28 18:49:28 by tosilva           #+#    #+#              #
-#    Updated: 2021/11/05 18:01:41 by psleziak         ###   ########.fr        #
+#    Updated: 2021/11/08 17:53:29 by psleziak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,6 +50,7 @@ CFILES	:= check_commands.c \
 			fill_builtins_struct.c \
 			ft_expand_dollar__2.c \
 			ft_expand_dollar.c \
+			ft_expand_tilde.c \
 			ft_parser.c \
 			lst_arguments.c \
 			minishell_builtins.c \

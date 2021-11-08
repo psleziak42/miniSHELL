@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tony <tony@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:52:05 by psleziak          #+#    #+#             */
-/*   Updated: 2021/11/02 01:15:24 by tony             ###   ########.fr       */
+/*   Updated: 2021/11/08 17:54:55 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,7 @@
 # include <curses.h>
 # include <term.h>
 
-# define General Error	1
-
+# define INVALID_COMMAND	"command not found"
 
 typedef struct s_arguments
 {
@@ -87,12 +86,14 @@ void		ft_handler(int signal);
 int			is_pipe(char *str);
 int			get_var_info(char *var_name, char **kw_content, int *content_len);
 char		*ft_expand_dollar(int *input_i);
+char		*ft_expand_tilde(int *input_i);
 t_arguments	*split_commands(t_arguments *old_argv);
 
 /* ERRORS AND CLEAN */
 int			ft_clear_data(void);
 void		ft_error_exit(const char *errmessage);
-int			ft_error_handler(const char *errmessage);
+void		ft_cmd_error_handler(char *command, char *argumment, char *description);
+void		ft_default_error_handler(char *message, char *description);
 
 /* DOLLAR */
 void		ft_dollar_sign(char *argv);

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipes2.c                                           :+:      :+:    :+:   */
+/*   pipes.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
+/*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 00:35:06 by psleziak          #+#    #+#             */
-/*   Updated: 2021/11/05 17:48:45 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/08 16:21:09 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,18 +86,20 @@ static void	run_builtin_or_execve(char *full_arg_path, char **args)
 			g_mini.builtins.builtin_func[i](args);
 			if (g_mini.argv->next != NULL)
 				exit(EXIT_SUCCESS);
+			else
+				return ;
 		}
 	}
 	process = 0;
 	if (g_mini.argv->next == NULL) // pipe wont do the fork it goes to execve directly.
 		process = fork();
 	if (process == -1)
-		ft_error_handler("fork error");
+		ft_default_error_handler("Fork error", strerror(10));
 	else if (process == 0)
 		execve(full_arg_path, args, NULL);
 	else
 		wait(NULL);
-	ft_error_handler("command not found");
+	// ft_cmd_error_handler(args[0], NULL, INVALID_COMMAND);
 }
 
 static int	count_nr_of_commands(void)
@@ -156,7 +158,7 @@ void	ft_ouptut_append(int *out, t_arguments *temp)
 
 	file_fd = open(temp->args[0], O_WRONLY | O_APPEND | O_CREAT, 0666);
 	if (file_fd == -1)
-		ft_error_handler("FILE doesnt exist, ft_output_append");
+		ft_default_error_handler(temp->args[0], strerror(2));
 	*out = file_fd;
 }
 
@@ -166,7 +168,7 @@ void	ft_output(int *out, t_arguments *temp)
 
 	file_fd = open(temp->args[0], O_WRONLY | O_TRUNC | O_CREAT, 0666);
 	if (file_fd == -1)
-		ft_error_handler("FILE doesnt exist, ft_output");
+		ft_default_error_handler(temp->args[0], strerror(2));
 	*out = file_fd;
 }
 
@@ -176,7 +178,7 @@ void	ft_input(int *in, t_arguments *temp)
 
 	file_fd = open(temp->args[0], O_RDONLY);
 	if (file_fd == -1)
-		ft_error_handler("FILE doesnt exist, ft_input");
+		ft_default_error_handler(temp->args[0], strerror(2));
 	*in = file_fd;
 }
 
@@ -212,9 +214,9 @@ void	ft_input_heredoc(int *in, t_arguments *temp)
 	}
 	close(file_fd);
 	file_fd = open(file_dir, O_RDONLY);
-	free(file_dir);
 	if (file_fd == -1)
-		ft_error_handler("FILE doesnt exist, ft_input_heredoc");
+		ft_default_error_handler(file_dir, strerror(77));
+	free(file_dir);
 	*in = file_fd;
 }
 
@@ -263,7 +265,7 @@ static void	run_pipes(int nr_of_commands)
 			io_table_manipulation(&fd_in, &fd_out, temp, get_type_of_pipe(temp->pipe_type));
 		process = fork();
 		if (process == -1)
-			ft_error_handler("fork error");
+			ft_default_error_handler("Fork error", strerror(10));
 		else if (process == 0)
 		{
 			dup2(fd_in, STDIN_FILENO);

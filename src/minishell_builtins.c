@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_builtins.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
+/*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 15:14:50 by bcosters          #+#    #+#             */
-/*   Updated: 2021/11/06 22:49:26 by tosilva          ###   ########.fr       */
+/*   Updated: 2021/11/08 19:11:56 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,26 +20,39 @@
 // TODO: join ~/Doc with full path
 void	ft_cd(char **args) // we must cover just "cd" without nothing to go to root.
 {
-	char	buf[4096];
+	char	oldpwd[4096];
+	char	newpwd[4096];
+	char	*key_n_content[2];
+	char	*temp;
 	
+	getcwd(oldpwd, 4096);
 	if (!ft_strncmp(args[0], "cd", 3) && !args[1]) 
 		chdir(ft_lstfind_content(&g_mini.env, "HOME"));
-	else if (args[1][0] == '~')
+	else if (args[1][0] == '-')
 	{
-		chdir(ft_lstfind_content(&g_mini.env, "HOME"));
-		if (args[1][1] != '\0')
+		temp = ft_lstfind_content(&g_mini.env, "OLDPWD");
+		if (!temp)
 		{
-			ft_memmove(&args[1][0], &args[1][2], ft_strlen(args[1]) - 1);
-			chdir(args[1]);
+			ft_cmd_error_handler(args[0], NULL, "OLDPWD not set");
+			return ;
 		}
+		chdir(temp);
 	}
 	else
 	{
 		if (chdir(args[1]) == -1)
-			g_mini.exit_code = ft_error_handler("wrong chdir");
+			ft_cmd_error_handler(args[0], args[1], strerror(2));
 	}
-	getcwd(buf, 4096);
-	ft_lstfind_update(&g_mini.env, buf, "PWD");
+	if (ft_lstfind_content(&g_mini.env, "OLDPWD"))
+		ft_lstfind_update(&g_mini.env, oldpwd, "OLDPWD");
+	else
+	{
+		key_n_content[0] = ft_strdup("OLDPWD");
+		key_n_content[1] = ft_strdup(oldpwd);
+		ft_lstadd_back(&g_mini.env, ft_lstnew(key_n_content));
+	}
+	getcwd(newpwd, 4096);
+	ft_lstfind_update(&g_mini.env, newpwd, "PWD");
 }
 
 void	ft_export(char **args) //* Fully working
@@ -129,7 +142,7 @@ void	ft_pwd(char **args)
 	{
 		if (!ft_strncmp(temp->keyword, "PWD", 3))
 		{	
-			ft_putstr_fd(temp->content, 1);
+			ft_putendl_fd(temp->content, 1);
 			break;
 		}
 		temp = temp->next;

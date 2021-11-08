@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dollar_sign.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tony <tony@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/26 16:31:57 by tosilva           #+#    #+#             */
-/*   Updated: 2021/11/02 00:46:36 by tony             ###   ########.fr       */
+/*   Updated: 2021/11/08 15:24:47 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	ft_dollar_sign(char *argv)
 	{
 		if (!ft_strncmp(temp->keyword, argv, ft_strlen(argv)))
 		{
-			ft_putstr_fd(temp->content, 1);
+			ft_putendl_fd(temp->content, 1);
 			break ;
 		}
 		temp = temp->next;
