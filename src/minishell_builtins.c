@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 15:14:50 by bcosters          #+#    #+#             */
-/*   Updated: 2021/11/08 19:11:56 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/09 15:52:53 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,10 +126,35 @@ void	ft_env(char **args)
 
 void	ft_exit(char **args)
 {
-	args = (char **)args;
+	int		exit_code;
+	char	*temp_args[2];
+
+	if (args[1])
+		temp_args[0] = ft_strdup(args[1]);
+	else
+		temp_args[0] = NULL;
+	if (args[1] && args[2])
+		temp_args[1] = ft_strdup(args[2]);
+	else
+		temp_args[1] = NULL;
+	exit_code = g_mini.exit_code;
 	printf("%s\n", "exit");
-	ft_clear_data();
-	exit(EXIT_SUCCESS);
+	if (temp_args[0] && temp_args[1] && ft_isnumber(temp_args[0]))
+		ft_cmd_error_handler("exit", NULL, "too many arguments");
+	else
+	{	
+		ft_clear_data();
+		if (temp_args[0] && ft_isnumber(temp_args[0]))
+			exit_code = ft_atoi(temp_args[0]);
+		else if (temp_args[0])
+		{
+			exit_code = 255;
+			ft_cmd_error_handler("exit", temp_args[0], "numeric argument required");
+		}
+		ft_memdel((void**)&temp_args[0]);
+		ft_memdel((void**)&temp_args[1]);
+		exit(exit_code);
+	}
 }
 
 void	ft_pwd(char **args)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_commands.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
+/*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 16:38:52 by tosilva           #+#    #+#             */
-/*   Updated: 2021/11/09 13:13:30 by tosilva          ###   ########.fr       */
+/*   Updated: 2021/11/09 16:32:39 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,13 @@ void	check_commands(void)
 	list_args = g_mini.argv;
 	while (list_args)
 	{
-		if (get_type_of_pipe(list_args->pipe_type) == 1)
+		if (!list_args->args[0])
+		{
+			ft_default_error_handler("Syntax error near unexpected token", list_args->pipe_type);
+			ft_free_args(g_mini.argv);
+			return ;
+		}
+		else if (get_type_of_pipe(list_args->pipe_type) == 1)
 		{
 			temp = ft_strjoin(getcwd(buf, 4095), "/");
 			full_file_path = ft_strjoin(temp, list_args->args[0]);
@@ -78,12 +84,6 @@ void	check_commands(void)
 			list_args->is_valid = 1;
 		else if (list_args->args[0])
 			list_args->full_arg_path = check_n_get_cmd_path(list_args->args[0]);
-		else if (!list_args->args[0])
-		{
-			ft_default_error_handler("syntax error near unexpected token", list_args->pipe_type);
-			ft_free_args(g_mini.argv);
-			return ;
-		}
 		if (list_args->full_arg_path)
 			list_args->is_valid = 1;
 		list_args = list_args->next;

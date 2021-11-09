@@ -1,22 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memdel_bonus.c                                  :+:      :+:    :+:   */
+/*   ft_isnumber.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/01 08:57:29 by bcosters          #+#    #+#             */
-/*   Updated: 2021/11/09 15:41:32 by psleziak         ###   ########.fr       */
+/*   Created: 2021/11/09 15:49:12 by psleziak          #+#    #+#             */
+/*   Updated: 2021/11/09 16:01:04 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_memdel(void **mem)
+int	ft_isnumber(char *str)
 {
-	if (mem != NULL && *mem != NULL)
+	int	i;
+
+	i = -1;
+	if (str[0] == '-' || str[0] == '+')
+		i++;
+	while (str[++i])
 	{
-		free(*mem);
-		*mem = NULL;
+		if (!ft_isdigit(str[i]))
+			return (0);
 	}
+	return (1);
 }

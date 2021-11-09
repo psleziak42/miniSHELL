@@ -248,4 +248,5 @@ int	main(int argc, char **argv, char **env)
 		//the escape chars + single/double quotes need to be handled
 		//run_commands();
 	}
+	return (EXIT_SUCCESS);
 }

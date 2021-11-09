@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error_clear.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
+/*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/26 16:33:54 by tosilva           #+#    #+#             */
-/*   Updated: 2021/11/09 13:05:48 by tosilva          ###   ########.fr       */
+/*   Updated: 2021/11/09 15:55:48 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,12 @@ int	ft_clear_data(void)
 */
 void	ft_error_exit(const char *errmessage)
 {
+	int		exit_code;
+
+	exit_code = g_mini.exit_code;
 	ft_clear_data();
 	perror(errmessage);
-	exit(EXIT_FAILURE);
+	exit(exit_code);
 }
 
 void	ft_cmd_error_handler(char *command, char *argument, char *description)
