@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error_clear.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/26 16:33:54 by tosilva           #+#    #+#             */
-/*   Updated: 2021/11/08 16:34:34 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/09 13:05:48 by tosilva          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,15 +49,21 @@ void	ft_error_exit(const char *errmessage)
 	exit(EXIT_FAILURE);
 }
 
-void	ft_cmd_error_handler(char *command, char *argumment, char *description)
+void	ft_cmd_error_handler(char *command, char *argument, char *description)
 {
-	if (argumment)
-		fprintf(stderr, "%s: %s: %s\n", command, argumment, description);
-	else
-		fprintf(stderr, "%s: %s\n", command, description);
+	ft_putstr_fd(command, STDERR_FILENO);
+	ft_putstr_fd(": ", STDERR_FILENO);
+	if (argument)
+	{
+		ft_putstr_fd(argument, STDERR_FILENO);
+		ft_putstr_fd(": ", STDERR_FILENO);
+	}
+	ft_putendl_fd(description, STDERR_FILENO);
 }
 
 void	ft_default_error_handler(char *message, char *description)
 {
-	fprintf(stderr, "%s: %s\n", message, description);
+	ft_putstr_fd(message, STDERR_FILENO);
+	ft_putstr_fd(": ", STDERR_FILENO);
+	ft_putendl_fd(description, STDERR_FILENO);
 }
