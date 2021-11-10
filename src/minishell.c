@@ -26,13 +26,20 @@ void	ft_handler(int sig)
 	if (sig == SIGINT)
 	{
 		g_mini.exit_code = 130;
-		printf("%s\n", g_mini.prompt);
+		//printf("%s\n", g_mini.prompt);
+		ft_putchar_fd('\n', 1);
 		rl_on_new_line();
 		rl_replace_line("", 0);
-		rl_redisplay();
+		if (!g_mini.pid_id)
+			rl_redisplay();
 	}
 	if (sig == SIGQUIT) // shouldnt move cursor
-		printf("%s%s", g_mini.prompt, rl_line_buffer);
+	{
+		if (g_mini.pid_id)
+			rl_redisplay();
+		else
+			printf("%s%s", g_mini.prompt, rl_line_buffer);
+	}
 }
 
 /*	 to do list by friday
@@ -224,8 +231,8 @@ int	main(int argc, char **argv, char **env)
 	ft_init(argv, env);
 	//int k;
 
-	// signal(SIGINT, ft_handler);
-	// signal(SIGQUIT, ft_handler);
+	signal(SIGINT, ft_handler);
+	signal(SIGQUIT, ft_handler);
 	while (argc)
 	{
 		g_mini.input = rl_gnl();

@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 00:35:06 by psleziak          #+#    #+#             */
-/*   Updated: 2021/11/09 16:53:53 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/10 16:47:28 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	run_commands(void)
 		heredoc = find_heredoc(heredoc->next);
 	}
 }*/
-static void	run_builtin_or_execve(char *full_arg_path, char **args)
+static void	run_builtin_or_execve(char *full_arg_path, char **args, int fd_in, int fd_out)
 {
 	int i;
 	int	var_len;
@@ -83,7 +83,7 @@ static void	run_builtin_or_execve(char *full_arg_path, char **args)
 	{
 		if (!ft_strncmp(g_mini.builtins.cmd[i], args[0], var_len + 1))
 		{
-			g_mini.builtins.builtin_func[i](args);
+			g_mini.builtins.builtin_func[i](args, fd_out);
 			if (g_mini.argv->next != NULL)
 				exit(EXIT_SUCCESS);
 			else
@@ -97,11 +97,21 @@ static void	run_builtin_or_execve(char *full_arg_path, char **args)
 		ft_default_error_handler("Fork error", strerror(10));
 	else if (process == 0)
 	{
+		dup2(fd_in, STDIN_FILENO);
+		dup2(fd_out, STDOUT_FILENO);
+		if (fd_in != STDIN_FILENO)
+			close(fd_in);
+		if (fd_out != STDOUT_FILENO)
+			close(fd_out);
 		execve(full_arg_path, args, NULL);
 		exit(EXIT_FAILURE);
 	}
 	else
+	{
+		g_mini.pid_id = process;
 		wait(NULL);
+		g_mini.pid_id = 0;
+	}
 	// ft_cmd_error_handler(args[0], NULL, INVALID_COMMAND);
 }
 
@@ -157,7 +167,10 @@ void	ft_ouptut_append(int *out, t_arguments *temp)
 	file_fd = open(temp->args[0], O_WRONLY | O_APPEND | O_CREAT, 0666);
 	if (file_fd == -1)
 		ft_default_error_handler(temp->args[0], strerror(2));
-	*out = file_fd;
+	if (temp->next && get_type_of_pipe(temp->next->pipe_type) >= 3)
+		close(file_fd);
+	else
+		*out = file_fd;
 }
 
 void	ft_output(int *out, t_arguments *temp)
@@ -167,7 +180,10 @@ void	ft_output(int *out, t_arguments *temp)
 	file_fd = open(temp->args[0], O_WRONLY | O_TRUNC | O_CREAT, 0666);
 	if (file_fd == -1)
 		ft_default_error_handler(temp->args[0], strerror(2));
-	*out = file_fd;
+	if (temp->next && get_type_of_pipe(temp->next->pipe_type) >= 3)
+		close(file_fd);
+	else
+		*out = file_fd;
 }
 
 void	ft_input(int *in, t_arguments *temp)
@@ -260,43 +276,50 @@ static void	run_pipes(int nr_of_commands)
 			fd_out = pipe_fd[1];
 		}
 		if (is_redirection(temp->pipe_type))
+		{
+			if (get_type_of_pipe(temp->pipe_type) >= 3)
+				close(fd_out);
+			else
+				close(fd_in);
 			io_table_manipulation(&fd_in, &fd_out, temp, get_type_of_pipe(temp->pipe_type));
+		}
 		process = fork();
 		if (process == -1)
 			ft_default_error_handler("Fork error", strerror(10));
 		else if (process == 0)
 		{
-			dup2(fd_in, STDIN_FILENO);
-			dup2(fd_out, STDOUT_FILENO);
-			if (nr_of_commands != 0)
-			{
-				close(pipe_fd[0]);
-				close(pipe_fd[1]);
-			}
+			// dup2(fd_in, STDIN_FILENO);
+			// dup2(fd_out, STDOUT_FILENO);
+			// if (nr_of_commands != 0)
+			// {
+			// 	close(pipe_fd[0]);
+			// 	close(pipe_fd[1]);
+			// }
 			if (temp->is_valid)
 			{
 				if (is_redirection(temp->pipe_type))
 				{
 					if (!temp->args[1])
 					{
-						if (get_type_of_pipe(temp->pipe_type) <= 2)
-							read_n_write_to_or_from_file(fd_in, STDOUT_FILENO); // it is now output of the pipe due to dup2
-						else
+							// read_n_write_to_or_from_file(fd_in, fd_out); // it is now output of the pipe due to dup2
+						// else
+						if (get_type_of_pipe(temp->pipe_type) > 2)
 						{
 							read_n_write_to_or_from_file(fd_in, fd_out); // 
-							if (nr_of_commands != 0)
-							{
-								close(fd_out);
-								fd_out = open(temp->args[0], O_RDONLY);
-								read_n_write_to_or_from_file(fd_out, STDOUT_FILENO);
-							}
+							// if (nr_of_commands != 0)
+							// {
+							// 	if (is_redirection(temp->next->pipe_type) &)
+							// 	close(fd_out);
+							// 	fd_out = open(temp->args[0], O_RDONLY);
+							// 	read_n_write_to_or_from_file(fd_out, STDOUT_FILENO);
+							// }
 						}
 					}
 					else
-						run_builtin_or_execve(temp->full_arg_path, &temp->args[1]);
+						run_builtin_or_execve(temp->full_arg_path, &temp->args[1], fd_in, fd_out);
 				}
 				else
-					run_builtin_or_execve(temp->full_arg_path, temp->args);
+					run_builtin_or_execve(temp->full_arg_path, temp->args, fd_in, fd_out);
 				exit(EXIT_FAILURE);
 			}
 			exit(EXIT_SUCCESS);
@@ -325,32 +348,35 @@ static void	run_single_command()
 	if (is_redirection(g_mini.argv->pipe_type))
 	{
 		io_table_manipulation(&fd_in, &fd_out, g_mini.argv, get_type_of_pipe(g_mini.argv->pipe_type));
-		if (get_type_of_pipe(g_mini.argv->pipe_type) <= 2)
-		{
-			dup2(fd_in, STDIN_FILENO);
-			//read_n_write_to_or_from_file(fd_in, STDOUT_FILENO); // it is now output of the pipe due to dup2
-		}
-		else
-		{
-			dup2(fd_out, STDOUT_FILENO);
-			// read_n_write_to_or_from_file(fd_in, fd_out);
-			// fd_out = open(g_mini.argv->args[0], O_RDONLY);
-			// read_n_write_to_or_from_file(fd_out, STDOUT_FILENO);
-		}
-		if (!g_mini.argv->args[1])
-		{
-			if (get_type_of_pipe(g_mini.argv->pipe_type) <= 2)
-				close(fd_in);
-			else
-				close(fd_out);
-			return ;
-		}
+		// if (get_type_of_pipe(g_mini.argv->pipe_type) <= 2)
+		// {
+		// 	//dup2(fd_in, STDIN_FILENO);
+		// 	//read_n_write_to_or_from_file(fd_in, STDOUT_FILENO); // it is now output of the pipe due to dup2
+		// }
+		// else
+		// {
+		// 	dup2(fd_out, STDOUT_FILENO);
+		// 	// read_n_write_to_or_from_file(fd_in, fd_out);
+		// 	// fd_out = open(g_mini.argv->args[0], O_RDONLY);
+		// 	// read_n_write_to_or_from_file(fd_out, STDOUT_FILENO);
+		// }
+		// if (!g_mini.argv->args[1])
+		// {
+		// 	if (get_type_of_pipe(g_mini.argv->pipe_type) <= 2)
+		// 		close(fd_in);
+		// 	else
+		// 		close(fd_out);
+		// 	return ;
+		// } 
+		if (g_mini.argv->args[1])
+			run_builtin_or_execve(g_mini.argv->full_arg_path, &g_mini.argv->args[1], fd_in, fd_out);
 	}
-	run_builtin_or_execve(g_mini.argv->full_arg_path, g_mini.argv->args);
-	if (get_type_of_pipe(g_mini.argv->pipe_type) <= 2)
-		close(fd_in);
 	else
-		close(fd_out);
+		run_builtin_or_execve(g_mini.argv->full_arg_path, g_mini.argv->args, fd_in, fd_out);
+	// if (get_type_of_pipe(g_mini.argv->pipe_type) <= 2)
+	// 	close(fd_in);
+	// else
+	// 	close(fd_out);
 }
 
 void	run_commands(void)

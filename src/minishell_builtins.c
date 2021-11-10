@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 15:14:50 by bcosters          #+#    #+#             */
-/*   Updated: 2021/11/09 15:52:53 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/10 17:24:23 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,14 @@
  *
 */
 // TODO: join ~/Doc with full path
-void	ft_cd(char **args) // we must cover just "cd" without nothing to go to root.
+void	ft_cd(char **args, int fd_out) // we must cover just "cd" without nothing to go to root.
 {
 	char	oldpwd[4096];
 	char	newpwd[4096];
 	char	*key_n_content[2];
 	char	*temp;
 	
+	fd_out = (int)fd_out;
 	getcwd(oldpwd, 4096);
 	if (!ft_strncmp(args[0], "cd", 3) && !args[1]) 
 		chdir(ft_lstfind_content(&g_mini.env, "HOME"));
@@ -55,76 +56,95 @@ void	ft_cd(char **args) // we must cover just "cd" without nothing to go to root
 	ft_lstfind_update(&g_mini.env, newpwd, "PWD");
 }
 
-void	ft_export(char **args) //* Fully working
+void	ft_export(char **args, int fd_out) //* Fully working
 {
 	t_list	*temp;
 	char	**export_split;
-	temp = g_mini.env;
-	
-	if (!ft_strchr(args[1], '='))
-		return ;
-	export_split = ft_split(args[1], '=');
-	if (!export_split[1])
-		export_split[1] = ft_strdup("");
-	if (ft_lstfind_update(&g_mini.env, export_split[1], export_split[0]) == 1)
+	int		i;
+
+	fd_out = (int)fd_out;
+	if (!args[1])
 	{
-		free(export_split[0]);
-		free(export_split[1]);
+		ft_cmd_error_handler(args[0], NULL, "not enough arguments");
 		return ;
 	}
-	ft_lstadd_back(&temp, ft_lstnew(export_split));
+	temp = g_mini.env;
+	i = 0;
+	while (args[++i])
+	{
+		if (ft_strchr(args[i], '='))
+		{
+			export_split = ft_split(args[i], '=');
+			if (!export_split[1])
+				export_split[1] = ft_strdup("");
+			if (ft_lstfind_update(&g_mini.env, export_split[1], export_split[0]) == 1)
+			{
+				free(export_split[0]);
+				free(export_split[1]);
+			}
+			else
+				ft_lstadd_back(&temp, ft_lstnew(export_split));
+		}
+	}
 }
 
-void	ft_unset(char **args)
+void	ft_unset(char **args, int fd_out)
 {
 	t_list	*temp;
 	t_list	*previous;
+	size_t	var_length;
 	int		i;
-	int		counter;
 
-	temp = g_mini.env;
-	previous = g_mini.env;
-	i = 0;
-	counter = 0;
-	while (args[1][i])
-		i++;
-	while (temp)
+	fd_out = (int)fd_out;
+	if (!args[1])
 	{
-		if (!ft_strncmp(temp->keyword, args[1], i) && counter == 0)
+		ft_cmd_error_handler(args[0], NULL, "not enough arguments");
+		return ;
+	}
+	i = 0;
+	while (args[++i])
+	{
+		temp = g_mini.env;
+		previous = g_mini.env;
+		var_length = ft_strlen(args[i]);
+		while (temp)
 		{
-				g_mini.env = temp->next;
+			if (!ft_strncmp(temp->keyword, args[i], var_length + 1))
+			{
+				if (temp == g_mini.env)
+					g_mini.env = temp->next;
+				else
+					previous->next = temp->next;
+				ft_lstdelone(temp, &free);
 				break ;
-		}
-		if (temp->next)
+			}
+			if (temp != g_mini.env)
+				previous = previous->next;
 			temp = temp->next;
-		else
-			break;
-		if (!ft_strncmp(temp->keyword, args[1], i)) 
-		{
-			previous->next = temp->next;
-			free(temp);
-			break ;
 		}
-		if (counter != 0)
-			previous = previous->next;
-		counter++;
 	}
 }
 
-void	ft_env(char **args)
+void	ft_env(char **args, int fd_out)
 {
 	t_list	*temp;
 
-	args = (char **)args;
+	if (args[1])
+	{
+		ft_cmd_error_handler(args[0], args[1], strerror(2));
+		return ;
+	}
 	temp = g_mini.env;
 	while (temp)
 	{
-		printf("%s%s\n", ft_strjoin(temp->keyword, "="), temp->content);
+		ft_putstr_fd(temp->keyword, fd_out);
+		ft_putstr_fd("=", fd_out);
+		ft_putendl_fd(temp->content, fd_out);
 		temp = temp->next;
 	}
 }
 
-void	ft_exit(char **args)
+void	ft_exit(char **args, int fd_out)
 {
 	int		exit_code;
 	char	*temp_args[2];
@@ -138,7 +158,7 @@ void	ft_exit(char **args)
 	else
 		temp_args[1] = NULL;
 	exit_code = g_mini.exit_code;
-	printf("%s\n", "exit");
+	ft_putendl_fd("exit", fd_out);
 	if (temp_args[0] && temp_args[1] && ft_isnumber(temp_args[0]))
 		ft_cmd_error_handler("exit", NULL, "too many arguments");
 	else
@@ -157,10 +177,11 @@ void	ft_exit(char **args)
 	}
 }
 
-void	ft_pwd(char **args)
+void	ft_pwd(char **args, int fd_out)
 {
 	t_list	*temp;
 
+	fd_out = (int)fd_out;
 	args = (char **)args;
 	temp = g_mini.env;
 	while (temp)
@@ -174,7 +195,7 @@ void	ft_pwd(char **args)
 	}
 }
 
-void	ft_echo(char **args)
+void	ft_echo(char **args, int fd_out)
 {
 	int i;
 
@@ -184,21 +205,21 @@ void	ft_echo(char **args)
 	while (args[++i])
 	{
 		if (!ft_strncmp(args[i], "$?", 2))
-			printf("%d", g_mini.exit_code);
+			ft_putnbr_fd(g_mini.exit_code, fd_out);
 		else
-			printf("%s", args[i]);
+			ft_putstr_fd(args[i], fd_out);
 		if (args[i + 1])
-			printf(" ");
+			ft_putstr_fd(" ", fd_out);
 	}
 	if (!args[1] || (args[1] && ft_strncmp(args[1], "-n", 3) != 0))
-		printf("\n");
+		ft_putendl_fd("", fd_out);
 }
 
 /*
  *	
 */
 
-// void	ft_path(char **args)
+// void	ft_path(char **args, int fd_out)
 // {
 // 	int		i;
 // 	int		child_id;

@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:52:05 by psleziak          #+#    #+#             */
-/*   Updated: 2021/11/08 17:54:55 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/10 16:47:39 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ typedef struct s_arguments
 typedef struct s_builtins
 {
 	char	**cmd;
-	void	(**builtin_func)(char **);
+	void	(**builtin_func)(char **, int);
 }				t_builtins;
 
 
@@ -58,6 +58,7 @@ typedef struct s_minishell
 {
 	char			*input;
 	char			**path;
+	pid_t			pid_id;
 	t_list			*env;
 	t_arguments		*argv;
 	t_builtins		builtins;
@@ -71,14 +72,14 @@ typedef struct s_minishell
 
 t_minishell	g_mini;
 
-void		ft_echo(char **args);
-void		ft_cd(char **args);
-void		ft_pwd(char **args);
-void		ft_export(char **args);
-void		ft_unset(char **args);
-void		ft_env(char **args);
-void		ft_exit(char **args);
-void		ft_path(char **args);
+void		ft_echo(char **args, int fd_out);
+void		ft_cd(char **args, int fd_out);
+void		ft_pwd(char **args, int fd_out);
+void		ft_export(char **args, int fd_out);
+void		ft_unset(char **args, int fd_out);
+void		ft_env(char **args, int fd_out);
+void		ft_exit(char **args, int fd_out);
+void		ft_path(char **args, int fd_out);
 
 void		ft_handler(int signal);
 

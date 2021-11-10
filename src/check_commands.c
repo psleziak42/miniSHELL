@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 16:38:52 by tosilva           #+#    #+#             */
-/*   Updated: 2021/11/09 16:32:39 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/10 15:20:03 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,10 @@ void	check_commands(void)
 	{
 		if (!list_args->args[0])
 		{
-			ft_default_error_handler("Syntax error near unexpected token", list_args->pipe_type);
+			if (list_args->pipe_type[0] == '|' && list_args->pipe_type[1] == '\0')
+				ft_default_error_handler("Syntax error near unexpected token", list_args->pipe_type);
+			else
+				ft_default_error_handler("Syntax error near unexpected token", "'newline'");
 			ft_free_args(g_mini.argv);
 			return ;
 		}
