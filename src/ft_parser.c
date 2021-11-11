@@ -6,40 +6,30 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/23 16:21:54 by tosilva           #+#    #+#             */
-/*   Updated: 2021/11/08 18:18:02 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/11 17:27:41 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	is_pipe(char *str)
+static void	check_and_save_redirection_or_pipe(t_arguments *temp, int *input_i)
 {
-	return (str[0] == '|'
-		|| str[0] == '<'
-		|| (str[0] == '<' && str[1] == '<')
-		|| str[0] == '>'
-		|| (str[0] == '>' && str[1] == '>'));
-}
+	int	pipe_i;
 
-static int	is_closed_quote(int input_i)
-{
-	int i;
-
-	i = input_i;
-	while (g_mini.input[++i])
+	pipe_i = 0;
+	if (is_pipe(&g_mini.input[*input_i]))
+		temp->pipe_type[pipe_i++] = g_mini.input[(*input_i)++];
+	ft_skip_spaces(input_i);
+	if (g_mini.input[*input_i] == '<' || g_mini.input[*input_i] == '>')
 	{
-		if (g_mini.input[i] == g_mini.quote.quote)
+		if (g_mini.input[*input_i] != g_mini.input[*input_i + 1])
+			temp->pipe_type[pipe_i++] = g_mini.input[(*input_i)++];
+		else
 		{
-			g_mini.quote.on_quote = 0;
-			break ;
+			temp->pipe_type[pipe_i++] = g_mini.input[(*input_i)++];
+			temp->pipe_type[pipe_i++] = g_mini.input[(*input_i)++];
 		}
 	}
-	if (g_mini.quote.on_quote)
-	{
-		ft_default_error_handler(strerror(22), "quotes must be closed");
-		return (-1);
-	}
-	return (i);
 }
 
 static int	count_words_until_pipe(int input_i)
@@ -53,13 +43,13 @@ static int	count_words_until_pipe(int input_i)
 	{
 		if (!nr_words)
 			nr_words++;
-		if ((g_mini.input[i] == ' '
-				&& g_mini.input[i + 1] != ' ' && !is_pipe(&g_mini.input[i + 1])))
+		if (g_mini.input[i] == ' ' && g_mini.input[i + 1] != ' '
+			&& !is_pipe(&g_mini.input[i + 1]))
 			nr_words++;
 		else if (g_mini.input[i] == '\'' || g_mini.input[i] == '\"')
 		{
 			g_mini.quote.on_quote = 1;
-			g_mini.quote.quote = g_mini.input[i];
+			g_mini.quote.qt = g_mini.input[i];
 			i = is_closed_quote(i);
 			if (i == -1)
 				return (-1);
@@ -68,127 +58,12 @@ static int	count_words_until_pipe(int input_i)
 	return (nr_words);
 }
 
-static char	*copy_word(int *input_i, int word_len)
-{
-	char	*arg;
-	int		i;
-	int		j;
-	int		quote_len;
-
-	arg = ft_calloc(word_len + 1, sizeof(char));
-	if (!arg)
-		return (NULL);
-	while (g_mini.input[*input_i] == ' ')
-		(*input_i)++;	
-	i = *input_i;
-	j = 0;
-	while (word_len--)
-	{
-		if (g_mini.input[i] == '\'' || g_mini.input[i] == '\"')
-		{
-			g_mini.quote.quote = g_mini.input[i++];
-			quote_len = 0;
-			while (g_mini.input[i] != g_mini.quote.quote)
-			{
-				arg[j++] = g_mini.input[i++];
-				quote_len++;
-			}
-			i++;
-			word_len -= (quote_len - 1);
-		}
-		else
-			arg[j++] = g_mini.input[i++];
-	}
-	if (g_mini.input[i]
-		&& (g_mini.input[i] == '\'' || g_mini.input[i] == '\"'))
-		i += 2;
-	*input_i = i;
-	return (arg);
-}
-
-
-
-static int	count_word_length(int *input_i)
-{
-	int		word_len;
-	int		i;
-
-	i = *input_i;
-	word_len = 0;
-	ft_bzero(&g_mini.quote, sizeof(t_quote));
-	while (g_mini.input[i] == ' ')
-		i++;
-	while (g_mini.input[i]
-		&& g_mini.input[i] != ' ' && !is_pipe(&g_mini.input[i]))
-	{
-		if (g_mini.input[i] == '\'' || g_mini.input[i] == '\"')
-		{
-			g_mini.quote.quote = g_mini.input[i];
-			while (g_mini.input[++i] != g_mini.quote.quote)
-			{
-				if (g_mini.input[i] == '$' && g_mini.input[i + 1] != '?' && g_mini.input[i + 1] != ' '
-					&& g_mini.quote.quote != '\'')
-					return (-1);
-				word_len++;
-			}
-			i++;
-		}
-		else
-		{
-			if (g_mini.input[i] == '$' && g_mini.input[i + 1] != '?' && g_mini.input[i + 1] != ' ')
-				return (-1);
-			if ((i == 0 || (i > 0 && g_mini.input[i - 1] == ' ')) && g_mini.input[i] == '~'
-				&& (g_mini.input[i + 1] == '\0' || g_mini.input[i + 1] == '/' || g_mini.input[i + 1] == ' '))
-				return (-2);
-			word_len++;
-			i++;
-		}
-	}
-	return (word_len);
-}
-
-static void	copy_args(t_arguments **new_arg, int *input_i, int nr_words)
-{
-	int		word_len;
-	int		wd;
-
-	wd = -1;
-	while (++wd < nr_words)
-	{
-		word_len = count_word_length(input_i);
-		ft_bzero(&g_mini.quote, sizeof(t_quote));
-		if (word_len == -1)
-			(*new_arg)->args[wd] = ft_expand_dollar(input_i);
-		else if (word_len == -2)
-			(*new_arg)->args[wd] = ft_expand_tilde(input_i);
-		else
-			(*new_arg)->args[wd] = copy_word(input_i, word_len);
-	}
-	
-}
-
 static int	split_args_and_add_pipe(t_arguments **new_arg, int *input_i)
 {
 	int	nr_words;
-	int	pipe_i;
 
-	pipe_i = 0;
-	if (is_pipe(&g_mini.input[*input_i]))
-		(*new_arg)->pipe_type[pipe_i++] = g_mini.input[(*input_i)++];
-	while (g_mini.input[*input_i] == ' ')
-		(*input_i)++;
-	if (g_mini.input[*input_i] == '<' || g_mini.input[*input_i] == '>')
-	{
-		if (g_mini.input[*input_i] != g_mini.input[*input_i + 1])
-			(*new_arg)->pipe_type[pipe_i++] = g_mini.input[(*input_i)++];
-		else
-		{
-			(*new_arg)->pipe_type[pipe_i++] = g_mini.input[(*input_i)++];
-			(*new_arg)->pipe_type[pipe_i++] = g_mini.input[(*input_i)++];
-		}
-	}
-	while (g_mini.input[*input_i] == ' ')
-		(*input_i)++;
+	check_and_save_redirection_or_pipe(*new_arg, input_i);
+	ft_skip_spaces(input_i);
 	nr_words = count_words_until_pipe(*input_i);
 	if (nr_words == -1)
 		return (-2);

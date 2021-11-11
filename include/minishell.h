@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:52:05 by psleziak          #+#    #+#             */
-/*   Updated: 2021/11/10 16:47:39 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/11 20:01:13 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,23 +33,45 @@
 # include <curses.h>
 # include <term.h>
 
+# define MALLOC_ERROR		"memory not allocated with malloc"
 # define INVALID_COMMAND	"command not found"
+# define SYNTAX_ERROR		"Syntax error near unexpected token"
+# define NUM_REQUIRED		"numeric argument required"
+# define TOO_MANY_ARGS		"too many arguments"
+# define FEW_ARGS			"not enough arguments"
+
+typedef enum e_exit_codes
+{
+	GENERAL_ERR			= 1,
+	MISUSE_BUILTIN		= 2,
+	CMD_CANT_EXEC		= 126,
+	CMD_NOT_FOUND		= 127,
+	INVALID_EXIT_ARG	= 128,
+	CTRL_C				= 130,
+	OUT_OF_RANGE		= 255,
+	TOKEN_ERR			= 258
+}				t_e_exit_codes;
 
 typedef struct s_arguments
 {
 	char				**args;
 	char				pipe_type[4];
-	char				*full_arg_path;
+	char				*cmd_w_path;
 	bool				is_valid;
 	struct s_arguments	*next;
 }				t_arguments;
+
+typedef struct s_quote
+{
+	int		on_quote;
+	char	qt;
+}				t_quote;
 
 typedef struct s_builtins
 {
 	char	**cmd;
 	void	(**builtin_func)(char **, int);
 }				t_builtins;
-
 
 /**
  * Note: "t_builtins builtins" is not a pointer becaus
@@ -81,34 +103,50 @@ void		ft_env(char **args, int fd_out);
 void		ft_exit(char **args, int fd_out);
 void		ft_path(char **args, int fd_out);
 
+void		ft_init(char **argv, char **env);
 void		ft_handler(int signal);
 
 /* PARSER FUNCTIONS */
 int			is_pipe(char *str);
+int			is_closed_quote(int input_i);
+int			copy_word_inside_quote(char *arg, char *str, int *i, int *word_len);
+bool		is_tilde_to_home(int i, char *str);
+bool		is_shell_var(char *var);
 int			get_var_info(char *var_name, char **kw_content, int *content_len);
 char		*ft_expand_dollar(int *input_i);
 char		*ft_expand_tilde(int *input_i);
+void		copy_args(t_arguments **new_arg, int *input_i, int nr_words);
+void		ft_skip_spaces(int *input_i);
+void		ft_go_to_next_cmd(int *input_i);
 t_arguments	*split_commands(t_arguments *old_argv);
 
 /* ERRORS AND CLEAN */
 int			ft_clear_data(void);
-void		ft_error_exit(const char *errmessage);
-void		ft_cmd_error_handler(char *command, char *argumment, char *description);
-void		ft_default_error_handler(char *message, char *description);
-
-/* DOLLAR */
-void		ft_dollar_sign(char *argv);
-void		ft_expand_var(char *argv);
+void		error_exit(char *message, char *description, int exit_code);
+void		cmd_error_handler(char *cmd, char *arg, char *description,
+				int exit_code);
+void		deflt_err_handler(char *message, char *description,
+				int exit_code);
 
 /* LINKED LIST EXTRAS */
 void		add_to_end_of_the_list(t_arguments **all_args,
 				t_arguments *new_arg);
 void		ft_free_args(t_arguments *old_argv);
 
-/* ACCESS and PIPES*/
+/* ACCESS and PIPES and REDIRECTIONS */
+void		run_builtin_or_execve(char *cmd_w_path, char **args,
+				int fd_in, int fd_out);
+void		ft_input(int *in, t_arguments *temp);
+void		ft_input_heredoc(int *in, t_arguments *temp);
+void		ft_output(int *out, t_arguments *temp);
+void		ft_ouptut_append(int *out, t_arguments *temp);
+void		io_table_manipulation(int *in, int *out, t_arguments *temp,
+				int pipe_type);
 void		fill_builtins_struct(void);
 void		check_commands(void);
-void		run_commands(void);
-int 		get_type_of_pipe(char *pipe_type);
+void		run_pipe_or_single_cmd(void);
+void		run_pipes(t_arguments *temp, int nr_of_commands);
+bool		is_redirection(char *pipe_type);
+int			get_type_of_pipe(char *pipe_type);
 
 #endif

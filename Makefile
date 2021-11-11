@@ -6,7 +6,7 @@
 #    By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/09/28 18:49:28 by tosilva           #+#    #+#              #
-#    Updated: 2021/11/10 14:57:34 by psleziak         ###   ########.fr        #
+#    Updated: 2021/11/11 20:00:13 by psleziak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,17 +45,26 @@ LIBFT		:= ${addprefix $(LIBFT_DIR), $(LIBFT_FILE)}
 # FILES
 HFILES	:= minishell.h
 CFILES	:= check_commands.c \
-			dollar_sign.c \
 			error_clear.c \
 			fill_builtins_struct.c \
-			ft_expand_dollar__2.c \
+			ft_cd.c \
+			ft_exit_echo_pwd_env.c \
+			ft_expand_dollar_utils.c \
 			ft_expand_dollar.c \
+			ft_expand_tilde_utils.c \
 			ft_expand_tilde.c \
+			ft_export_n_unset.c \
+			ft_parser_copy_args.c \
+			ft_parser_utils.c \
 			ft_parser.c \
 			lst_arguments.c \
-			minishell_builtins.c \
+			minishell_initialization.c \
 			minishell.c \
-			pipes.c
+			pipes_and_single_cmd_utils.c \
+			pipes.c \
+			redirections.c \
+			run_builtin_or_execve.c \
+			run_pipe_or_single_cmd.c
 
 HFILES_BONUS	:=
 CFILES_BONUS	:=
@@ -94,7 +103,7 @@ CL_NORM_NUM		:=$(COLORF_CYAN)
 ########################################
 
 CC			= gcc
-CFLAGS		= -Wall -Werror -Wextra -g -fsanitize=address# -03
+CFLAGS		= -Wall -Werror -Wextra # -03
 DEBFLAGS	= -g -fsanitize=address
 INCFLAGS	:= -I./$(LIBFT_DIR) -I./$(INC_DIR) -I ~/.brew/opt/readline/include#'pkg-config readline --cflags'
 LIBFLAGS	:= -L./$(LIBFT_DIR) -lft -L ~/.brew/opt/readline/lib -lreadline

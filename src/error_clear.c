@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/26 16:33:54 by tosilva           #+#    #+#             */
-/*   Updated: 2021/11/09 15:55:48 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/11 18:32:03 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,30 +42,33 @@ int	ft_clear_data(void)
 /*
  * ft_error_handler handles errno 
 */
-void	ft_error_exit(const char *errmessage)
+void	error_exit(char *message, char *description, int exit_code)
 {
-	int		exit_code;
-
-	exit_code = g_mini.exit_code;
 	ft_clear_data();
-	perror(errmessage);
+	ft_putstr_fd(message, STDERR_FILENO);
+	ft_putstr_fd(": ", STDERR_FILENO);
+	ft_putendl_fd(description, STDERR_FILENO);
 	exit(exit_code);
 }
 
-void	ft_cmd_error_handler(char *command, char *argument, char *description)
+void
+	cmd_error_handler(char *cmd, char *arg, char *description, int exit_code)
 {
-	ft_putstr_fd(command, STDERR_FILENO);
+	g_mini.exit_code = exit_code;
+	ft_putstr_fd(cmd, STDERR_FILENO);
 	ft_putstr_fd(": ", STDERR_FILENO);
-	if (argument)
+	if (arg)
 	{
-		ft_putstr_fd(argument, STDERR_FILENO);
+		ft_putstr_fd(arg, STDERR_FILENO);
 		ft_putstr_fd(": ", STDERR_FILENO);
 	}
 	ft_putendl_fd(description, STDERR_FILENO);
 }
 
-void	ft_default_error_handler(char *message, char *description)
+void
+	deflt_err_handler(char *message, char *description, int exit_code)
 {
+	g_mini.exit_code = exit_code;
 	ft_putstr_fd(message, STDERR_FILENO);
 	ft_putstr_fd(": ", STDERR_FILENO);
 	ft_putendl_fd(description, STDERR_FILENO);

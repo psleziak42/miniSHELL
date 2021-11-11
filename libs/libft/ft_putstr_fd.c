@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/17 22:07:35 by psleziak          #+#    #+#             */
-/*   Updated: 2021/11/08 15:24:38 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/11 18:39:51 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,5 @@ void	ft_putstr_fd(char *s, int fd)
 		i = 0;
 		while (s[i] != '\0')
 			write(fd, &s[i++], 1);
-		/* write(1, "\n", 1); */
 	}
 }

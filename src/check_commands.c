@@ -6,16 +6,31 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 16:38:52 by tosilva           #+#    #+#             */
-/*   Updated: 2021/11/10 15:20:03 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/11 19:09:21 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+static char	*get_cmd_w_path(char *cmd, char *path)
+{
+	char	*cmd_w_path;
+	char	*temp;
+
+	if (ft_strchr(cmd, '/'))
+		cmd_w_path = ft_strdup(cmd);
+	else
+	{
+		temp = ft_strjoin(path, "/");
+		cmd_w_path = ft_strjoin(temp, cmd);
+		free(temp);
+	}
+	return (cmd_w_path);
+}
+
 static char	*check_n_get_cmd_path(char *cmd)
 {
-	char	*temp;
-	char	*full_cmd_path;
+	char	*cmd_w_path;
 	size_t	cmd_length;
 	int		i;
 
@@ -29,66 +44,78 @@ static char	*check_n_get_cmd_path(char *cmd)
 	i = -1;
 	while (g_mini.path[++i])
 	{
-		temp = ft_strjoin(g_mini.path[i], "/");
-		full_cmd_path = ft_strjoin(temp, cmd);
-		free(temp);
-		if (access(full_cmd_path, F_OK | X_OK) == 0)
-			return (full_cmd_path);
-		free(full_cmd_path);
+		cmd_w_path = get_cmd_w_path(cmd, g_mini.path[i]);
+		if (access(cmd_w_path, F_OK | X_OK) == 0)
+			return (cmd_w_path);
+		free(cmd_w_path);
 	}
-	ft_cmd_error_handler(cmd, NULL, INVALID_COMMAND);
+	cmd_error_handler(cmd, NULL, INVALID_COMMAND, CMD_NOT_FOUND);
 	return (NULL);
+}
+
+static void	poland_independence_day(t_arguments *lst_args, char *temp,
+				char *full_file_path, char *buf)
+{
+	if (get_type_of_pipe(lst_args->pipe_type) == 1)
+	{
+		temp = ft_strjoin(getcwd(buf, 4095), "/");
+		full_file_path = ft_strjoin(temp, lst_args->args[0]);
+		free(temp);
+		if (access(full_file_path, F_OK | R_OK) == 0)
+		{
+			free(full_file_path);
+			if (lst_args->args[1])
+				lst_args->cmd_w_path = check_n_get_cmd_path(lst_args->args[1]);
+			else
+				lst_args->is_valid = 1;
+		}
+		else
+			cmd_error_handler(lst_args->args[0], 0, strerror(2), GENERAL_ERR);
+	}
+	else if (get_type_of_pipe(lst_args->pipe_type) == 2)
+	{
+		if (lst_args->args[1])
+			lst_args->cmd_w_path = check_n_get_cmd_path(lst_args->args[1]);
+		else
+			lst_args->is_valid = 1;
+	}
+	else if (get_type_of_pipe(lst_args->pipe_type) >= 3)
+		lst_args->is_valid = 1;
+}
+
+static void	init_check_commands(t_arguments	**lst_args, char **temp,
+				char **full_file_path)
+{
+	*temp = NULL;
+	*full_file_path = NULL;
+	*lst_args = g_mini.argv;
 }
 
 void	check_commands(void)
 {
-	t_arguments	*list_args;
+	t_arguments	*lst_args;
 	char		*temp;
 	char		*full_file_path;
 	char		buf[4096];
 
-	list_args = g_mini.argv;
-	while (list_args)
+	init_check_commands(&lst_args, &temp, &full_file_path);
+	while (lst_args)
 	{
-		if (!list_args->args[0])
+		if (!lst_args->args[0])
 		{
-			if (list_args->pipe_type[0] == '|' && list_args->pipe_type[1] == '\0')
-				ft_default_error_handler("Syntax error near unexpected token", list_args->pipe_type);
+			if (lst_args->pipe_type[0] == '|' && lst_args->pipe_type[1] == 0)
+				deflt_err_handler(SYNTAX_ERROR, lst_args->pipe_type, TOKEN_ERR);
 			else
-				ft_default_error_handler("Syntax error near unexpected token", "'newline'");
+				deflt_err_handler(SYNTAX_ERROR, "'newline'", TOKEN_ERR);
 			ft_free_args(g_mini.argv);
 			return ;
 		}
-		else if (get_type_of_pipe(list_args->pipe_type) == 1)
-		{
-			temp = ft_strjoin(getcwd(buf, 4095), "/");
-			full_file_path = ft_strjoin(temp, list_args->args[0]);
-			free(temp);
-			if (access(full_file_path, F_OK | R_OK) == 0)
-			{
-				free(full_file_path);
-				if (list_args->args[1])
-					list_args->full_arg_path
-						= check_n_get_cmd_path(list_args->args[1]);
-				else
-					list_args->is_valid = 1;
-			}
-			else
-				ft_cmd_error_handler(list_args->args[0], NULL, strerror(2));
-		}
-		else if (get_type_of_pipe(list_args->pipe_type) == 2)
-		{
-			if (list_args->args[1])
-				list_args->full_arg_path = check_n_get_cmd_path(list_args->args[1]);
-			else
-				list_args->is_valid = 1;
-		}
-		else if (get_type_of_pipe(list_args->pipe_type) >= 3)
-			list_args->is_valid = 1;
-		else if (list_args->args[0])
-			list_args->full_arg_path = check_n_get_cmd_path(list_args->args[0]);
-		if (list_args->full_arg_path)
-			list_args->is_valid = 1;
-		list_args = list_args->next;
+		else if (is_redirection(lst_args->pipe_type))
+			poland_independence_day(lst_args, temp, full_file_path, buf);
+		else if (lst_args->args[0])
+			lst_args->cmd_w_path = check_n_get_cmd_path(lst_args->args[0]);
+		if (lst_args->cmd_w_path)
+			lst_args->is_valid = 1;
+		lst_args = lst_args->next;
 	}
 }

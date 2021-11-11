@@ -1,16 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_expand_dollar__2.c                              :+:      :+:    :+:   */
+/*   ft_expand_dollar_utils.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
+/*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/26 16:35:56 by tosilva           #+#    #+#             */
-/*   Updated: 2021/10/26 17:45:04 by tosilva          ###   ########.fr       */
+/*   Updated: 2021/11/11 20:12:48 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+bool	is_shell_var(char *var)
+{
+	return (var[0] == '$' && var[1] && ft_isalpha(var[1]));
+}
 
 static int	is_end_character(char c)
 {

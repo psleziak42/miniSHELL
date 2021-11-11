@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lst_arguments.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tosilva <tosilva@student.42lisboa.com>     +#+  +:+       +#+        */
+/*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/25 15:29:49 by tosilva           #+#    #+#             */
-/*   Updated: 2021/10/28 19:28:16 by tosilva          ###   ########.fr       */
+/*   Updated: 2021/11/10 18:03:18 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	ft_free_args(t_arguments *old_argv)
 		while (old_argv->args[++i])
 			ft_strdel(&(old_argv->args[i]));
 		ft_strdel(old_argv->args);
-		ft_strdel(&(old_argv->full_arg_path));
+		ft_strdel(&(old_argv->cmd_w_path));
 		free(old_argv);
 		old_argv = temp;
 	}

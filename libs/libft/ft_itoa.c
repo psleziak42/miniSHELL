@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: psleziak <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/18 00:17:26 by psleziak          #+#    #+#             */
-/*   Updated: 2021/05/19 22:09:29 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/11 18:41:43 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	ft_count_i(int *n)
 	}
 	while (z > 0)
 	{
-		z = z /10;
+		z = z / 10;
 		i++;
 	}
 	return (i);
@@ -52,9 +52,9 @@ char	*ft_itoa(int n)
 		return (0);
 	while (i--)
 	{	
-		x = (n %10 + 48);
+		x = ((n % 10) + 48);
 		itoa_buffer[i] = x;
-		n = n /10;
+		n = n / 10;
 		if (n == 0 && i == 1)
 		{
 			i--;
