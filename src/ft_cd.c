@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/11 15:44:55 by tosilva           #+#    #+#             */
-/*   Updated: 2021/11/12 16:04:44 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 22:28:25 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	ft_cd(char **args, int fd_out)
 	else if (args[1][0] == '-')
 	{
 		if (chdir(ft_lstfind_content(&g_mini.env, "OLDPWD")) == -1)
-			error_message = "HOME not set";
+			error_message = "OLDPWD not set";
 	}
 	else
 	{
@@ -53,7 +53,7 @@ void	ft_cd(char **args, int fd_out)
 			cmd_error_handler(args[0], args[1], strerror(2), GENERAL_ERR);
 	}
 	if (error_message)
-		cmd_error_handler(args[0], NULL, "OLDPWD not set", GENERAL_ERR);
+		cmd_error_handler(args[0], NULL, error_message, GENERAL_ERR);
 	else
 		update_old_n_new_pwd(oldpwd);
 }

@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/11 14:26:15 by psleziak          #+#    #+#             */
-/*   Updated: 2021/11/12 21:14:19 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 22:36:04 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ static void	prepare_pipe_to_run(t_arguments *temp, int *fd_in, int *fd_out)
 		if (*fd_in != STDIN_FILENO)
 			close(*fd_in);
 		temp->next->special = 1;
+		if (!temp->next->is_valid)
+			temp->is_valid = 0;
 		io_table_manipulation(fd_in, fd_out, temp->next,
 			get_type_of_pipe(temp->next->pipe_type));
 	}
