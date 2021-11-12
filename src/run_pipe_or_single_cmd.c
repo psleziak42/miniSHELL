@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 00:35:06 by psleziak          #+#    #+#             */
-/*   Updated: 2021/11/11 14:39:01 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 22:20:09 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,6 @@ void	run_pipe_or_single_cmd(void)
 	else
 		run_single_command();
 	path_to_unlink_heardoc = ft_strjoin(getenv("HOME"), "/heredoc.txt");
-	unlink(path_to_unlink_heardoc); //? access first?
+	unlink(path_to_unlink_heardoc);
 	ft_memdel((void **)&path_to_unlink_heardoc);
 }

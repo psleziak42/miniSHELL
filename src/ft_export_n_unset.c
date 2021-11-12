@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/11 15:46:45 by tosilva           #+#    #+#             */
-/*   Updated: 2021/11/12 21:59:07 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 22:19:42 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,6 @@ void	ft_unset(char **args, int fd_out)
 	fd_out = (int)fd_out;
 	if (!args[1])
 		return ;
-		//cmd_error_handler(args[0], NULL, FEW_ARGS, MISUSE_BUILTIN);
 	i = 0;
 	while (args[++i])
 	{

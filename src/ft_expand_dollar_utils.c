@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/26 16:35:56 by tosilva           #+#    #+#             */
-/*   Updated: 2021/11/12 22:03:42 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 22:19:32 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,6 @@ bool	is_shell_var(char *var)
 static int	is_end_character(char c)
 {
 	return (!ft_isalpha(c) && c != '_');
-	//  c == ' '
-	// 	|| c == '\'' || c == '\"'
-	// 	|| c == '|'
-	// 	|| c == '<' || c == '>'
-	// 	|| c == '\0');
 }
 
 static int	ft_keyword_length(char *input)
@@ -58,16 +53,6 @@ static char	*get_content_from_keyword(char *input, int length)
 	input[length] = old_chr;
 	return (NULL);
 }
-
-// static int	ft_get_countent_length(char *input, int kw_length)
-// {
-// 	char	*shell_variable;
-
-// 	shell_variable = get_content_from_keyword(input, kw_length);
-// 	if (!shell_variable)
-// 		return (0);
-// 	return (ft_strlen(shell_variable));
-// }
 
 int	get_var_info(char *var_name, char **kw_content, int *content_len)
 {

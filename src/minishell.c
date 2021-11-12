@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:56:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/11/12 22:17:41 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 22:19:50 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,6 @@ char	*rl_gnl(void)
 		else
 			exit(EXIT_SUCCESS);
 	}
-	// if (!*line)
-	// 	exit(ft_clear_data(g_mini, B));
 	if (line != NULL && line[0] != 0)
 		add_history(line);
 	line_trimmed = ft_strtrim(line, " \t\v");
