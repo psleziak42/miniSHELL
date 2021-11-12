@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/26 16:35:56 by tosilva           #+#    #+#             */
-/*   Updated: 2021/11/12 15:26:47 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 22:03:42 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,13 @@
 
 bool	is_shell_var(char *var)
 {
-	return (var[0] == '$' && var[1] && ft_isalpha(var[1]));
+	return (var[0] == '$' && var[1]
+		&& (ft_isalpha(var[1]) || var[1] == '_'));
 }
 
 static int	is_end_character(char c)
 {
-	return (!ft_isalpha(c));
+	return (!ft_isalpha(c) && c != '_');
 	//  c == ' '
 	// 	|| c == '\'' || c == '\"'
 	// 	|| c == '|'
@@ -45,7 +46,7 @@ static char	*get_content_from_keyword(char *input, int length)
 	old_chr = input[length];
 	input[length] = 0;
 	temp = g_mini.env;
-	while (temp->next)
+	while (temp)
 	{
 		if (ft_strncmp(input, temp->keyword, length + 1) == 0)
 		{

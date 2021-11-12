@@ -6,7 +6,7 @@
 #    By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/09/28 18:49:28 by tosilva           #+#    #+#              #
-#    Updated: 2021/11/12 15:15:06 by psleziak         ###   ########.fr        #
+#    Updated: 2021/11/12 20:59:46 by psleziak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -60,6 +60,7 @@ CFILES	:= check_commands.c \
 			lst_arguments.c \
 			minishell_initialization.c \
 			minishell.c \
+			pipes_and_single_cmd_utils_2.c \
 			pipes_and_single_cmd_utils.c \
 			pipes.c \
 			redirections.c \

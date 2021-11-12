@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/11 15:46:45 by tosilva           #+#    #+#             */
-/*   Updated: 2021/11/12 17:12:44 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 21:59:07 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static void	find_and_update_env_var(char *env_var)
 			free(export_split[1]);
 		}
 		else
-			ft_lstadd_back(&(g_mini.env), ft_lstnew(export_split));
+			ft_lstadd_back(&g_mini.env, ft_lstnew(export_split));
 	}
 }
 
@@ -48,7 +48,7 @@ void	ft_export(char **args, int fd_out)
 	i = 0;
 	while (args[++i])
 	{
-		if (!ft_isalpha(args[i][0]))
+		if (!ft_isalpha(args[i][0]) && args[i][0] != '_')
 			cmd_error_handler(args[0], args[i],
 				"not a valid identifier", GENERAL_ERR);
 		else
@@ -93,7 +93,7 @@ void	ft_unset(char **args, int fd_out)
 	i = 0;
 	while (args[++i])
 	{
-		if (!ft_isalpha(args[i][0]))
+		if (!ft_isalpha(args[i][0]) && args[i][0] != '_')
 			cmd_error_handler(args[0], args[i],
 				"not a valid identifier", GENERAL_ERR);
 		else

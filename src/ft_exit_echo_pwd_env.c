@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 15:14:50 by bcosters          #+#    #+#             */
-/*   Updated: 2021/11/12 15:46:44 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 19:49:08 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void	ft_pwd(char **args, int fd_out)
 	{
 		if (!ft_strncmp(temp->keyword, "PWD", 4))
 		{	
-			ft_putendl_fd(temp->content, 1);
+			ft_putendl_fd(temp->content, fd_out);
 			break ;
 		}
 		temp = temp->next;

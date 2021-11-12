@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:52:05 by psleziak          #+#    #+#             */
-/*   Updated: 2021/11/12 17:34:27 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 20:59:17 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ typedef struct s_arguments
 	char				pipe_type[4];
 	char				*cmd_w_path;
 	bool				is_valid;
+	bool				special;
 	struct s_arguments	*next;
 }				t_arguments;
 
@@ -148,6 +149,9 @@ void		fill_builtins_struct(void);
 void		check_commands(void);
 void		run_pipe_or_single_cmd(void);
 void		run_pipes(t_arguments *temp, int nr_of_commands);
+void		waitpid_n_update_exit_code(pid_t process);
+void		read_n_write_to_or_from_file(int fd_in, int fd_out, bool to_exit);
+void		portugal_tribute(int nr_of_commands, int *fd_out, int *pipe_fd);
 bool		is_redirection(char *pipe_type);
 int			get_type_of_pipe(char *pipe_type);
 

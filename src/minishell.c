@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:56:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/11/12 17:36:48 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 22:17:41 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,27 @@ void	ft_handler(int sig)
 {
 	if (sig == SIGINT)
 	{
-		g_mini.exit_code = 1; // 130
-		/*printf("%s\n", g_mini.prompt);*/
+		g_mini.exit_code = 1;
 		ft_putchar_fd('\n', 1);
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		if (!g_mini.pid_id)
 			rl_redisplay();
+		else
+			g_mini.exit_code = 130;
 	}
 	if (sig == SIGQUIT)
 	{
 		if (g_mini.pid_id)
+		{
+			printf("Quit: 3\n");
+			g_mini.exit_code = 131;
 			rl_redisplay();
+		}
 		else
 			printf("%s%s", g_mini.prompt, rl_line_buffer);
 	}
+	g_mini.has_error = 1;
 }
 
 /*
@@ -45,15 +51,21 @@ char	*rl_gnl(void)
 {
 	static char	*line_trimmed;
 	char		*line;
+	int			exit_code;
 
 	if (line_trimmed)
 		ft_strdel(&line_trimmed);
 	line = readline(g_mini.prompt);
 	if (!line)
 	{
-		//printf("%s\n", "exit");
+		exit_code = 0;
+		if (g_mini.has_error)
+			exit_code = g_mini.exit_code;
 		ft_clear_data();
-		exit(1);
+		if (exit_code)
+			exit(exit_code);
+		else
+			exit(EXIT_SUCCESS);
 	}
 	// if (!*line)
 	// 	exit(ft_clear_data(g_mini, B));
@@ -106,8 +118,6 @@ char	*rl_gnl(void)
 
 int	main(int argc, char **argv, char **env)
 {
-	//t_arguments	*last_arg;
-
 	ft_init(argv, env);
 	signal(SIGINT, ft_handler);
 	signal(SIGQUIT, ft_handler);
@@ -117,15 +127,12 @@ int	main(int argc, char **argv, char **env)
 		if (ft_strncmp(g_mini.input, "", 1) == 0)
 			continue ;
 		g_mini.argv = split_commands(g_mini.argv);
-		g_mini.has_error = 0;
 		check_commands();
 		if (!g_mini.argv)
 			continue ;
 		run_pipe_or_single_cmd();
 		if (!g_mini.has_error)
 			g_mini.exit_code = 0;
-		// last_arg = get_last_arg(g_mini.argv);
-		// if (last_arg->is_valid)
 	}
 	return (EXIT_SUCCESS);
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipes_utils.c                                      :+:      :+:    :+:   */
+/*   pipes_and_single_cmd_utils.c                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/11 14:34:47 by tosilva           #+#    #+#             */
-/*   Updated: 2021/11/11 14:38:21 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 20:59:49 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,4 +53,26 @@ void
 		ft_output(out, temp);
 	if (pipe_type == 4)
 		ft_ouptut_append(out, temp);
+}
+
+void	waitpid_n_update_exit_code(pid_t process)
+{
+	int	status;
+
+	waitpid(process, &status, 0);
+	if (WIFEXITED(status))
+	{
+		g_mini.has_error = 1;
+		g_mini.exit_code = WEXITSTATUS(status);
+	}
+}
+
+void	read_n_write_to_or_from_file(int fd_in, int fd_out, bool to_exit)
+{
+	char	buf;
+
+	while (read(fd_in, &buf, 1) > 0)
+		write(fd_out, &buf, 1);
+	if (to_exit)
+		exit(g_mini.exit_code);
 }

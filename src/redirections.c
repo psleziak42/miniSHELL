@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/11 13:41:51 by psleziak          #+#    #+#             */
-/*   Updated: 2021/11/12 17:43:24 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 22:04:13 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,18 @@ void	ft_input(int *in, t_arguments *temp)
 {
 	int	file_fd;
 
+	if (temp->special && temp->next
+		&& get_type_of_pipe(temp->next->pipe_type) != 0
+		&& get_type_of_pipe(temp->next->pipe_type) <= 2)
+	{
+		while (temp->next
+			&& get_type_of_pipe(temp->next->pipe_type) != 0
+			&& get_type_of_pipe(temp->next->pipe_type) <= 2)
+		{
+			temp = temp->next;
+			temp->special = 1;
+		}
+	}
 	file_fd = open(temp->args[0], O_RDONLY);
 	if (file_fd == -1)
 		return ;
@@ -35,6 +47,8 @@ static void	run_heredoc(char *end_of_file, int file_fd)
 	while (1)
 	{
 		line = readline("heredoc> ");
+		if (!line)
+			return ;
 		if (!ft_strncmp(end_of_file, line, eof_length + 1))
 			break ;
 		new_line = ft_strjoin(line, "\n");

@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/11 17:30:24 by psleziak          #+#    #+#             */
-/*   Updated: 2021/11/12 16:12:09 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 19:47:07 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,16 +55,13 @@ static t_list	*ft_env_list(char **env)
 
 void	ft_init(char **argv, char **env)
 {
-	char	*temp_prompt;
-
+	argv = (char **)argv;
 	ft_bzero(&g_mini, sizeof(g_mini));
 	fill_builtins_struct();
-	temp_prompt = ft_strtrim(argv[0], "./");
-	g_mini.prompt = ft_strjoin(temp_prompt, "42: ");
+	g_mini.prompt = ft_strdup("–– mini\033[31mshell\033[0m: ");
 	g_mini.fd = 1;
 	if (!g_mini.prompt)
 		error_exit("Fatal Error", "creating prompt string", GENERAL_ERR);
-	ft_strdel(&temp_prompt);
 	g_mini.env = ft_env_list(env);
 	if (!g_mini.env)
 		error_exit("Fatal Error", MALLOC_ERROR, GENERAL_ERR);

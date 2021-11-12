@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/11 13:36:21 by psleziak          #+#    #+#             */
-/*   Updated: 2021/11/12 17:28:55 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 18:48:48 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,15 @@ static int	run_builtin(char **args, int fd_out)
 	return (1);
 }
 
+/*
+* If there is a single command /line48/ then we create fork and 
+* everything after waitpid /line68/ is to take exit code from that fork.
+*
+* When we enter here from pipe, we create fork there in the pipe. 
+* We set here process to 0 so if line48 is false (so there is next link in 
+* list) we do not create fork but just run else if. This is why inside pipes.c
+* we need to implement WIFEEXITED once again.
+*/
 static void	run_execve(char *cmd_w_path, char **args, int fd_in, int fd_out)
 {
 	int	process;
@@ -51,20 +60,21 @@ static void	run_execve(char *cmd_w_path, char **args, int fd_in, int fd_out)
 		if (fd_out != STDOUT_FILENO)
 			close(fd_out);
 		execve(cmd_w_path, args, NULL);
-		exit(EXIT_FAILURE);
+		ft_clear_data();
+		exit(CMD_NOT_FOUND);
 	}
 	else
 	{
 		g_mini.pid_id = process;
-		wait(NULL);
+		waitpid_n_update_exit_code(process);
 		g_mini.pid_id = 0;
 	}
-	// cmd_error_handler(args[0], NULL, INVALID_COMMAND, CMD_NOT_FOUND);
 }
 
 void	
 	run_builtin_or_execve(char *cmd_w_path, char **args, int fd_in, int fd_out)
 {
+	g_mini.has_error = 0;
 	if (run_builtin(args, fd_out))
 		run_execve(cmd_w_path, args, fd_in, fd_out);
 }
