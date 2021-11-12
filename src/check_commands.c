@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/28 16:38:52 by tosilva           #+#    #+#             */
-/*   Updated: 2021/11/11 19:09:21 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 17:41:11 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,9 +86,25 @@ static void	poland_independence_day(t_arguments *lst_args, char *temp,
 static void	init_check_commands(t_arguments	**lst_args, char **temp,
 				char **full_file_path)
 {
+	int	i;
+
 	*temp = NULL;
 	*full_file_path = NULL;
 	*lst_args = g_mini.argv;
+	if (g_mini.path)
+	{
+		i = -1;
+		while (g_mini.path[++i])
+			ft_strdel(&g_mini.path[i]);
+		free(g_mini.path);
+		g_mini.path = NULL;
+	}
+	g_mini.path = ft_get_path();
+	if (!g_mini.path)
+	{
+		g_mini.path = ft_calloc(2, sizeof(char *));
+		g_mini.path[0] = ft_strdup("");
+	}
 }
 
 void	check_commands(void)

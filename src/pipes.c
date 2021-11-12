@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/11 14:26:15 by psleziak          #+#    #+#             */
-/*   Updated: 2021/11/11 18:32:13 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 17:05:13 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,11 @@ static void	prepare_pipe_to_run(t_arguments *temp, int *fd_in, int *fd_out)
 {
 	if (is_redirection(temp->pipe_type))
 	{
-		if (get_type_of_pipe(temp->pipe_type) >= 3)
-			close(*fd_out);
-		else
-			close(*fd_in);
+		if (get_type_of_pipe(temp->pipe_type) <= 2)
+		{
+			if (*fd_in != STDIN_FILENO)
+				close(*fd_in);
+		}
 		io_table_manipulation(fd_in, fd_out, temp,
 			get_type_of_pipe(temp->pipe_type));
 	}

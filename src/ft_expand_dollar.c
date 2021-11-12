@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/25 14:18:10 by tosilva           #+#    #+#             */
-/*   Updated: 2021/11/11 18:35:57 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 17:24:54 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,15 @@ static int
 		{
 			i += get_var_info(&input[i + 1], &content, &content_len);
 			if (copy)
-				ft_memcpy(arg, content, content_len);
+				ft_memcpy(&arg[*arg_len], content, content_len);
 			*arg_len += content_len;
 		}
 		else
+		{
+			if (copy)
+				arg[*arg_len] = input[i];
 			(*arg_len)++;
+		}
 	}
 	ft_bzero((void *)&g_mini.quote, sizeof(t_quote));
 	return (i);
@@ -68,7 +72,7 @@ static char	*ft_fill_arg(char *input, int arg_len)
 			copy_without_quotes(input, arg, &i, &j);
 		else if (!g_mini.quote.qt
 			&& (input[i] == '\'' || input[i] == '\"'))
-			i += expanding_inside_quotes(&input[i], &j, &arg[j], 1);
+			i += expanding_inside_quotes(&input[i], &j, arg, 1);
 		else
 			arg[j++] = input[i];
 	}

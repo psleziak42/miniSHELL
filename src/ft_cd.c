@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/11 15:44:55 by tosilva           #+#    #+#             */
-/*   Updated: 2021/11/11 18:16:39 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 16:04:44 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,26 +32,28 @@ static void	update_old_n_new_pwd(char *oldpwd)
 void	ft_cd(char **args, int fd_out)
 {
 	char	oldpwd[4096];
-	char	*temp;
+	char	*error_message;
 
+	error_message = NULL;
 	fd_out = (int)fd_out;
 	getcwd(oldpwd, 4096);
 	if (!ft_strncmp(args[0], "cd", 3) && !args[1])
-		chdir(ft_lstfind_content(&g_mini.env, "HOME"));
+	{
+		if (chdir(ft_lstfind_content(&g_mini.env, "HOME")) == -1)
+			error_message = "HOME not set";
+	}
 	else if (args[1][0] == '-')
 	{
-		temp = ft_lstfind_content(&g_mini.env, "OLDPWD");
-		if (!temp)
-		{
-			cmd_error_handler(args[0], NULL, "OLDPWD not set", GENERAL_ERR);
-			return ;
-		}
-		chdir(temp);
+		if (chdir(ft_lstfind_content(&g_mini.env, "OLDPWD")) == -1)
+			error_message = "HOME not set";
 	}
 	else
 	{
 		if (chdir(args[1]) == -1)
 			cmd_error_handler(args[0], args[1], strerror(2), GENERAL_ERR);
 	}
-	update_old_n_new_pwd(oldpwd);
+	if (error_message)
+		cmd_error_handler(args[0], NULL, "OLDPWD not set", GENERAL_ERR);
+	else
+		update_old_n_new_pwd(oldpwd);
 }

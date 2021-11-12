@@ -6,7 +6,7 @@
 #    By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/09/28 18:49:28 by tosilva           #+#    #+#              #
-#    Updated: 2021/11/11 20:00:13 by psleziak         ###   ########.fr        #
+#    Updated: 2021/11/12 15:15:06 by psleziak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -103,7 +103,7 @@ CL_NORM_NUM		:=$(COLORF_CYAN)
 ########################################
 
 CC			= gcc
-CFLAGS		= -Wall -Werror -Wextra # -03
+CFLAGS		= -Wall -Werror -Wextra -g -fsanitize=address# -03
 DEBFLAGS	= -g -fsanitize=address
 INCFLAGS	:= -I./$(LIBFT_DIR) -I./$(INC_DIR) -I ~/.brew/opt/readline/include#'pkg-config readline --cflags'
 LIBFLAGS	:= -L./$(LIBFT_DIR) -lft -L ~/.brew/opt/readline/lib -lreadline

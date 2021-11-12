@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:56:12 by bcosters          #+#    #+#             */
-/*   Updated: 2021/11/11 20:10:07 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 17:36:48 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,28 +85,28 @@ char	*rl_gnl(void)
 // 	}
 // }
 
-static t_arguments	*get_last_arg(t_arguments *lst)
-{
-	t_arguments	*previous;
-	t_arguments	*current;
+// static t_arguments	*get_last_arg(t_arguments *lst)
+// {
+// 	t_arguments	*previous;
+// 	t_arguments	*current;
 
-	previous = lst;
-	current = lst;
-	if (lst == NULL)
-		return (lst);
-	while (current != NULL)
-	{
-		if (current->next == NULL)
-			return (current);
-		previous = current;
-		current = current->next;
-	}
-	return (previous);
-}
+// 	previous = lst;
+// 	current = lst;
+// 	if (lst == NULL)
+// 		return (lst);
+// 	while (current != NULL)
+// 	{
+// 		if (current->next == NULL)
+// 			return (current);
+// 		previous = current;
+// 		current = current->next;
+// 	}
+// 	return (previous);
+// }
 
 int	main(int argc, char **argv, char **env)
 {
-	t_arguments	*last_arg;
+	//t_arguments	*last_arg;
 
 	ft_init(argv, env);
 	signal(SIGINT, ft_handler);
@@ -117,13 +117,15 @@ int	main(int argc, char **argv, char **env)
 		if (ft_strncmp(g_mini.input, "", 1) == 0)
 			continue ;
 		g_mini.argv = split_commands(g_mini.argv);
+		g_mini.has_error = 0;
 		check_commands();
 		if (!g_mini.argv)
 			continue ;
 		run_pipe_or_single_cmd();
-		last_arg = get_last_arg(g_mini.argv);
-		if (last_arg->is_valid)
+		if (!g_mini.has_error)
 			g_mini.exit_code = 0;
+		// last_arg = get_last_arg(g_mini.argv);
+		// if (last_arg->is_valid)
 	}
 	return (EXIT_SUCCESS);
 }

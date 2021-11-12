@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 15:14:50 by bcosters          #+#    #+#             */
-/*   Updated: 2021/11/11 18:20:50 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 15:46:44 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void	ft_pwd(char **args, int fd_out)
 	temp = g_mini.env;
 	while (temp)
 	{
-		if (!ft_strncmp(temp->keyword, "PWD", 3))
+		if (!ft_strncmp(temp->keyword, "PWD", 4))
 		{	
 			ft_putendl_fd(temp->content, 1);
 			break ;

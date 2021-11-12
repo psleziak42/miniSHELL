@@ -6,20 +6,20 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/11 17:30:24 by psleziak          #+#    #+#             */
-/*   Updated: 2021/11/11 18:31:56 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 16:12:09 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static char	**ft_get_path(void)
+char	**ft_get_path(void)
 {
 	t_list	*temp;
 
 	temp = g_mini.env;
 	while (temp)
 	{
-		if (!ft_strncmp(temp->keyword, "PATH", 4))
+		if (!ft_strncmp(temp->keyword, "PATH", 5))
 			return (ft_split(temp->content, ':'));
 		temp = temp->next;
 	}

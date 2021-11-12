@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 14:52:05 by psleziak          #+#    #+#             */
-/*   Updated: 2021/11/11 20:01:13 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 17:34:27 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ typedef struct s_minishell
 	char			*cwd;
 	int				fd;
 	struct termios	term;
+	bool			has_error;
 	unsigned char	exit_code;
 }				t_minishell;
 
@@ -105,6 +106,7 @@ void		ft_path(char **args, int fd_out);
 
 void		ft_init(char **argv, char **env);
 void		ft_handler(int signal);
+char		**ft_get_path(void);
 
 /* PARSER FUNCTIONS */
 int			is_pipe(char *str);

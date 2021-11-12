@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/26 16:35:56 by tosilva           #+#    #+#             */
-/*   Updated: 2021/11/11 20:12:48 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 15:26:47 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,12 @@ bool	is_shell_var(char *var)
 
 static int	is_end_character(char c)
 {
-	return (c == ' '
-		|| c == '\'' || c == '\"'
-		|| c == '|'
-		|| c == '<' || c == '>'
-		|| c == '\0');
+	return (!ft_isalpha(c));
+	//  c == ' '
+	// 	|| c == '\'' || c == '\"'
+	// 	|| c == '|'
+	// 	|| c == '<' || c == '>'
+	// 	|| c == '\0');
 }
 
 static int	ft_keyword_length(char *input)

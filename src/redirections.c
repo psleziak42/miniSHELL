@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/11 13:41:51 by psleziak          #+#    #+#             */
-/*   Updated: 2021/11/11 18:39:06 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 17:43:24 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	ft_input(int *in, t_arguments *temp)
 
 	file_fd = open(temp->args[0], O_RDONLY);
 	if (file_fd == -1)
-		deflt_err_handler(temp->args[0], strerror(2), GENERAL_ERR);
+		return ;
 	*in = file_fd;
 }
 
@@ -78,7 +78,11 @@ void	ft_output(int *out, t_arguments *temp)
 	if (temp->next && get_type_of_pipe(temp->next->pipe_type) >= 3)
 		close(file_fd);
 	else
+	{
+		if (*out != STDOUT_FILENO)
+			close(*out);
 		*out = file_fd;
+	}
 }
 
 void	ft_ouptut_append(int *out, t_arguments *temp)
@@ -91,5 +95,9 @@ void	ft_ouptut_append(int *out, t_arguments *temp)
 	if (temp->next && get_type_of_pipe(temp->next->pipe_type) >= 3)
 		close(file_fd);
 	else
+	{
+		if (*out != STDOUT_FILENO)
+			close(*out);
 		*out = file_fd;
+	}
 }

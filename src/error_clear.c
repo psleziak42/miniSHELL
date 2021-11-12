@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/26 16:33:54 by tosilva           #+#    #+#             */
-/*   Updated: 2021/11/11 18:32:03 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 17:35:35 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ void	error_exit(char *message, char *description, int exit_code)
 void
 	cmd_error_handler(char *cmd, char *arg, char *description, int exit_code)
 {
+	g_mini.has_error = 1;
 	g_mini.exit_code = exit_code;
 	ft_putstr_fd(cmd, STDERR_FILENO);
 	ft_putstr_fd(": ", STDERR_FILENO);
@@ -68,6 +69,7 @@ void
 void
 	deflt_err_handler(char *message, char *description, int exit_code)
 {
+	g_mini.has_error = 1;
 	g_mini.exit_code = exit_code;
 	ft_putstr_fd(message, STDERR_FILENO);
 	ft_putstr_fd(": ", STDERR_FILENO);

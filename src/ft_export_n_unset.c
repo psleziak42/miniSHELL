@@ -6,7 +6,7 @@
 /*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/11 15:46:45 by tosilva           #+#    #+#             */
-/*   Updated: 2021/11/11 18:37:18 by psleziak         ###   ########.fr       */
+/*   Updated: 2021/11/12 17:12:44 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,9 @@ static void	find_and_update_env_var(char *env_var)
 	}
 }
 
+/*
+* cmd_error_handler(args[0], NULL, FEW_ARGS, MISUSE_BUILTIN);
+*/
 void	ft_export(char **args, int fd_out)
 {
 	int		i;
@@ -39,12 +42,18 @@ void	ft_export(char **args, int fd_out)
 	fd_out = (int)fd_out;
 	if (!args[1])
 	{
-		cmd_error_handler(args[0], NULL, FEW_ARGS, MISUSE_BUILTIN);
+		ft_env(args, fd_out);
 		return ;
 	}
 	i = 0;
 	while (args[++i])
-		find_and_update_env_var(args[i]);
+	{
+		if (!ft_isalpha(args[i][0]))
+			cmd_error_handler(args[0], args[i],
+				"not a valid identifier", GENERAL_ERR);
+		else
+			find_and_update_env_var(args[i]);
+	}
 }
 
 static void	find_and_delete_env_var(char *keyword)
@@ -83,5 +92,11 @@ void	ft_unset(char **args, int fd_out)
 		//cmd_error_handler(args[0], NULL, FEW_ARGS, MISUSE_BUILTIN);
 	i = 0;
 	while (args[++i])
-		find_and_delete_env_var(args[i]);
+	{
+		if (!ft_isalpha(args[i][0]))
+			cmd_error_handler(args[0], args[i],
+				"not a valid identifier", GENERAL_ERR);
+		else
+			find_and_delete_env_var(args[i]);
+	}
 }
