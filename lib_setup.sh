@@ -9,7 +9,7 @@ else
     brew update
 fi
 
-#	CHECK IF pkg-config and readline are installed
+#	CHECKIF pkg-config and readline are installed
 
 if brew list | grep pkg-config ; then
 	echo "OK!"
