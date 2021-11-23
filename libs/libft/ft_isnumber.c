@@ -1,19 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstdelone.c                                     :+:      :+:    :+:   */
+/*   ft_isnumber.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: psleziak <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/05/17 23:41:40 by psleziak          #+#    #+#             */
-/*   Updated: 2021/05/17 23:41:42 by psleziak         ###   ########.fr       */
+/*   Created: 2021/11/09 15:49:12 by psleziak          #+#    #+#             */
+/*   Updated: 2021/11/09 16:01:04 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_lstdelone(t_list *lst, void (*del)(void *))
+int	ft_isnumber(char *str)
 {
-	del(lst->content);
-	free(lst);
+	int	i;
+
+	i = -1;
+	if (str[0] == '-' || str[0] == '+')
+		i++;
+	while (str[++i])
+	{
+		if (!ft_isdigit(str[i]))
+			return (0);
+	}
+	return (1);
 }

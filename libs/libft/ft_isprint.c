@@ -1,22 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memdel_bonus.c                                  :+:      :+:    :+:   */
+/*   ft_isprint.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bcosters <bcosters@student.42.fr>          +#+  +:+       +#+        */
+/*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/01 08:57:29 by bcosters          #+#    #+#             */
-/*   Updated: 2021/09/15 11:24:18 by bcosters         ###   ########.fr       */
+/*   Created: 2021/11/11 18:41:22 by psleziak          #+#    #+#             */
+/*   Updated: 2021/11/11 18:41:23 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_memdel(void **mem)
+int	ft_isprint(int c)
 {
-	if (mem != NULL)
-	{
-		free(*mem);
-		*mem = NULL;
-	}
+	if (c >= 32 && c <= 126)
+		return (1);
+	return (0);
 }

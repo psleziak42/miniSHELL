@@ -1,23 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   pipes_and_single_cmd_utils_2.c                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: psleziak <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: psleziak <psleziak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/05/17 22:19:49 by psleziak          #+#    #+#             */
-/*   Updated: 2021/05/17 22:20:42 by psleziak         ###   ########.fr       */
+/*   Created: 2021/11/12 20:58:48 by psleziak          #+#    #+#             */
+/*   Updated: 2021/11/12 20:59:15 by psleziak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-size_t	ft_strlen(const char *s)
+void	portugal_tribute(int nr_of_commands, int *fd_out, int *pipe_fd)
 {
-	int	i;
-
-	i = 0;
-	while (s[i] != '\0')
-		i++;
-	return (i);
+	if (nr_of_commands == 0)
+		*fd_out = STDOUT_FILENO;
+	if (nr_of_commands != 0)
+		pipe(pipe_fd);
+	if (nr_of_commands != 0)
+		*fd_out = pipe_fd[1];
 }
