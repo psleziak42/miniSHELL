@@ -24,7 +24,8 @@
 > 1. command, 2. command and what follows untill pipe or redirection is encountered, 3. environmental variables
 
 At this point we understood that better approach will be to create linked list, that contains all arguments untill redirection/pipe is found, will save type of redirection, we could also save output from access function (so we know if command is valid) as well as its path ex: 'ls' /bin/ls.
-<br>typedef struct s_arguments
+
+><br>typedef struct s_arguments
 <br>{
 <br>	char				**args;
 <br>	char				pipe_type[4];
