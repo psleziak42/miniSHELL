@@ -66,7 +66,7 @@ LET US CONSIDER THIS INPUT:
 > ls -l | grep minishell | wc -l
 
 Pipe is simply sort of buffer: 
-> ls -l -> goes to the pipe -> | output of ls -l is storred here instead of being displayed on your screen (a)| -> read from pipe, execute grep -> goes to the new pipe (b)| -> ls -l grep output is stored here | -> read from the pipe, execute wc -l -> write it to stdout. 
+> ls -l -> goes to the pipe -> | output of ls -l is storred here instead of being displayed on your screen (a)| -> read from pipe, execute grep -> goes to the new pipe (b)| -> ls -l grep output is stored here | -> read from the pipe, execute wc -l -> write it to stdout (c). 
 
 So this should give you a number as a final output.
 (a) -> before going to grep, in your parent process you should close fd_pipe[1], as explained in IMPORTANT2! Before forking to execute grep we will open new pipe, so our table will look like this now:
@@ -74,9 +74,19 @@ So this should give you a number as a final output.
 standard input (stdin)    0
 standard output (stdout)  1
 standard error (stderr)   2
-&mdash;fd_pipe[0] - read part    3 - closed, so fd 3 is avaliable
-fd_pipe[1] - write part   4
 fd_pipe[0] - read part    3
+__fd_pipe[1] - write part   4 - closed, so its not here anymore
+fd_pipe[0] - read part    4
+fd_pipe[1] - write part   5
 ```
+Now you are probably wondering how we can have twice fd_pipe[0] and it is not creating confusion (I mean I would wonder). `Pipe` just opens new fd's and its more about numbers. If i write to 5 i will write to a "new pipe" if i read from 3 i will read from "old pipe"
 
-(b) -> 
+(b) -> at this point, to avoid fd's leaks we close nr 3 because we not gonna need it anymore. And also nr 5 because we have already written to the pipe. And that's how it is rolling. wc -l has no pipe at the end, so we should enter child process with this table:
+
+```
+standard input (stdin)        0
+standard output (stdout)      1
+standard error (stderr)       2
+fd_pipe[0] - old read part    4 - wc -l will read from here
+```
+(c) -> before we leave the program we close 4.
