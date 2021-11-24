@@ -90,3 +90,22 @@ standard error (stderr)       2
 fd_pipe[0] - old read part    4 - wc -l will read from here
 ```
 (c) -> before we leave the program we close 4.
+
+###END WORDS
+Of couse our task was much more complicated than this example. We had to handle for instance:
+- < input.txt ls -l | grep minishell | wc -l > output.txt
+- << a << b | wc-l > output.txt > output2.txt
+- execute executavel files ./a.out or whatever. we could create file, open it in VIM, edit, compile and execute.
+- and some more crazy ideas of the evaluators
+
+But have in mind that it is not perfect. It passes the evaluation and much more, but you may always find a command that will not give desired output. What was actually interesting was that zsh (it is kinda fancy skin for bash) is giving different outputs than original bash. And original bash (according to my friend's info, so maybe not most reliable source ;p) took years to be written.
+
+IMPORTANT239149023590!
+When you write your minishell and use zhs make yourself a favour and type `bash` before testing how does it work. :)
+
+Thank you for your attention. I hope it clarified you a bit some doubts.
+
+##SOURCES
+- Kris Jordan
+  - https://www.youtube.com/watch?v=Vax97MIL_uI&list=PLKUb7MEve0TjHQSKUWChAWyJPCpYMRovO&index=57 (all videos till 39.2)
+
