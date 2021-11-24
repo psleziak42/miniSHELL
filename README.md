@@ -104,6 +104,7 @@ IMPORTANT239149023590!
 When you write your minishell and use zhs make yourself a favour and type `bash` before testing how does it work. :)
 
 Thank you for your attention. I hope it clarified you a bit some doubts.
+If you would like to try our program, just git clone it and type make inside repository. If function readline shows problems then you must follow the instructions in bash script lib_setup.sh
 
 ##SOURCES
 - Kris Jordan
