@@ -27,10 +27,10 @@ At this point we understood that better approach will be to create linked list, 
 
 ><br>typedef struct s_arguments
 <br>{
-<br>	char				**args;
-<br>	char				pipe_type[4];
-<br>	char				*cmd_w_path;
-<br>	bool				is_valid;
-<br>	bool				special;
-<br>	struct s_arguments	*next;
-<br>}				t_arguments;
+<br>	  char				**args;
+<br>	  char				pipe_type[4];
+<br>	  char				*cmd_w_path;
+<br>	  bool				is_valid;
+<br>	  bool				special;
+<br>	  struct s_arguments	*next;
+<br>}				  t_arguments;
