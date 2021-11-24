@@ -29,7 +29,7 @@ At this point we understood that better approach will be to create linked list, 
 >	char				**args;
 >	char				pipe_type[4];
 >	char				*cmd_w_path;
-	bool				is_valid;
-	bool				special;
-	struct s_arguments	*next;
+>	bool				is_valid;
+>	bool				special;
+>	struct s_arguments	*next;
 >}				t_arguments;
