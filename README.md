@@ -38,9 +38,9 @@ At this point we understood that better approach will be to create linked list, 
 
 ### PIPING
 <br> Every process (this is fancy name for a program) has its own redirection table, that looks this way:
-'''
+```
 standard input&nbsp; 0
 standard output 1
 standard error&nbsp;	&nbsp;2
-'''
+```
 
