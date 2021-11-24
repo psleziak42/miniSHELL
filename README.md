@@ -19,11 +19,12 @@
 <br> Sounds like there is not that much to do, however the project took over a month to be completed.
 
 ## Our soluion and challenges.
+### PARSING
 <br> This project had shown that sayig: "think twice code once" is true and elevated forward thinking ability is in price. Our 1st approach towars parsing was to save all input in two dimensional array. The moment we moved to pipes we realized that this will make our lifes very hard, as execve expects:
 > int execve(const char *pathname, char **const argv, char **const envp);
 > 1. command, 2. command and what follows untill pipe or redirection is encountered, 3. environmental variables
 
-At this point we understood that better approach will be to create linked list, that contains all arguments untill redirection/pipe is found, will save type of redirection, we could also save output from access function (so we know if command is valid) as well as its path ex: 'ls' /bin/ls.
+At this point we understood that better approach will be to create linked list, that contains all arguments untill redirection/pipe is found, will save type of redirection, we could also save output from access function (so we know if command is valid) as well as its path ex: 'ls' /bin/ls. Anytime redirection/pipe is found we create next node and link it. At this point executing it starts being pleasent.
 
 >typedef struct s_arguments
 <br>{
@@ -33,4 +34,13 @@ At this point we understood that better approach will be to create linked list, 
 <br>&nbsp;&nbsp;	  bool				is_valid;
 <br>&nbsp;&nbsp;	  bool				special;
 <br>&nbsp;&nbsp;	  struct s_arguments	*next;
-<br>}				  t_arguments;
+<br>}&nbsp;&nbsp;&nbsp;&nbsp;t_arguments;
+
+### PIPING
+<br> Every process (this is fancy name for a program) has its own redirection table, that looks this way:
+'''
+standard input&nbsp; 0
+standard output 1
+standard error&nbsp;	&nbsp;2
+'''
+
